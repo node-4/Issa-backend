@@ -15,6 +15,8 @@ app.get("/", (req, res) => {
         res.send("Hello World issa-Backend!");
 });
 
+require('./routes/superAdmin')(app);
+require('./routes/Admin')(app);
 
 
 
