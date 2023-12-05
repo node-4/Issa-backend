@@ -3,6 +3,9 @@ const jwt = require("jsonwebtoken");
 const User = require('../model/userModel');
 const AdminTracking = require('../model/adminTracking');
 const admitDetail = require('../model/admitDetail');
+const task = require('../model/task');
+const reciept = require('../model/reciept');
+const moment = require('moment');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -268,6 +271,194 @@ exports.getAdmitDetails = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "No Admit detail found matching the criteria", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "Admit detail successfully.", data: users });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addTask = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                } else {
+                        let obj = {
+                                title: req.body.title,
+                                date: req.body.date,
+                                time: req.body.time,
+                                description: req.body.description,
+                                user: user._id,
+                        }
+                        const userCreate = await task.create(obj);
+                        return res.status(200).send({ status: 200, message: "Task add successfully ", data: userCreate, });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getTaskById = async (req, res) => {
+        try {
+                const user1 = await task.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Task not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get Task fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteTask = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found", data: {} });
+                }
+                const user1 = await task.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Task not found", data: {} });
+                } else {
+                        await task.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Task delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.markAsDoneTask = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                } else {
+                        const user1 = await task.findOne({ _id: req.params.id, user: user._id });
+                        if (!user1) {
+                                return res.status(404).send({ status: 404, message: "Task not found", data: {} });
+                        } else {
+                                let update = await task.findByIdAndUpdate({ _id: user1._id }, { $set: { complete: true } }, { new: true })
+                                return res.status(200).send({ status: 200, message: "Task mark as done successfully.", data: update });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllTask = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const tasks = await task.find({ user: user._id }).sort({ date: 1 });
+                const filteredTasks = filterTasksByDate(tasks);
+                if (filteredTasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No tasks found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Tasks found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+function filterTasksByDate(tasks) {
+        const today = moment().startOf('day');
+        const tomorrow = moment().add(1, 'days').startOf('day');
+        const filteredTasks = {
+                today: {},
+                tomorrow: {},
+                yesterday: {},
+                week: {},
+        };
+        tasks.forEach((task) => {
+                const taskDate = moment(task.date);
+                const formattedDate = taskDate.format('DD MMM, ddd');
+                if (taskDate.isSame(today, 'day')) {
+                        filteredTasks.today[formattedDate] = filteredTasks.today[formattedDate] || [];
+                        filteredTasks.today[formattedDate].push(task);
+                } else if (taskDate.isSame(tomorrow, 'day')) {
+                        filteredTasks.tomorrow[formattedDate] = filteredTasks.tomorrow[formattedDate] || [];
+                        filteredTasks.tomorrow[formattedDate].push(task);
+                } else if (taskDate.isAfter(today, 'day') && taskDate.isBefore(tomorrow, 'day')) {
+                        filteredTasks.tomorrow[formattedDate] = filteredTasks.tomorrow[formattedDate] || [];
+                        filteredTasks.tomorrow[formattedDate].push(task);
+                } else if (taskDate.isAfter(today, 'day')) {
+                        filteredTasks.week[formattedDate] = filteredTasks.week[formattedDate] || [];
+                        filteredTasks.week[formattedDate].push(task);
+                } else if (taskDate.isBefore(today, 'day')) {
+                        filteredTasks.yesterday[formattedDate] = filteredTasks.yesterday[formattedDate] || [];
+                        filteredTasks.yesterday[formattedDate].push(task);
+                }
+        });
+
+        return filteredTasks;
+}
+exports.addReceipt = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found! Not registered.", data: {} });
+                } else {
+                        let uploadDate = new Date(), documentType, size, document;
+                        let getDate = new Date();
+                        let options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true };
+                        let formattedDate = getDate.toLocaleDateString('en-IN', options);
+                        uploadDate = formattedDate;
+                        if (req.file) {
+                                const fullMimeType = req.file.mimetype;
+                                documentType = fullMimeType.startsWith('application/') ? fullMimeType.substring(12) : fullMimeType;
+                                if (req.file.size < 1024 * 1024) {
+                                        size = (req.file.size / 1024).toFixed(2) + ' KB';
+                                } else {
+                                        size = (req.file.size / (1024 * 1024)).toFixed(2) + ' MB';
+                                }
+                                document = req.file.path;
+                        }
+                        let obj = {
+                                receiptName: req.body.receiptName,
+                                uploadDate: uploadDate,
+                                documentType: documentType,
+                                document: document,
+                                size: size,
+                                user: user._id,
+                        };
+                        const userCreate = await reciept.create(obj);
+                        return res.status(200).send({ status: 200, message: "Receipt added successfully", data: userCreate, });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {}, });
+        }
+};
+exports.getRecieptById = async (req, res) => {
+        try {
+                const user1 = await reciept.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Reciept not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get Reciept fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllReceipt = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const tasks = await reciept.find({ user: user._id }).sort({ createdAt: -1 })
+                if (filteredTasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No tasks found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Reciept found successfully.", data: filteredTasks });
                 }
         } catch (error) {
                 console.error(error);

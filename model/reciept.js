@@ -1,21 +1,20 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 const addressSchema = new mongoose.Schema({
-        title: {
+        document: {
                 type: String,
         },
-        date: {
-                type: Date,
-        },
-        time: {
+        receiptName: {
                 type: String,
         },
-        description: {
+        uploadDate: {
                 type: String,
         },
-        complete: {
-                type: Boolean,
-                default: false
+        documentType: {
+                type: String,
+        },
+        size: {
+                type: String,
         },
         user: {
                 type: schema.Types.ObjectId,
@@ -23,4 +22,4 @@ const addressSchema = new mongoose.Schema({
         },
 
 }, { timestamps: true });
-module.exports = mongoose.model("task", addressSchema);
+module.exports = mongoose.model("reciept", addressSchema);
