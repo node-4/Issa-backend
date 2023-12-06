@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 const vehicleInspectionSchema = new mongoose.Schema({
+        adminId: {
+                type: schema.Types.ObjectId,
+                ref: "user",
+        },
         date: {
                 type: String, // Assuming mm/yy format
                 required: true,
@@ -129,15 +133,13 @@ const vehicleInspectionSchema = new mongoose.Schema({
         comments: {
                 type: String,
         },
-        inspector: {
-                signature: {
-                        type: String,
-                        required: true,
-                },
-                date: {
-                        type: Date,
-                        default: Date.now,
-                },
+        inspectorSignature: {
+                type: String,
+                required: true,
+        },
+        inspectorDate: {
+                type: Date,
+                default: Date.now,
         },
 });
 const VehicleInspection = mongoose.model("MonthlyVehicleInspection", vehicleInspectionSchema);

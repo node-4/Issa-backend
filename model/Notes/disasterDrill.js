@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 const addressSchema = new mongoose.Schema({
+        adminId: {
+                type: schema.Types.ObjectId,
+                ref: "user",
+        },
         facititAddress: {
                 type: String,
         },

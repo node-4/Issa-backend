@@ -5,6 +5,18 @@ const AdminTracking = require('../model/adminTracking');
 const admitDetail = require('../model/admitDetail');
 const task = require('../model/task');
 const reciept = require('../model/reciept');
+const firstAidChecklist = require('../model/Notes/firstAidChecklist');
+const fireEquipementMonitoring = require('../model/Notes/fireEquipementMonitoring');
+const evacuationAndFireDrill = require('../model/Notes/evacuationandFireDrill');
+const disasterDrill = require('../model/Notes/disasterDrill');
+const WeeklyVehicleInspectionChecklist = require('../model/Notes/WeeklyVehicleInspectionChecklist');
+const ClinicalOversight = require('../model/Notes/ClinicalOversight');
+const MonthlyVehicleInspection = require('../model/Notes/MonthlyVehicleInspection');
+const vanEmergencyInformationForm = require('../model/Notes/vanEmergencyInformationForm');
+const qualityManagement = require('../model/Notes/qualityManagement');
+const infectiousData = require('../model/Notes/infectiousData');
+const incidentReport = require('../model/Notes/incidentReport');
+const disasterPlanReview = require('../model/Notes/disasterPlanReview');
 const moment = require('moment');
 exports.signin = async (req, res) => {
         try {
@@ -51,12 +63,12 @@ exports.addAdminTracking = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let user1 = await AdminTracking.findOne({ name: req.body.name, user: user._id, });
+                let user1 = await AdminTracking.findOne({ name: req.body.name, adminId: user._id, });
                 if (!user1) {
                         let obj = {
                                 name: req.body.name,
                                 dueDate: req.body.dueDate,
-                                user: user._id,
+                                adminId: user._id,
                         };
                         const userCreate = await AdminTracking.create(obj);
                         return res.status(200).send({ status: 200, message: "Admin tracking add successfully ", data: userCreate, });
@@ -130,7 +142,7 @@ exports.deleteAdminTracking = async (req, res) => {
 };
 exports.getAdminTracking = async (req, res) => {
         try {
-                const user1 = await AdminTracking.find({ user: req.user._id });
+                const user1 = await AdminTracking.find({ adminId: req.user._id });
                 if (user1.length == 0) {
                         return res.status(404).send({ status: 404, message: "Admin tracking not found ! not registered", data: {} });
                 } else {
@@ -156,6 +168,7 @@ exports.addAdmitDetails = async (req, res) => {
                                         return res.status(200).send({ status: 200, message: "Admit detail  for this patient already add.", data: findData, });
                                 } else {
                                         let obj = {
+                                                adminId: user._id,
                                                 patientId: user1._id,
                                                 ahcccsId: req.body.ahcccsId,
                                                 dateOfBirth: user1.dateOfBirth,
@@ -288,7 +301,7 @@ exports.addTask = async (req, res) => {
                                 date: req.body.date,
                                 time: req.body.time,
                                 description: req.body.description,
-                                user: user._id,
+                                adminId: user._id,
                         }
                         const userCreate = await task.create(obj);
                         return res.status(200).send({ status: 200, message: "Task add successfully ", data: userCreate, });
@@ -354,7 +367,7 @@ exports.getAllTask = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
-                const tasks = await task.find({ user: user._id }).sort({ date: 1 });
+                const tasks = await task.find({ adminId: user._id }).sort({ date: 1 });
                 const filteredTasks = filterTasksByDate(tasks);
                 if (filteredTasks.length === 0) {
                         return res.status(404).send({ status: 404, message: "No tasks found.", data: {} });
@@ -425,7 +438,7 @@ exports.addReceipt = async (req, res) => {
                                 documentType: documentType,
                                 document: document,
                                 size: size,
-                                user: user._id,
+                                adminId: user._id,
                         };
                         const userCreate = await reciept.create(obj);
                         return res.status(200).send({ status: 200, message: "Receipt added successfully", data: userCreate, });
@@ -454,11 +467,203 @@ exports.getAllReceipt = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
-                const tasks = await reciept.find({ user: user._id }).sort({ createdAt: -1 })
+                const tasks = await reciept.find({ adminId: user._id }).sort({ createdAt: -1 })
                 if (filteredTasks.length === 0) {
                         return res.status(404).send({ status: 404, message: "No tasks found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "Reciept found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addFirstAidChecklist = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                req.body.adminId = user._id;
+                const checklist = await firstAidChecklist.create(req.body);
+                if (checklist) {
+                        return res.status(200).send({ status: 200, message: "Checklist added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addFireEquipementMonitoring = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                req.body.adminId = user._id;
+                const checklist = await fireEquipementMonitoring.create(req.body);
+                if (checklist) {
+                        return res.status(200).send({ status: 200, message: "Fire equipement monitoring added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addEvacuationAndFireDrill = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                req.body.adminId = user._id;
+                const checklist = await evacuationAndFireDrill.create(req.body);
+                if (checklist) {
+                        return res.status(200).send({ status: 200, message: "Evacuation And Fire Drill added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addDisasterDrill = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                req.body.adminId = user._id;
+                const checklist = await disasterDrill.create(req.body);
+                if (checklist) {
+                        return res.status(200).send({ status: 200, message: "Disaster drill added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addWeeklyVehicleInspectionChecklist = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                req.body.adminId = user._id;
+                const checklist = await WeeklyVehicleInspectionChecklist.create(req.body);
+                if (checklist) {
+                        return res.status(200).send({ status: 200, message: "Weekly Vehicle Inspection Checklist added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addClinicalOversight = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                req.body.adminId = user._id;
+                const checklist = await ClinicalOversight.create(req.body);
+                if (checklist) {
+                        return res.status(200).send({ status: 200, message: "Clinical Over sight added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+}
+exports.addMonthlyVehicleInspection = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                req.body.adminId = user._id;
+                const checklist = await MonthlyVehicleInspection.create(req.body);
+                if (checklist) {
+                        return res.status(200).send({ status: 200, message: "Monthly Vehicle Inspection added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addVanEmergencyInformationForm = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                req.body.adminId = user._id;
+                const checklist = await vanEmergencyInformationForm.create(req.body);
+                if (checklist) {
+                        return res.status(200).send({ status: 200, message: "Van Emergency InformationForm added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addQualityManagement = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                req.body.adminId = user._id;
+                const checklist = await qualityManagement.create(req.body);
+                if (checklist) {
+                        return res.status(200).send({ status: 200, message: "Quality Management added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addInfectiousData = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                req.body.adminId = user._id;
+                const checklist = await infectiousData.create(req.body);
+                if (checklist) {
+                        return res.status(200).send({ status: 200, message: "Infectious Data added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addIncidentReport = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                req.body.adminId = user._id;
+                const checklist = await incidentReport.create(req.body);
+                if (checklist) {
+                        return res.status(200).send({ status: 200, message: "Incident Report added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addDisasterPlanReview = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                req.body.adminId = user._id;
+                const checklist = await disasterPlanReview.create(req.body);
+                if (checklist) {
+                        return res.status(200).send({ status: 200, message: "Disaster Plan Review added successfully.", data: checklist });
                 }
         } catch (error) {
                 console.error(error);

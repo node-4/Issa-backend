@@ -22,4 +22,16 @@ module.exports = (app) => {
         app.post('/api/v1/admin/addReceipt', authJwt.verifyToken, upload.single('file'), auth.addReceipt);
         app.get('/api/v1/admin/getRecieptById/:id', auth.getRecieptById);
         app.get('/api/v1/admin/getAllReceipt', authJwt.verifyToken, auth.getAllReceipt);
+        app.post('/api/v1/admin/addFirstAidChecklist', authJwt.verifyToken, auth.addFirstAidChecklist);
+        app.post('/api/v1/admin/addFireEquipementMonitoring', authJwt.verifyToken, auth.addFireEquipementMonitoring);
+        app.post('/api/v1/admin/addEvacuationAndFireDrill', authJwt.verifyToken, auth.addEvacuationAndFireDrill);
+        app.post('/api/v1/admin/addDisasterDrill', authJwt.verifyToken, auth.addDisasterDrill);
+        app.post('/api/v1/admin/addWeeklyVehicleInspectionChecklist', authJwt.verifyToken, auth.addWeeklyVehicleInspectionChecklist);
+        app.post('/api/v1/admin/addClinicalOversight', authJwt.verifyToken, auth.addClinicalOversight);
+        app.post('/api/v1/admin/addMonthlyVehicleInspection', authJwt.verifyToken, auth.addMonthlyVehicleInspection);
+        app.post('/api/v1/admin/addVanEmergencyInformationForm', authJwt.verifyToken, auth.addVanEmergencyInformationForm);
+        app.post('/api/v1/admin/addQualityManagement', authJwt.verifyToken, auth.addQualityManagement);
+        app.post('/api/v1/admin/addInfectiousData', authJwt.verifyToken, auth.addInfectiousData);
+        app.post('/api/v1/admin/addIncidentReport', authJwt.verifyToken, auth.addIncidentReport);
+        app.post('/api/v1/admin/addDisasterPlanReview', authJwt.verifyToken, auth.addDisasterPlanReview);
 }

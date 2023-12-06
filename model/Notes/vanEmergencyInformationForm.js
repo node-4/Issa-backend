@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
-
 const residentInformationSchema = new mongoose.Schema({
+        adminId: {
+                type: schema.Types.ObjectId,
+                ref: "user",
+        },
         residentName: {
                 type: String,
                 required: true,

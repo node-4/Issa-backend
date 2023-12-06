@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 const addressSchema = new mongoose.Schema({
-
         patientId: {
+                type: schema.Types.ObjectId,
+                ref: "user",
+        },
+        adminId: {
                 type: schema.Types.ObjectId,
                 ref: "user",
         },

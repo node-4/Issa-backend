@@ -17,7 +17,7 @@ const addressSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false
         },
-        user: {
+        adminId: {
                 type: schema.Types.ObjectId,
                 ref: "user",
         },
