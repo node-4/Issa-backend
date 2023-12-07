@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const schema = mongoose.Schema;
 const inspectionSchema = new mongoose.Schema({
         adminId: {
                 type: schema.Types.ObjectId,

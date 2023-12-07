@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const mongoosePaginate = require("mongoose-paginate");
+const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const schema = mongoose.Schema;
 const userSchema = new mongoose.Schema({
         adminId: {
@@ -68,9 +70,8 @@ const userSchema = new mongoose.Schema({
                 enum: ["SuperAdmin", "Employee", "Admin", "Patient"],
                 default: "Employee"
         },
-},
-        { timestamps: true }
+}, { timestamps: true });
 
-);
-
+userSchema.plugin(mongoosePaginate);
+userSchema.plugin(mongooseAggregatePaginate);
 module.exports = mongoose.model("User", userSchema);

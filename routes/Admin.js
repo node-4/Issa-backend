@@ -4,6 +4,10 @@ const { upload, FranchiseUpload, productUpload } = require('../middleware/imageu
 module.exports = (app) => {
         app.post('/api/v1/admin/signin', auth.signin);
         app.get('/api/v1/admin/getProfile', authJwt.verifyToken, auth.getProfile);
+        app.post('/api/v1/admin/createUser', authJwt.verifyToken, auth.createUser);
+        app.get('/api/v1/admin/getUser', authJwt.verifyToken, auth.getUser);
+        app.get('/api/v1/admin/getUserById/:id', authJwt.verifyToken, auth.getUserById);
+        app.delete('/api/v1/admin/deleteUser/:id', authJwt.verifyToken, auth.deleteUser);
         app.post('/api/v1/admin/addAdminTracking', authJwt.verifyToken, auth.addAdminTracking);
         app.get('/api/v1/admin/getAdminTrackingById/:id', auth.getAdminTrackingById);
         app.put('/api/v1/admin/updateAdminTracking/:id', authJwt.verifyToken, auth.updateAdminTracking);
@@ -34,4 +38,5 @@ module.exports = (app) => {
         app.post('/api/v1/admin/addInfectiousData', authJwt.verifyToken, auth.addInfectiousData);
         app.post('/api/v1/admin/addIncidentReport', authJwt.verifyToken, auth.addIncidentReport);
         app.post('/api/v1/admin/addDisasterPlanReview', authJwt.verifyToken, auth.addDisasterPlanReview);
+        app.get('/api/v1/admin/getAllNotes', authJwt.verifyToken, auth.getAllNotes);
 }
