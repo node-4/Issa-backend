@@ -4,6 +4,9 @@ const mongoosePaginate = require("mongoose-paginate");
 const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const schema = mongoose.Schema;
 const userSchema = new mongoose.Schema({
+        Id: {
+                type: String
+        },
         adminId: {
                 type: schema.Types.ObjectId,
                 ref: "user",
@@ -30,6 +33,9 @@ const userSchema = new mongoose.Schema({
         dateOfBirth: {
                 type: Date
         },
+        age: {
+                type: Number
+        },
         wallet: {
                 type: Number,
                 default: 0,
@@ -39,6 +45,12 @@ const userSchema = new mongoose.Schema({
                 default: "",
         },
         otp: {
+                type: String
+        },
+        address: {
+                type: String
+        },
+        proffession: {
                 type: String
         },
         isVerified: {
@@ -64,6 +76,10 @@ const userSchema = new mongoose.Schema({
         permissionClaimSubmission: {
                 type: Boolean,
                 default: false,
+        },
+        gender: {
+                type: String,
+                enum: ["Male", "Female", "Other"],
         },
         userType: {
                 type: String,

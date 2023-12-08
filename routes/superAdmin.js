@@ -1,5 +1,6 @@
 const auth = require("../controller/superAdminController");
 const authJwt = require("../middleware/authJwt");
+const { upload, FranchiseUpload, productUpload } = require('../middleware/imageupload')
 module.exports = (app) => {
         app.post('/api/v1/superAdmin/registration', auth.registration);
         app.post('/api/v1/superAdmin/signin', auth.signin);
@@ -12,4 +13,8 @@ module.exports = (app) => {
         app.get('/api/v1/superAdmin/getAdmitDetails', authJwt.verifyToken, auth.getAdmitDetails);
         app.get('/api/v1/superAdmin/getAllNotes', authJwt.verifyToken, auth.getAllNotes);
         app.get('/api/v1/superAdmin/getAllReceipt', authJwt.verifyToken, auth.getAllReceipt);
+        app.post('/api/v1/superAdmin/addPackage', authJwt.verifyToken, upload.single('image'), auth.addPackage);
+        app.get('/api/v1/superAdmin/getPackageById/:id', auth.getPackageById);
+        app.get('/api/v1/superAdmin/getAllPackage', auth.getAllPackage);
+        app.delete('/api/v1/superAdmin/deletePackage/:id', authJwt.verifyToken, auth.deletePackage);
 }

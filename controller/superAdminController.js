@@ -1,11 +1,25 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const moment = require('moment');
 const User = require('../model/userModel');
 const AdminTracking = require('../model/adminTracking');
 const admitDetail = require('../model/admitDetail');
-const notes = require('../model/Notes/notes');
+const task = require('../model/task');
 const reciept = require('../model/reciept');
-
+const firstAidChecklist = require('../model/Notes/firstAidChecklist');
+const fireEquipementMonitoring = require('../model/Notes/fireEquipementMonitoring');
+const evacuationAndFireDrill = require('../model/Notes/evacuationandFireDrill');
+const disasterDrill = require('../model/Notes/disasterDrill');
+const WeeklyVehicleInspectionChecklist = require('../model/Notes/WeeklyVehicleInspectionChecklist');
+const ClinicalOversight = require('../model/Notes/ClinicalOversight');
+const MonthlyVehicleInspection = require('../model/Notes/MonthlyVehicleInspection');
+const vanEmergencyInformationForm = require('../model/Notes/vanEmergencyInformationForm');
+const qualityManagement = require('../model/Notes/qualityManagement');
+const infectiousData = require('../model/Notes/infectiousData');
+const incidentReport = require('../model/Notes/incidentReport');
+const disasterPlanReview = require('../model/Notes/disasterPlanReview');
+const notes = require('../model/Notes/notes');
+const package = require('../model/package');
 exports.registration = async (req, res) => {
         const { mobileNumber, email } = req.body;
         try {
@@ -77,6 +91,8 @@ exports.createAdmin = async (req, res) => {
                         req.body.password = bcrypt.hashSync(req.body.password, 8);
                         req.body.userType = "Admin";
                         req.body.accountVerification = true;
+                        let user2 = await User.find({ userType: "Admin" }).count();
+                        req.body.Id = `B${user2 + 1}`
                         const userCreate = await User.create(req.body);
                         return res.status(200).send({ message: "registered successfully ", data: userCreate, });
                 } else {
@@ -255,5 +271,85 @@ exports.getAllReceipt = async (req, res) => {
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addPackage = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                let findData = await package.findOne({ packageType: req.body.packageType });
+                if (findData) {
+                        if (req.file) {
+                                req.body.image = req.file.path;
+                        } else {
+                                req.body.image = findData.image;
+                        }
+                        let obj = {
+                                image: req.body.image,
+                                description: req.body.description || findData.description,
+                                packageType: findData.packageType,
+                        }
+                        let update = await package.findOneAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "Package added successfully.", data: update });
+                        }
+                } else {
+                        if (req.file) {
+                                req.body.image = req.file.path;
+                        }
+                        const checklist = await package.create(req.body);
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Package added successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getPackageById = async (req, res) => {
+        try {
+                const user1 = await package.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Package not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get Package fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllPackage = async (req, res) => {
+        try {
+                const tasks = await package.find({}).sort({ createdAt: -1 });
+                if (filteredTasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No package found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Package found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.deletePackage = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found", data: {} });
+                }
+                const user1 = await package.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Package not found", data: {} });
+                } else {
+                        await package.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Package delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };

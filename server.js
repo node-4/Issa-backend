@@ -17,7 +17,8 @@ app.get("/", (req, res) => {
 
 require('./routes/superAdmin')(app);
 require('./routes/Admin')(app);
-
+require('./routes/employee')(app);
+require('./routes/patient')(app);
 
 
 

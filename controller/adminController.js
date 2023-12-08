@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const moment = require('moment');
 const User = require('../model/userModel');
 const AdminTracking = require('../model/adminTracking');
 const admitDetail = require('../model/admitDetail');
@@ -18,7 +19,7 @@ const infectiousData = require('../model/Notes/infectiousData');
 const incidentReport = require('../model/Notes/incidentReport');
 const disasterPlanReview = require('../model/Notes/disasterPlanReview');
 const notes = require('../model/Notes/notes');
-const moment = require('moment');
+const package = require('../model/package');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -71,6 +72,26 @@ exports.createUser = async (req, res) => {
                         req.body.password = bcrypt.hashSync(req.body.password, 8);
                         req.body.accountVerification = true;
                         req.body.adminId = user._id;
+                        if (req.body.dateOfBirth) {
+                                const age = calculateAge(req.body.dateOfBirth);
+                                req.body.age = age;
+                        }
+                        function calculateAge(dateOfBirth) {
+                                const dob = new Date(dateOfBirth);
+                                const currentDate = new Date();
+                                let age = currentDate.getFullYear() - dob.getFullYear();
+                                if (currentDate.getMonth() < dob.getMonth() || (currentDate.getMonth() === dob.getMonth() && currentDate.getDate() < dob.getDate())) {
+                                        age--;
+                                }
+                                return age;
+                        }
+                        let user2 = await User.find({ userType: req.body.userType, adminId: user._id }).count();
+                        if (req.body.userType == "Patient") {
+                                req.body.Id = `P${user2 + 1}`
+                        }
+                        if (req.body.userType == "Employee") {
+                                req.body.Id = `E${user2 + 1}`
+                        }
                         const userCreate = await User.create(req.body);
                         return res.status(200).send({ message: "registered successfully ", data: userCreate, });
                 } else {
