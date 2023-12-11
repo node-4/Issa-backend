@@ -20,6 +20,12 @@ const userSchema = new mongoose.Schema({
         lastName: {
                 type: String
         },
+        middle: {
+                type: String
+        },
+        maiden: {
+                type: String
+        },
         email: {
                 type: String,
                 validate: [validator.isEmail, "Please Enter a valid Email"],
