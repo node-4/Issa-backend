@@ -20,6 +20,8 @@ const incidentReport = require('../model/Notes/incidentReport');
 const disasterPlanReview = require('../model/Notes/disasterPlanReview');
 const notes = require('../model/Notes/notes');
 const package = require('../model/package');
+const staffSchedule = require('../model/GroupNotes/theropyNotes/staffSchedule');
+
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -580,7 +582,7 @@ exports.getAllReceipt = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
-                const tasks = await reciept.find({ adminId: user._id }).sort({ createdAt: -1 })
+                const filteredTasks = await reciept.find({ adminId: user._id }).sort({ createdAt: -1 })
                 if (filteredTasks.length === 0) {
                         return res.status(404).send({ status: 404, message: "No tasks found.", data: {} });
                 } else {
@@ -790,13 +792,62 @@ exports.getAllNotes = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 const tasks = await notes.find({ adminId: user._id }).sort({ createdAt: -1 })
-                if (filteredTasks.length === 0) {
+                if (tasks.length === 0) {
                         return res.status(404).send({ status: 404, message: "No Notes found.", data: {} });
                 } else {
-                        return res.status(200).send({ status: 200, message: "Notes found successfully.", data: filteredTasks });
+                        return res.status(200).send({ status: 200, message: "Notes found successfully.", data: tasks });
                 }
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.addStaffSchedule = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const findEmployee = await User.findOne({ _id: req.params.employeeId });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Employee not found.", data: {} });
+                }
+                let findStaffSchedule = await staffSchedule.findOne({ employeeId: findEmployee._id, year: req.body.year, month: req.body.month });
+                if (findStaffSchedule) {
+                        let savedSigned = `${user.firstName} ${user.lastName}`
+                        let obj = {
+                                employeeId: findEmployee._id,
+                                year: findStaffSchedule.year,
+                                month: findStaffSchedule.month,
+                                schedule: req.body.schedule || findStaffSchedule.schedule,
+                                administratorAndNumber: req.body.administratorAndNumber || findStaffSchedule.administratorAndNumber,
+                                registeredNurseAndNumber: req.body.registeredNurseAndNumber || findStaffSchedule.registeredNurseAndNumber,
+                                bhtNameAndNumber: req.body.bhtNameAndNumber || findStaffSchedule.bhtNameAndNumber,
+                                savedSigned: savedSigned,
+                        }
+                        let update = await staffSchedule.findOneAndUpdate({ _id: findStaffSchedule._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "Staff Schedule add successfully.", data: update })
+                        }
+                } else {
+                        let savedSigned = `${user.firstName} ${user.lastName}`
+                        let obj = {
+                                employeeId: findEmployee._id,
+                                year: req.body.year,
+                                month: req.body.month,
+                                schedule: req.body.schedule,
+                                administratorAndNumber: req.body.administratorAndNumber,
+                                registeredNurseAndNumber: req.body.registeredNurseAndNumber,
+                                bhtNameAndNumber: req.body.bhtNameAndNumber,
+                                savedSigned: savedSigned,
+                        }
+                        let newEmployee = await staffSchedule.create(obj);
+                        if (newEmployee) {
+                                return res.status(200).send({ status: 200, message: "Staff Schedule add successfully.", data: newEmployee });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+}

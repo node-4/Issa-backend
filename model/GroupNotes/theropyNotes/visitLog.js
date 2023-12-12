@@ -7,17 +7,22 @@ const addressSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
-        today: {
+        date: {
                 type: Date
         },
-        hireDate: {
-                type: Date,
-        },
-        currentAddressNumber: {
+        visitorName: {
                 type: String,
         },
-      
+        timeIn: {
+                type: String,
+        },
+        reason: {
+                type: String,
+        },
+        timeOut: {
+                type: String,
+        },
 }, { timestamps: true });
 addressSchema.plugin(mongoosePaginate);
 addressSchema.plugin(mongooseAggregatePaginate);
-module.exports = mongoose.model("employeeApplication", addressSchema);
+module.exports = mongoose.model("visitLog", addressSchema);
