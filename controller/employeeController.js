@@ -28,6 +28,9 @@ const employeeSkillAndQualification = require('../model/Employee/employeeSkillAn
 const visitLog = require('../model/GroupNotes/theropyNotes/visitLog');
 const mileageLog = require('../model/GroupNotes/theropyNotes/mileageLog');
 const staffSchedule = require('../model/GroupNotes/theropyNotes/staffSchedule');
+const EmployeeInServiceLog = require('../model/Training/employeeInServiceLog');
+const onSiteFacility = require('../model/Training/onSiteFacility');
+const skillAndKnowledge = require('../model/Training/skillAndKnowledge');
 
 exports.signin = async (req, res) => {
         try {
@@ -740,6 +743,223 @@ exports.deleteMileageLog = async (req, res) => {
                 } else {
                         await mileageLog.findByIdAndDelete({ _id: user1._id })
                         return res.status(200).send({ status: 200, message: "Mileage Log delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.addStaffSchedule = async (req, res) => {
+        try {
+                const user = await User.findById(req.user);
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const findEmployee = await User.findById(req.body.employeeId);
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Employee not found.", data: {} });
+                }
+                let findStaffSchedule = await staffSchedule.findOne({ employeeId: findEmployee._id, year: req.body.year, month: req.body.month });
+                if (findStaffSchedule) {
+                        const scheduleWithDays = req.body.schedule.map(scheduleItem => {
+                                const date = new Date(req.body.year, req.body.month - 1, scheduleItem.date);
+                                const day = date.toLocaleString('en-us', { weekday: 'long' });
+                                return { ...scheduleItem, day };
+                        });
+                        let savedSigned = `${user.firstName} ${user.lastName}`;
+                        let obj = {
+                                employeeId: findEmployee._id,
+                                year: findStaffSchedule.year,
+                                month: findStaffSchedule.month,
+                                schedule: scheduleWithDays || findStaffSchedule.schedule,
+                                administratorAndNumber: req.body.administratorAndNumber || findStaffSchedule.administratorAndNumber,
+                                registeredNurseAndNumber: req.body.registeredNurseAndNumber || findStaffSchedule.registeredNurseAndNumber,
+                                bhtNameAndNumber: req.body.bhtNameAndNumber || findStaffSchedule.bhtNameAndNumber,
+                                savedSigned: savedSigned,
+                        };
+                        let update = await staffSchedule.findOneAndUpdate({ _id: findStaffSchedule._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "Staff Schedule updated successfully.", data: update });
+                        }
+                } else {
+                        const scheduleWithDays = req.body.schedule.map(scheduleItem => {
+                                const date = new Date(req.body.year, req.body.month - 1, scheduleItem.date);
+                                const day = date.toLocaleString('en-us', { weekday: 'long' });
+                                return { ...scheduleItem, day };
+                        });
+                        let savedSigned = `${user.firstName} ${user.lastName}`;
+                        let obj = {
+                                employeeId: findEmployee._id,
+                                year: req.body.year,
+                                month: req.body.month,
+                                schedule: scheduleWithDays,
+                                administratorAndNumber: req.body.administratorAndNumber,
+                                registeredNurseAndNumber: req.body.registeredNurseAndNumber,
+                                bhtNameAndNumber: req.body.bhtNameAndNumber,
+                                savedSigned: savedSigned,
+                        };
+                        let newEmployee = await staffSchedule.create(obj);
+                        if (newEmployee) {
+                                return res.status(200).send({ status: 200, message: "Staff Schedule added successfully.", data: newEmployee });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getStaffSchedule = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await staffSchedule.findOne({ employeeId: user._id });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Staff schedule not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Staff schedule found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getStaffScheduleByEmployeeId = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await staffSchedule.findOne({ employeeId: req.params.employeeId });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Staff schedule  not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Staff schedule  found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createEmployeeInServiceLog = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let employeeSignature = `${user.firstName} ${user.lastName}`
+                let obj = {
+                        employeeId: user._id,
+                        employeeName: req.body.employeeName,
+                        dateOfTraining: req.body.dateOfTraining,
+                        trainingSubject: req.body.trainingSubject,
+                        hoursOrUnits: req.body.hoursOrUnits,
+                        administratorSignature: req.body.administratorSignature,
+                        employeeSignature: employeeSignature
+                }
+                let newEmployee = await EmployeeInServiceLog.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "Employee In ServiceLog add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getEmployeeInServiceLogById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await EmployeeInServiceLog.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "EmployeeInServiceLog not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "EmployeeInServiceLog found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteEmployeeInServiceLog = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await EmployeeInServiceLog.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "EmployeeInServiceLog  not found", data: {} });
+                } else {
+                        await EmployeeInServiceLog.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "EmployeeInServiceLog delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllEmployeeInServiceLog = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await EmployeeInServiceLog.findOne({ employeeId: user._id });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "EmployeeInServiceLog not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "EmployeeInServiceLog found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllEmployeeInServiceLogByEmployeeId = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await EmployeeInServiceLog.findOne({ employeeId: req.params.employeeId });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "EmployeeInServiceLog  not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "EmployeeInServiceLog  found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.updateEmployeeInServiceLog = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await EmployeeInServiceLog.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "EmployeeInServiceLog  not found", data: {} });
+                } else {
+                        let employeeSignature = `${user.firstName} ${user.lastName}`
+                        let obj = {
+                                employeeId: user1.employeeId,
+                                employeeName: req.body.employeeName || user1.employeeName,
+                                dateOfTraining: req.body.dateOfTraining || user1.dateOfTraining,
+                                trainingSubject: req.body.trainingSubject || user1.trainingSubject,
+                                hoursOrUnits: req.body.hoursOrUnits || user1.hoursOrUnits,
+                                administratorSignature: req.body.administratorSignature || user1.administratorSignature,
+                                employeeSignature: employeeSignature || user1.employeeSignature,
+                        }
+                        let update = await EmployeeInServiceLog.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "EmployeeInServiceLog update successfully.", data: update })
+                        }
                 }
         } catch (error) {
                 console.error(error);
