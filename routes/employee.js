@@ -42,4 +42,10 @@ module.exports = (app) => {
         app.get('/api/v1/employee/getEmployeeInServiceLogById/:id', authJwt.verifyToken, auth.getEmployeeInServiceLogById);
         app.put('/api/v1/employee/updateEmployeeInServiceLog/:id', authJwt.verifyToken, auth.updateEmployeeInServiceLog);
         app.delete('/api/v1/employee/deleteEmployeeInServiceLog/:id', authJwt.verifyToken, auth.deleteEmployeeInServiceLog);
+        app.post('/api/v1/employee/createOnSiteFacility', authJwt.verifyToken, auth.createOnSiteFacility);
+        app.get('/api/v1/employee/getAllOnSiteFacility', authJwt.verifyToken, auth.getAllOnSiteFacility);
+        app.get('/api/v1/employee/getAllOnSiteFacilityByEmployeeId/:employeeId', authJwt.verifyToken, auth.getAllOnSiteFacilityByEmployeeId);
+        app.get('/api/v1/employee/getOnSiteFacilityById/:id', authJwt.verifyToken, auth.getOnSiteFacilityById);
+        app.put('/api/v1/employee/updateOnSiteFacility/:id', authJwt.verifyToken, auth.updateOnSiteFacility);
+        app.delete('/api/v1/employee/deleteOnSiteFacility/:id', authJwt.verifyToken, auth.deleteOnSiteFacility);
 }

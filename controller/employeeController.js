@@ -966,3 +966,129 @@ exports.updateEmployeeInServiceLog = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+exports.createOnSiteFacility = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let employeeSignature = `${user.firstName} ${user.lastName}`
+                let obj = {
+                        employeeId: user._id,
+                        training: req.body.training,
+                        description: req.body.description,
+                        employeeSignature: req.body.employeeSignature,
+                        employeeDate: req.body.employeeDate,
+                        trainerSignature: req.body.trainerSignature,
+                        trainerDate: req.body.trainerDate,
+                        savedSigned: employeeSignature
+                }
+                let newEmployee = await onSiteFacility.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "OnSite facility add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getOnSiteFacilityById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await onSiteFacility.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "OnSite facility not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "OnSite facility found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteOnSiteFacility = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await onSiteFacility.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "OnSite facility  not found", data: {} });
+                } else {
+                        await onSiteFacility.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "OnSite facility delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllOnSiteFacility = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await onSiteFacility.findOne({ employeeId: user._id });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "OnSiteFacility not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "OnSiteFacility found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllOnSiteFacilityByEmployeeId = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await onSiteFacility.findOne({ employeeId: req.params.employeeId });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "On Site Facility  not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "On Site Facility  found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.updateOnSiteFacility = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await onSiteFacility.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "OnSiteFacility  not found", data: {} });
+                } else {
+                        let employeeSignature = `${user.firstName} ${user.lastName}`
+                        let obj = {
+                                employeeId: user._id,
+                                training: req.body.training || user1.training,
+                                description: req.body.description || user1.description,
+                                employeeSignature: req.body.employeeSignature || user1.employeeSignature,
+                                employeeDate: req.body.employeeDate || user1.employeeDate,
+                                trainerSignature: req.body.trainerSignature || user1.trainerSignature,
+                                trainerDate: req.body.trainerDate || user1.trainerDate,
+                                savedSigned: employeeSignature || user1.employeeSignature,
+                        }
+                        let update = await onSiteFacility.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "OnSiteFacility update successfully.", data: update })
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
