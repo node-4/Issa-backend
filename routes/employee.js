@@ -48,4 +48,10 @@ module.exports = (app) => {
         app.get('/api/v1/employee/getOnSiteFacilityById/:id', authJwt.verifyToken, auth.getOnSiteFacilityById);
         app.put('/api/v1/employee/updateOnSiteFacility/:id', authJwt.verifyToken, auth.updateOnSiteFacility);
         app.delete('/api/v1/employee/deleteOnSiteFacility/:id', authJwt.verifyToken, auth.deleteOnSiteFacility);
+        app.post('/api/v1/employee/createSkillAndKnowledge', authJwt.verifyToken, auth.createSkillAndKnowledge);
+        app.get('/api/v1/employee/getAllSkillAndKnowledge', authJwt.verifyToken, auth.getAllSkillAndKnowledge);
+        app.get('/api/v1/employee/getAllSkillAndKnowledgeByEmployeeId/:employeeId', authJwt.verifyToken, auth.getAllSkillAndKnowledgeByEmployeeId);
+        app.get('/api/v1/employee/getSkillAndKnowledgeById/:id', authJwt.verifyToken, auth.getSkillAndKnowledgeById);
+        app.put('/api/v1/employee/updateSkillAndKnowledge/:id', authJwt.verifyToken, auth.updateSkillAndKnowledge);
+        app.delete('/api/v1/employee/deleteSkillAndKnowledge/:id', authJwt.verifyToken, auth.deleteSkillAndKnowledge);
 }

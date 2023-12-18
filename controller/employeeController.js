@@ -1092,3 +1092,137 @@ exports.updateOnSiteFacility = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+exports.createSkillAndKnowledge = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let employeeSignature = `${user.firstName} ${user.lastName}`
+                let obj = {
+                        employeeId: user._id,
+                        employeeName: user.firstName,
+                        hoursCompleted: req.body.hoursCompleted,
+                        companyName: req.body.companyName,
+                        selectedTrainingTopics: req.body.selectedTrainingTopics,
+                        verificationMethod: req.body.verificationMethod,
+                        employeeSignature: employeeSignature,
+                        employeeTitle: req.body.employeeTitle,
+                        employeeDate: req.body.employeeDate,
+                        verifiedBySignature: req.body.verifiedBySignature,
+                        verifiedByTitle: req.body.verifiedByTitle,
+                        verifiedByDate: req.body.verifiedByDate,
+                }
+                let newEmployee = await skillAndKnowledge.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "Skill and knowledge add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getSkillAndKnowledgeById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await skillAndKnowledge.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Skill and knowledge not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Skill and knowledge found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteSkillAndKnowledge = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await skillAndKnowledge.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Skill and knowledge  not found", data: {} });
+                } else {
+                        await skillAndKnowledge.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Skill and knowledge delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllSkillAndKnowledge = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await skillAndKnowledge.findOne({ employeeId: user._id });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Skill and knowledge not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Skill and knowledge found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllSkillAndKnowledgeByEmployeeId = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await skillAndKnowledge.findOne({ employeeId: req.params.employeeId });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "On Site Facility  not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "On Site Facility  found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.updateSkillAndKnowledge = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await skillAndKnowledge.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Skill and knowledge  not found", data: {} });
+                } else {
+                        let employeeSignature = `${user.firstName} ${user.lastName}`
+                        let obj = {
+                                employeeId: user._id,
+                                employeeName: user.firstName,
+                                hoursCompleted: req.body.hoursCompleted || user1.hoursCompleted,
+                                companyName: req.body.companyName || user1.companyName,
+                                selectedTrainingTopics: req.body.selectedTrainingTopics || user1.selectedTrainingTopics,
+                                verificationMethod: req.body.verificationMethod || user1.verificationMethod,
+                                employeeSignature: employeeSignature || user1.employeeSignature,
+                                employeeTitle: req.body.employeeTitle || user1.employeeTitle,
+                                employeeDate: req.body.employeeDate || user1.employeeDate,
+                                verifiedBySignature: req.body.verifiedBySignature || user1.verifiedBySignature,
+                                verifiedByTitle: req.body.verifiedByTitle || user1.verifiedByTitle,
+                                verifiedByDate: req.body.verifiedByDate || user1.verifiedByDate,
+                        }
+                        let update = await skillAndKnowledge.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "Skill and knowledge update successfully.", data: update })
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
