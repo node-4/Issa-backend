@@ -21,6 +21,8 @@ const disasterPlanReview = require('../model/Notes/disasterPlanReview');
 const notes = require('../model/Notes/notes');
 const package = require('../model/package');
 const staffSchedule = require('../model/GroupNotes/theropyNotes/staffSchedule');
+const bhrfTherapy = require('../model/GroupNotes/NotesLiabrary/bhrfTherapy');
+const bhrfTherapyTopic = require('../model/GroupNotes/NotesLiabrary/bhrfTherapyTopic');
 
 exports.signin = async (req, res) => {
         try {
@@ -800,5 +802,88 @@ exports.getAllNotes = async (req, res) => {
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addBhrfTherapyTopic = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                let findData = await bhrfTherapyTopic.findOne({ bhrfTherapyId: req.body.bhrfTherapyId, topic: req.body.topic, addBy: "admin" });
+                if (findData) {
+                        let obj = {
+                                bhrfTherapyId: req.body.bhrfTherapyId || findData.bhrfTherapyId,
+                                topic: req.body.topic || findData.topic,
+                                notesSummary: req.body.notesSummary || findData.notesSummary,
+                                planRecommendation: req.body.planRecommendation || findData.planRecommendation,
+                                addBy: "admin",
+                                adminId: findData.adminId
+                        }
+                        let update = await bhrfTherapyTopic.findOneAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "BhrfTherapy Topic added successfully.", data: update });
+                        }
+                } else {
+                        let obj = {
+                                bhrfTherapyId: req.body.bhrfTherapyId,
+                                topic: req.body.topic,
+                                notesSummary: req.body.notesSummary,
+                                planRecommendation: req.body.planRecommendation,
+                                addBy: "admin",
+                                adminId: user._id
+                        }
+                        const checklist = await bhrfTherapyTopic.create(obj);
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "BhrfTherapy Topic added successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getBhrfTherapyTopicById = async (req, res) => {
+        try {
+                const user1 = await bhrfTherapyTopic.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "BhrfTherapy Topic not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get BhrfTherapy Topic fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllBhrfTherapyTopic = async (req, res) => {
+        try {
+                const filteredTasks = await bhrfTherapyTopic.find({ $or: [{ adminId: req.user._id }], addBy: "superAdmin" }).sort({ createdAt: -1 });
+                if (filteredTasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No bhrfTherapy Topic found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "BhrfTherapy Topic found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.deleteBhrfTherapyTopic = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found", data: {} });
+                }
+                const user1 = await bhrfTherapyTopic.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "BhrfTherapy Topic not found", data: {} });
+                } else {
+                        await bhrfTherapyTopic.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "BhrfTherapy Topic delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };

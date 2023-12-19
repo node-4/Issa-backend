@@ -17,4 +17,12 @@ module.exports = (app) => {
         app.get('/api/v1/superAdmin/getPackageById/:id', auth.getPackageById);
         app.get('/api/v1/superAdmin/getAllPackage', auth.getAllPackage);
         app.delete('/api/v1/superAdmin/deletePackage/:id', authJwt.verifyToken, auth.deletePackage);
+        app.post('/api/v1/superAdmin/addBhrfTherapy', authJwt.verifyToken, auth.addBhrfTherapy);
+        app.get('/api/v1/superAdmin/getBhrfTherapyById/id', auth.getBhrfTherapyById)
+        app.get('/api/v1/superAdmin/getAllBhrfTherapy', auth.getAllBhrfTherapy);
+        app.delete('/api/v1/superAdmin/deleteBhrfTherapy/:id', authJwt.verifyToken, auth.deleteBhrfTherapy);
+        app.post('/api/v1/superAdmin/addBhrfTherapyTopic', authJwt.verifyToken, auth.addBhrfTherapyTopic);
+        app.get('/api/v1/superAdmin/getBhrfTherapyTopicById/id', auth.getBhrfTherapyTopicById)
+        app.get('/api/v1/superAdmin/getAllBhrfTherapyTopic', auth.getAllBhrfTherapyTopic);
+        app.delete('/api/v1/superAdmin/deleteBhrfTherapyTopic/:id', authJwt.verifyToken, auth.deleteBhrfTherapyTopic);
 }

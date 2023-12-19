@@ -31,6 +31,7 @@ const staffSchedule = require('../model/GroupNotes/theropyNotes/staffSchedule');
 const EmployeeInServiceLog = require('../model/Training/employeeInServiceLog');
 const onSiteFacility = require('../model/Training/onSiteFacility');
 const skillAndKnowledge = require('../model/Training/skillAndKnowledge');
+const bhrfTherapyTopic = require('../model/GroupNotes/NotesLiabrary/bhrfTherapyTopic');
 
 exports.signin = async (req, res) => {
         try {
@@ -1224,5 +1225,22 @@ exports.updateSkillAndKnowledge = async (req, res) => {
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllBhrfTherapyTopic = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const filteredTasks = await bhrfTherapyTopic.find({ $or: [{ adminId: user.adminId }], addBy: "superAdmin" }).sort({ createdAt: -1 });
+                if (filteredTasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No bhrfTherapy Topic found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "BhrfTherapy Topic found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };

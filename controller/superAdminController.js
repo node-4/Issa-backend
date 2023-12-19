@@ -20,6 +20,9 @@ const incidentReport = require('../model/Notes/incidentReport');
 const disasterPlanReview = require('../model/Notes/disasterPlanReview');
 const notes = require('../model/Notes/notes');
 const package = require('../model/package');
+const bhrfTherapy = require('../model/GroupNotes/NotesLiabrary/bhrfTherapy');
+const bhrfTherapyTopic = require('../model/GroupNotes/NotesLiabrary/bhrfTherapyTopic');
+
 exports.registration = async (req, res) => {
         const { mobileNumber, email } = req.body;
         try {
@@ -324,7 +327,7 @@ exports.getPackageById = async (req, res) => {
 };
 exports.getAllPackage = async (req, res) => {
         try {
-                const tasks = await package.find({}).sort({ createdAt: -1 });
+                const filteredTasks = await package.find({}).sort({ createdAt: -1 });
                 if (filteredTasks.length === 0) {
                         return res.status(404).send({ status: 404, message: "No package found.", data: {} });
                 } else {
@@ -347,6 +350,167 @@ exports.deletePackage = async (req, res) => {
                 } else {
                         await package.findByIdAndDelete({ _id: user1._id })
                         return res.status(200).send({ status: 200, message: "Package delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.addBhrfTherapy = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                let findData = await bhrfTherapy.findOne({ title: req.body.title, subTitle: req.body.subTitle });
+                if (findData) {
+                        let obj = {
+                                title: req.body.title || findData.title,
+                                subTitle: req.body.title || findData.subTitle,
+                        }
+                        let update = await bhrfTherapy.findOneAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "Bhrf Therapy added successfully.", data: update });
+                        }
+                } else {
+                        let findData1 = await bhrfTherapy.findOne({ status: true });
+                        if (findData1) {
+                                req.body.status = false;
+                                const checklist = await bhrfTherapy.create(req.body);
+                                if (checklist) {
+                                        return res.status(200).send({ status: 200, message: "Bhrf Therapy added successfully.", data: checklist });
+                                }
+                        } else {
+                                const checklist = await bhrfTherapy.create(req.body);
+                                if (checklist) {
+                                        return res.status(200).send({ status: 200, message: "Bhrf Therapy added successfully.", data: checklist });
+                                }
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getBhrfTherapyById = async (req, res) => {
+        try {
+                const user1 = await bhrfTherapy.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Bhrf Therapy not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get Bhrf Therapy fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllBhrfTherapy = async (req, res) => {
+        try {
+                const filteredTasks = await bhrfTherapy.find({}).sort({ createdAt: -1 });
+                if (filteredTasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No bhrf Therapy found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Bhrf Therapy found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.deleteBhrfTherapy = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found", data: {} });
+                }
+                const user1 = await bhrfTherapy.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Bhrf Therapy not found", data: {} });
+                } else {
+                        await bhrfTherapy.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Bhrf Therapy delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.addBhrfTherapyTopic = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                let findData = await bhrfTherapyTopic.findOne({ bhrfTherapyId: req.body.bhrfTherapyId, topic: req.body.topic, addBy: "superAdmin" });
+                if (findData) {
+                        let obj = {
+                                bhrfTherapyId: req.body.bhrfTherapyId || findData.bhrfTherapyId,
+                                topic: req.body.topic || findData.topic,
+                                notesSummary: req.body.notesSummary || findData.notesSummary,
+                                planRecommendation: req.body.planRecommendation || findData.planRecommendation,
+                                addBy: "superAdmin",
+                        }
+                        let update = await bhrfTherapyTopic.findOneAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "BhrfTherapy Topic added successfully.", data: update });
+                        }
+                } else {
+                        let obj = {
+                                bhrfTherapyId: req.body.bhrfTherapyId,
+                                topic: req.body.topic,
+                                notesSummary: req.body.notesSummary,
+                                planRecommendation: req.body.planRecommendation,
+                                addBy: "superAdmin",
+                        }
+                        const checklist = await bhrfTherapyTopic.create(obj);
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "BhrfTherapy Topic added successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getBhrfTherapyTopicById = async (req, res) => {
+        try {
+                const user1 = await bhrfTherapyTopic.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "BhrfTherapy Topic not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get BhrfTherapy Topic fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllBhrfTherapyTopic = async (req, res) => {
+        try {
+                const filteredTasks = await bhrfTherapyTopic.find({}).sort({ createdAt: -1 });
+                if (filteredTasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No bhrfTherapy Topic found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "BhrfTherapy Topic found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.deleteBhrfTherapyTopic = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found", data: {} });
+                }
+                const user1 = await bhrfTherapyTopic.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "BhrfTherapy Topic not found", data: {} });
+                } else {
+                        await bhrfTherapyTopic.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "BhrfTherapy Topic delete successfully.", data: {} });
                 }
         } catch (error) {
                 console.error(error);

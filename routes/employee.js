@@ -54,4 +54,5 @@ module.exports = (app) => {
         app.get('/api/v1/employee/getSkillAndKnowledgeById/:id', authJwt.verifyToken, auth.getSkillAndKnowledgeById);
         app.put('/api/v1/employee/updateSkillAndKnowledge/:id', authJwt.verifyToken, auth.updateSkillAndKnowledge);
         app.delete('/api/v1/employee/deleteSkillAndKnowledge/:id', authJwt.verifyToken, auth.deleteSkillAndKnowledge);
+        app.get('/api/v1/employee/getAllBhrfTherapyTopic', auth.getAllBhrfTherapyTopic);
 }
