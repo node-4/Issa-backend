@@ -32,6 +32,7 @@ const EmployeeInServiceLog = require('../model/Training/employeeInServiceLog');
 const onSiteFacility = require('../model/Training/onSiteFacility');
 const skillAndKnowledge = require('../model/Training/skillAndKnowledge');
 const bhrfTherapyTopic = require('../model/GroupNotes/NotesLiabrary/bhrfTherapyTopic');
+const TherapySession = require('../model/GroupNotes/theropyNotes/therapyNotes');
 
 exports.signin = async (req, res) => {
         try {
@@ -1242,5 +1243,85 @@ exports.getAllBhrfTherapyTopic = async (req, res) => {
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+
+
+exports.createTherapySession = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let employeeSignature = `${user.firstName} ${user.lastName}`
+                let obj = {
+                        employeeId: user._id,
+                        date: req.body.date,
+                        startTime: req.body.startTime,
+                        endTime: req.body.endTime,
+                        totalDuration: req.body.totalDuration,
+                        behaviorTech: req.body.behaviorTech,
+                        location: req.body.location,
+                        topic: {
+                                type: mongoose.Schema.ObjectId,
+                                ref: "bhrfTherapyTopic",
+                        },
+                        residentId: {
+                                type: mongoose.Schema.ObjectId,
+                                ref: "User",
+                        },
+                        residentCompletedSession: req.body.residentCompletedSession,
+                        attitude: req.body.attitude,
+                        treatmentGoalsAddressed: req.body.treatmentGoalsAddressed,
+                        residentParticipation: {
+                                type: Number,
+                                required: true
+                        },
+                        residentQuality: {
+                                type: String,
+                                enum: ["Attentive", "Supportive", "Sharing", "Intrusive", "Resistant"]
+                        },
+                        significantInfoNotSpecifiedAbove: req.body.significantInfoNotSpecifiedAbove,
+                        residentAppearance: {
+                                type: String,
+                                enum: ["Neat", "Unkept", "Inappropriate", "Bizarre", "Other"]
+                        },
+                        residentMood: {
+                                type: String,
+                                enum: ["Normal", "Euthymic", "Anxious", "Depressed", "Euphoric", "Irritable"]
+                        },
+                        residentProgress: {
+                                type: String,
+                                enum: ["Deterioration", "No Progress", "Small Progress", "Good Progress", "Goal Achieved"]
+                        },
+                        pleaseSpecify: {
+                                type: String,
+                        },
+                        residentResponse: {
+                                type: String
+                        },
+                        significantInfoNotSpecifiedAbove1: {
+                                type: Boolean,
+                                default: false
+                        },
+                        pleaseSpecify1: {
+                                type: String,
+                        },
+                        date: {
+                                type: Date,
+                                required: true
+                        },
+                        behavioralHealthProfessionalName: user.firstName,
+                        behavioralHealthProfessionalSignature: employeeSignature,
+                        behavioralTechnicianName: user.firstName,
+                        behavioralTechnicianSignature: employeeSignature,
+                }
+                let newEmployee = await TherapySession.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "Skill and knowledge add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
