@@ -43,4 +43,10 @@ module.exports = (app) => {
         app.get('/api/v1/admin/getBhrfTherapyTopicById/id', auth.getBhrfTherapyTopicById)
         app.get('/api/v1/admin/getAllBhrfTherapyTopic', auth.getAllBhrfTherapyTopic);
         app.delete('/api/v1/admin/deleteBhrfTherapyTopic/:id', authJwt.verifyToken, auth.deleteBhrfTherapyTopic);
+        app.get('/api/v1/admin/getAllTimeOffRequestForAdmin', authJwt.verifyToken, auth.getAllTimeOffRequestForAdmin);
+        app.put('/api/v1/admin/updateTimeOffRequestStatus/:id', authJwt.verifyToken, auth.updateTimeOffRequestStatus);
+        app.get('/api/v1/admin/getAllEmployeePerformanceReviewForAdmin', authJwt.verifyToken, auth.getAllEmployeePerformanceReviewForAdmin);
+        app.put('/api/v1/admin/updateEmployeePerformanceReview/:id', authJwt.verifyToken, auth.updateEmployeePerformanceReview);
+        app.get('/api/v1/admin/getAllPatientTracking', authJwt.verifyToken, auth.getAllPatientTracking);
+
 }

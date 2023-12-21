@@ -55,4 +55,24 @@ module.exports = (app) => {
         app.put('/api/v1/employee/updateSkillAndKnowledge/:id', authJwt.verifyToken, auth.updateSkillAndKnowledge);
         app.delete('/api/v1/employee/deleteSkillAndKnowledge/:id', authJwt.verifyToken, auth.deleteSkillAndKnowledge);
         app.get('/api/v1/employee/getAllBhrfTherapyTopic', auth.getAllBhrfTherapyTopic);
+        app.post('/api/v1/employee/createTherapySession', authJwt.verifyToken, auth.createTherapySession);
+        app.get('/api/v1/employee/getAllTherapySession', authJwt.verifyToken, auth.getAllTherapySession);
+        app.get('/api/v1/employee/getAllTherapySessionForResident', authJwt.verifyToken, auth.getAllTherapySessionForResident);
+        app.get('/api/v1/employee/getAllTherapySessionByemployeeId/:employeeId', authJwt.verifyToken, auth.getAllTherapySessionByemployeeId);
+        app.get('/api/v1/employee/getTherapySessionById/:id', authJwt.verifyToken, auth.getTherapySessionById);
+        app.delete('/api/v1/employee/deleteTherapySession/:id', authJwt.verifyToken, auth.deleteTherapySession);
+        app.post('/api/v1/employee/createTimeOffRequest', authJwt.verifyToken, auth.createTimeOffRequest);
+        app.get('/api/v1/employee/getAllTimeOffRequest', authJwt.verifyToken, auth.getAllTimeOffRequest);
+        app.get('/api/v1/employee/getTimeOffRequestById/:id', authJwt.verifyToken, auth.getTimeOffRequestById);
+        app.delete('/api/v1/employee/deleteTimeOffRequest/:id', authJwt.verifyToken, auth.deleteTimeOffRequest);
+        app.post('/api/v1/employee/createEmployeePerformanceReview', authJwt.verifyToken, auth.createEmployeePerformanceReview);
+        app.get('/api/v1/employee/getAllEmployeePerformanceReview', authJwt.verifyToken, auth.getAllEmployeePerformanceReview);
+        app.get('/api/v1/employee/getEmployeePerformanceReviewById/:id', authJwt.verifyToken, auth.getEmployeePerformanceReviewById);
+        app.delete('/api/v1/employee/deleteEmployeePerformanceReview/:id', authJwt.verifyToken, auth.deleteEmployeePerformanceReview);
+        app.post('/api/v1/employee/createPatientTracking', authJwt.verifyToken, auth.createPatientTracking);
+        app.get('/api/v1/employee/getAllPatientTracking/:patientId', authJwt.verifyToken, auth.getAllPatientTracking);
+        app.get('/api/v1/employee/getPatientTrackingById/:id', authJwt.verifyToken, auth.getPatientTrackingById);
+        app.post('/api/v1/employee/createPatientVitals', authJwt.verifyToken, auth.createPatientVitals);
+        app.get('/api/v1/employee/getPatientVitalsByPatientId/:patientId', authJwt.verifyToken, auth.getPatientVitalsByPatientId);
+
 }

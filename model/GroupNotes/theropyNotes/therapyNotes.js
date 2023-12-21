@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate");
 const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
+const attitudeEnum = ["cooperative", "Focused", "Suspicious", "Distracted"];
+const qualityEnum = ["Attentive", "Supportive", "Sharing", "Intrusive", "Resistant"];
+const appearanceEnum = ["Neat", "Unkept", "Inappropriate", "Bizarre", "Other"];
+const moodEnum = ["Normal", "Euthymic", "Anxious", "Depressed", "Euphoric", "Irritable"];
+const progressEnum = ["Deterioration", "No Progress", "Small Progress", "Good Progress", "Goal Achieved"];
 const therapySessionSchema = new mongoose.Schema({
         employeeId: {
                 type: mongoose.Schema.ObjectId,
@@ -25,8 +30,8 @@ const therapySessionSchema = new mongoose.Schema({
                 default: false
         },
         attitude: {
-                type: String,
-                enum: ["cooperative", "Focused", "Suspcious", "Distracted"]
+                type: [String],
+                enum: attitudeEnum,
         },
         treatmentGoalsAddressed: {
                 type: Boolean,
@@ -37,24 +42,24 @@ const therapySessionSchema = new mongoose.Schema({
                 required: true
         },
         residentQuality: {
-                type: String,
-                enum: ["Attentive", "Supportive", "Sharing", "Intrusive", "Resistant"]
+                type: [String],
+                enum: qualityEnum,
         },
         significantInfoNotSpecifiedAbove: {
                 type: Boolean,
                 default: false
         },
         residentAppearance: {
-                type: String,
-                enum: ["Neat", "Unkept", "Inappropriate", "Bizarre", "Other"]
+                type: [String],
+                enum: appearanceEnum,
         },
         residentMood: {
-                type: String,
-                enum: ["Normal", "Euthymic", "Anxious", "Depressed", "Euphoric", "Irritable"]
+                type: [String],
+                enum: moodEnum,
         },
         residentProgress: {
-                type: String,
-                enum: ["Deterioration", "No Progress", "Small Progress", "Good Progress", "Goal Achieved"]
+                type: [String],
+                enum: progressEnum,
         },
         pleaseSpecify: {
                 type: String,
@@ -69,10 +74,6 @@ const therapySessionSchema = new mongoose.Schema({
         pleaseSpecify1: {
                 type: String,
         },
-        date: {
-                type: Date,
-                required: true
-        },
         behavioralHealthProfessionalName: {
                 type: String, required: true
         },
@@ -86,7 +87,10 @@ const therapySessionSchema = new mongoose.Schema({
                 type: String, required: true
         },
 });
+
 therapySessionSchema.plugin(mongoosePaginate);
-therapySessionSchema.plugin(mongooseAggregatePaginate)
+therapySessionSchema.plugin(mongooseAggregatePaginate);
+
 const TherapySession = mongoose.model('TherapySession', therapySessionSchema);
+
 module.exports = TherapySession;

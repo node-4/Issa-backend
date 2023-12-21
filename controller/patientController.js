@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const moment = require('moment');
 const User = require('../model/userModel');
-const AdminTracking = require('../model/adminTracking');
+const AdminTracking = require('../model/Tracking/adminTracking');
 const admitDetail = require('../model/admitDetail');
 const task = require('../model/task');
 const reciept = require('../model/reciept');
@@ -21,6 +21,7 @@ const disasterPlanReview = require('../model/Notes/disasterPlanReview');
 const notes = require('../model/Notes/notes');
 const package = require('../model/package');
 const appointment = require('../model/appointment');
+const patientTracking = require('../model/Tracking/patientTracking');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -109,3 +110,19 @@ exports.createAppointment = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 }
+exports.getAllPatientTracking = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Patient" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await patientTracking.findOne({ patientId: user._id });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Patient tracking not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Patient tracking found.", data: findEmployee });
+                }
+        } catch (error) {
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};

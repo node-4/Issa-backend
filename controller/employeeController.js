@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const moment = require('moment');
 const User = require('../model/userModel');
-const AdminTracking = require('../model/adminTracking');
+const AdminTracking = require('../model/Tracking/adminTracking');
 const admitDetail = require('../model/admitDetail');
 const task = require('../model/task');
 const reciept = require('../model/reciept');
@@ -33,6 +33,10 @@ const onSiteFacility = require('../model/Training/onSiteFacility');
 const skillAndKnowledge = require('../model/Training/skillAndKnowledge');
 const bhrfTherapyTopic = require('../model/GroupNotes/NotesLiabrary/bhrfTherapyTopic');
 const TherapySession = require('../model/GroupNotes/theropyNotes/therapyNotes');
+const timeOffRequest = require('../model/timeOffRequest/timeOffrequest');
+const employeePerformanceReview = require('../model/EmployeePerformanceReview/employeePerformanceReview');
+const patientTracking = require('../model/Tracking/patientTracking');
+const patientVitals = require('../model/patientVitals/patientVitals');
 
 exports.signin = async (req, res) => {
         try {
@@ -1184,9 +1188,9 @@ exports.getAllSkillAndKnowledgeByEmployeeId = async (req, res) => {
                 }
                 let findEmployee = await skillAndKnowledge.findOne({ employeeId: req.params.employeeId });
                 if (!findEmployee) {
-                        return res.status(404).send({ status: 404, message: "On Site Facility  not found.", data: {} });
+                        return res.status(404).send({ status: 404, message: "SkillAndKnowledge  not found.", data: {} });
                 } else {
-                        return res.status(200).send({ status: 200, message: "On Site Facility  found.", data: findEmployee });
+                        return res.status(200).send({ status: 200, message: "SkillAndKnowledge  found.", data: findEmployee });
                 }
         } catch (error) {
                 console.error(error);
@@ -1245,9 +1249,140 @@ exports.getAllBhrfTherapyTopic = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
-
-
 exports.createTherapySession = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let data = []
+                let employeeSignature = `${user.firstName} ${user.lastName}`
+                for (let i = 0; i < req.body.residentId.length; i++) {
+                        let obj = {
+                                employeeId: user._id,
+                                date: req.body.date,
+                                startTime: req.body.startTime,
+                                endTime: req.body.endTime,
+                                totalDuration: req.body.totalDuration,
+                                behaviorTech: req.body.behaviorTech,
+                                location: req.body.location,
+                                topic: req.body.topicId,
+                                residentId: req.body.residentId[i],
+                                residentCompletedSession: req.body.residentCompletedSession,
+                                attitude: req.body.attitude,
+                                treatmentGoalsAddressed: req.body.treatmentGoalsAddressed,
+                                residentParticipation: req.body.residentParticipation,
+                                residentQuality: req.body.residentQuality,
+                                significantInfoNotSpecifiedAbove: req.body.significantInfoNotSpecifiedAbove,
+                                residentAppearance: req.body.residentAppearance,
+                                residentMood: req.body.residentMood,
+                                residentProgress: req.body.residentProgress,
+                                pleaseSpecify: req.body.pleaseSpecify,
+                                residentResponse: req.body.residentResponse,
+                                significantInfoNotSpecifiedAbove1: req.body.significantInfoNotSpecifiedAbove1,
+                                pleaseSpecify1: req.body.pleaseSpecify1,
+                                date: req.body.date,
+                                behavioralHealthProfessionalName: user.firstName,
+                                behavioralHealthProfessionalSignature: employeeSignature,
+                                behavioralTechnicianName: user.firstName,
+                                behavioralTechnicianSignature: employeeSignature,
+                        }
+                        let newEmployee = await TherapySession.create(obj);
+                        data.push(newEmployee)
+                }
+                return res.status(200).send({ status: 200, message: "TherapySession add successfully.", data: date });
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getTherapySessionById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await TherapySession.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "TherapySession not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "TherapySession found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteTherapySession = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await TherapySession.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Therapy Session  not found", data: {} });
+                } else {
+                        await TherapySession.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Therapy Session delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllTherapySession = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await TherapySession.findOne({ employeeId: user._id });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Therapy session not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Therapy session found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllTherapySessionByemployeeId = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await TherapySession.findOne({ employeeId: req.params.employeeId });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "TherapySession  not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "TherapySession  found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllTherapySessionForResident = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await TherapySession.findOne({ residentId: user._id });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Therapy session not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Therapy session found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createTimeOffRequest = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user, userType: "Employee" });
                 if (!user) {
@@ -1256,72 +1391,367 @@ exports.createTherapySession = async (req, res) => {
                 let employeeSignature = `${user.firstName} ${user.lastName}`
                 let obj = {
                         employeeId: user._id,
-                        date: req.body.date,
-                        startTime: req.body.startTime,
-                        endTime: req.body.endTime,
-                        totalDuration: req.body.totalDuration,
-                        behaviorTech: req.body.behaviorTech,
-                        location: req.body.location,
-                        topic: {
-                                type: mongoose.Schema.ObjectId,
-                                ref: "bhrfTherapyTopic",
-                        },
-                        residentId: {
-                                type: mongoose.Schema.ObjectId,
-                                ref: "User",
-                        },
-                        residentCompletedSession: req.body.residentCompletedSession,
-                        attitude: req.body.attitude,
-                        treatmentGoalsAddressed: req.body.treatmentGoalsAddressed,
-                        residentParticipation: {
-                                type: Number,
-                                required: true
-                        },
-                        residentQuality: {
-                                type: String,
-                                enum: ["Attentive", "Supportive", "Sharing", "Intrusive", "Resistant"]
-                        },
-                        significantInfoNotSpecifiedAbove: req.body.significantInfoNotSpecifiedAbove,
-                        residentAppearance: {
-                                type: String,
-                                enum: ["Neat", "Unkept", "Inappropriate", "Bizarre", "Other"]
-                        },
-                        residentMood: {
-                                type: String,
-                                enum: ["Normal", "Euthymic", "Anxious", "Depressed", "Euphoric", "Irritable"]
-                        },
-                        residentProgress: {
-                                type: String,
-                                enum: ["Deterioration", "No Progress", "Small Progress", "Good Progress", "Goal Achieved"]
-                        },
-                        pleaseSpecify: {
-                                type: String,
-                        },
-                        residentResponse: {
-                                type: String
-                        },
-                        significantInfoNotSpecifiedAbove1: {
-                                type: Boolean,
-                                default: false
-                        },
-                        pleaseSpecify1: {
-                                type: String,
-                        },
-                        date: {
-                                type: Date,
-                                required: true
-                        },
-                        behavioralHealthProfessionalName: user.firstName,
-                        behavioralHealthProfessionalSignature: employeeSignature,
-                        behavioralTechnicianName: user.firstName,
-                        behavioralTechnicianSignature: employeeSignature,
+                        adminId: user.adminId,
+                        beginDate: req.body.beginDate,
+                        endDate: req.body.endDate,
+                        normalShift: req.body.normalShift,
+                        unPaidHrLeft: req.body.unPaidHrLeft,
+                        vacationPersonTimeUsed: req.body.vacationPersonTimeUsed,
+                        sickTimeUsed: req.body.sickTimeUsed,
+                        notes: req.body.notes,
+                        signature: employeeSignature,
+                        requestType: req.body.requestType,
                 }
-                let newEmployee = await TherapySession.create(obj);
+                let newEmployee = await timeOffRequest.create(obj);
                 if (newEmployee) {
-                        return res.status(200).send({ status: 200, message: "Skill and knowledge add successfully.", data: newEmployee });
+                        return res.status(200).send({ status: 200, message: "Time Off Request add successfully.", data: newEmployee });
                 }
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getTimeOffRequestById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await timeOffRequest.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Time off request not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Time off request found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteTimeOffRequest = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await timeOffRequest.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Time Off Request  not found", data: {} });
+                } else {
+                        await timeOffRequest.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Time Off Request delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllTimeOffRequest = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await timeOffRequest.findOne({ employeeId: user._id });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Time Off Request not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Time Off Request found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createEmployeePerformanceReview = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let employeeSignature = `${user.firstName} ${user.lastName}`
+                let obj = {
+                        employeeId: user._id,
+                        adminId: user.adminId,
+                        name: req.body.name,
+                        employeeDate: req.body.employeeDate,
+                        employeeJobTitle: req.body.employeeJobTitle,
+                        employeeManager: req.body.employeeManager,
+                        typeOfReview: req.body.typeOfReview,
+                        employeeHireDate: req.body.employeeHireDate,
+                        ratingsPerformanceAndQualityOfWork: req.body.ratingsPerformanceAndQualityOfWork,
+                        ratingsCommunication: req.body.ratingsCommunication,
+                        ratingsProfessionalism: req.body.ratingsProfessionalism,
+                        ratingsAttendanceAndPunctuality: req.body.ratingsAttendanceAndPunctuality,
+                        ratingsTimeManagement: req.body.ratingsTimeManagement,
+                        ratingsReliabilityDependability: req.body.ratingsReliabilityDependability,
+                        overallRating: req.body.overallRating,
+                        evaluation: req.body.evaluation,
+                        additionalComments: req.body.additionalComments,
+                        employeeName: req.body.employeeName,
+                        employeeSignature: employeeSignature,
+                        employeeDate: req.body.employeeDate,
+                }
+                let newEmployee = await employeePerformanceReview.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "Employee performance Review add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getEmployeePerformanceReviewById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await employeePerformanceReview.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Employee performance Review not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Employee performance Review found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteEmployeePerformanceReview = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await employeePerformanceReview.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Employee performance Review  not found", data: {} });
+                } else {
+                        await employeePerformanceReview.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Employee performance Review delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllEmployeePerformanceReview = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await employeePerformanceReview.findOne({ employeeId: user._id });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Employee performance Review not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Employee performance Review found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createPatientTracking = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                let findPatientTracking = await patientTracking.findOne({ patientId: user1._id });
+                if (findPatientTracking) {
+                        let obj = {
+                                employeeId: user._id,
+                                patientId: user1._id,
+                                adminId: user.adminId,
+                                tbTest: req.body.tbTest || findPatientTracking.tbTest,
+                                tbTestDate: req.body.tbTestDate || findPatientTracking.tbTestDate,
+                                tbTestExpire: req.body.tbTestExpire || findPatientTracking.tbTestExpire,
+                                expireDate: req.body.expireDate || findPatientTracking.expireDate,
+                                initialAssessment: req.body.initialAssessment || findPatientTracking.initialAssessment,
+                                nursingAssessment: req.body.nursingAssessment || findPatientTracking.nursingAssessment,
+                                treatmentPlanReviewDate: req.body.treatmentPlanReviewDate || findPatientTracking.treatmentPlanReviewDate,
+                                treatmentPlanTestDate: req.body.treatmentPlanTestDate || findPatientTracking.treatmentPlanTestDate,
+                                treatmentPlanTestExpire: req.body.treatmentPlanTestExpire || findPatientTracking.treatmentPlanTestExpire,
+                                treatmentPlanExpireDate: req.body.treatmentPlanExpireDate || findPatientTracking.treatmentPlanExpireDate,
+                                staffing: req.body.staffing || findPatientTracking.staffing,
+                                fluShot: req.body.fluShot || findPatientTracking.fluShot,
+                                otherTestDate: req.body.otherTestDate || findPatientTracking.otherTestDate,
+                                otherTestExpire: req.body.otherTestExpire || findPatientTracking.otherTestExpire,
+                                otherExpireDate: req.body.otherExpireDate || findPatientTracking.otherExpireDate,
+                                timeOffRequestApproved: req.body.timeOffRequestApproved || findPatientTracking.timeOffRequestApproved,
+                                note: req.body.note || findPatientTracking.note,
+                                signature: req.body.signature || findPatientTracking.signature,
+                                additionalDocument: req.body.additionalDocument || findPatientTracking.additionalDocument,
+                        }
+                        let newEmployee = await patientTracking.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: obj }, { new: true });
+                        if (newEmployee) {
+                                return res.status(200).send({ status: 200, message: "Patient Tracking add successfully.", data: newEmployee });
+                        }
+                } else {
+                        let obj = {
+                                employeeId: user._id,
+                                patientId: user1._id,
+                                adminId: user.adminId,
+                                tbTest: req.body.tbTest,
+                                tbTestDate: req.body.tbTestDate,
+                                tbTestExpire: req.body.tbTestExpire,
+                                expireDate: req.body.expireDate,
+                                initialAssessment: req.body.initialAssessment,
+                                nursingAssessment: req.body.nursingAssessment,
+                                treatmentPlanReviewDate: req.body.treatmentPlanReviewDate,
+                                treatmentPlanTestDate: req.body.treatmentPlanTestDate,
+                                treatmentPlanTestExpire: req.body.treatmentPlanTestExpire,
+                                treatmentPlanExpireDate: req.body.treatmentPlanExpireDate,
+                                staffing: req.body.staffing,
+                                fluShot: req.body.fluShot,
+                                otherTestDate: req.body.otherTestDate,
+                                otherTestExpire: req.body.otherTestExpire,
+                                otherExpireDate: req.body.otherExpireDate,
+                                timeOffRequestApproved: req.body.timeOffRequestApproved,
+                                note: req.body.note,
+                                signature: req.body.signature,
+                                additionalDocument: req.body.additionalDocument,
+                        }
+                        let newEmployee = await patientTracking.create(obj);
+                        if (newEmployee) {
+                                return res.status(200).send({ status: 200, message: "Patient Tracking add successfully.", data: newEmployee });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getPatientTrackingById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await patientTracking.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient tracking not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Patient tracking found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllPatientTracking = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await patientTracking.findOne({ employeeId: user._id, patientId: req.params.patientId });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Patient tracking not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Patient tracking found.", data: findEmployee });
+                }
+        } catch (error) {
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createPatientVitals = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                let findPatientTracking = await patientVitals.findOne({ patientId: user1._id, exDate: req.body.date });
+                if (findPatientTracking) {
+                        let obj = {
+                                employeeId: user._id,
+                                patientId: user1._id,
+                                adminId: user.adminId,
+                                exDate: req.body.date || findPatientTracking.exDate,
+                                date: req.body.date || findPatientTracking.date,
+                                bodyTemperature: req.body.bodyTemperature || findPatientTracking.bodyTemperature,
+                                pulseRate: req.body.pulseRate || findPatientTracking.pulseRate,
+                                respirationRate: req.body.respirationRate || findPatientTracking.respirationRate,
+                                bloodPressure: req.body.bloodPressure || findPatientTracking.bloodPressure,
+                                bloodOxygen: req.body.bloodOxygen || findPatientTracking.bloodOxygen,
+                                weight: req.body.weight || findPatientTracking.weight,
+                                bloodGlucoseLevel: req.body.bloodGlucoseLevel || findPatientTracking.bloodGlucoseLevel,
+                                height: req.body.height || findPatientTracking.height,
+                        }
+                        let newEmployee = await patientVitals.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: obj }, { new: true });
+                        if (newEmployee) {
+                                return res.status(200).send({ status: 200, message: "Patient Vitals add successfully.", data: newEmployee });
+                        }
+                } else {
+                        let obj = {
+                                employeeId: user._id,
+                                patientId: user1._id,
+                                adminId: user.adminId,
+                                exDate: req.body.date,
+                                date: req.body.date,
+                                bodyTemperature: req.body.bodyTemperature,
+                                pulseRate: req.body.pulseRate,
+                                respirationRate: req.body.respirationRate,
+                                bloodPressure: req.body.bloodPressure,
+                                bloodOxygen: req.body.bloodOxygen,
+                                weight: req.body.weight,
+                                bloodGlucoseLevel: req.body.bloodGlucoseLevel,
+                                height: req.body.height,
+                        }
+                        let newEmployee = await patientVitals.create(obj);
+                        if (newEmployee) {
+                                return res.status(200).send({ status: 200, message: "Patient Vitals add successfully.", data: newEmployee });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getPatientVitalsByPatientId = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found! Not registered", data: {} });
+                }
+                const user2 = await User.findOne({ _id: req.params.patientId, userType: "Patient" });
+                if (!user2) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                let filter = { patientId: user2._id };
+                if (req.query.for == 'today') {
+                        const todayStart = new Date();
+                        todayStart.setHours(0, 0, 0, 0);
+                        filter.date = { $gte: todayStart };
+                } else if (req.query.for == 'week') {
+                        const lastWeekStart = new Date();
+                        lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+                        lastWeekStart.setHours(0, 0, 0, 0);
+                        filter.date = { $gte: lastWeekStart };
+                } else if (req.query.for == 'month') {
+                        const firstDayOfMonth = new Date();
+                        firstDayOfMonth.setDate(1);
+                        firstDayOfMonth.setHours(0, 0, 0, 0);
+                        filter.date = { $gte: firstDayOfMonth };
+                }
+                const user1 = await patientVitals.find(filter);
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient tracking not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Patient tracking found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message });
         }
 };
