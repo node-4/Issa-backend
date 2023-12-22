@@ -26,6 +26,7 @@ const bhrfTherapyTopic = require('../model/GroupNotes/NotesLiabrary/bhrfTherapyT
 const timeOffRequest = require('../model/timeOffRequest/timeOffrequest');
 const employeePerformanceReview = require('../model/EmployeePerformanceReview/employeePerformanceReview');
 const patientTracking = require('../model/Tracking/patientTracking');
+const patientVitals = require('../model/patientVitals/patientVitals');
 
 exports.signin = async (req, res) => {
         try {
@@ -993,5 +994,42 @@ exports.getAllPatientTracking = async (req, res) => {
                 }
         } catch (error) {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getPatientVitalsByPatientId = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found! Not registered", data: {} });
+                }
+                const user2 = await User.findOne({ _id: req.params.patientId, userType: "Patient" });
+                if (!user2) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                let filter = { patientId: user2._id };
+                if (req.query.for == 'today') {
+                        const todayStart = new Date();
+                        todayStart.setHours(0, 0, 0, 0);
+                        filter.date = { $gte: todayStart };
+                } else if (req.query.for == 'week') {
+                        const lastWeekStart = new Date();
+                        lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+                        lastWeekStart.setHours(0, 0, 0, 0);
+                        filter.date = { $gte: lastWeekStart };
+                } else if (req.query.for == 'month') {
+                        const firstDayOfMonth = new Date();
+                        firstDayOfMonth.setDate(1);
+                        firstDayOfMonth.setHours(0, 0, 0, 0);
+                        filter.date = { $gte: firstDayOfMonth };
+                }
+                const user1 = await patientVitals.find(filter);
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient tracking not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Patient tracking found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message });
         }
 };

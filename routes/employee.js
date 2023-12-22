@@ -74,5 +74,24 @@ module.exports = (app) => {
         app.get('/api/v1/employee/getPatientTrackingById/:id', authJwt.verifyToken, auth.getPatientTrackingById);
         app.post('/api/v1/employee/createPatientVitals', authJwt.verifyToken, auth.createPatientVitals);
         app.get('/api/v1/employee/getPatientVitalsByPatientId/:patientId', authJwt.verifyToken, auth.getPatientVitalsByPatientId);
-
+        app.post('/api/v1/employee/createPrnMedicationLog', authJwt.verifyToken, auth.createPrnMedicationLog);
+        app.get('/api/v1/employee/getPrnMedicationLogById/:id', authJwt.verifyToken, auth.getPrnMedicationLogById);
+        app.put('/api/v1/employee/editPrnMedicationLogById/:id', authJwt.verifyToken, auth.editPrnMedicationLogById);
+        app.get('/api/v1/employee/getAllPrnMedicationLog', authJwt.verifyToken, auth.getAllPrnMedicationLog);
+        app.delete('/api/v1/employee/deletePrnMedicationLog/:id', authJwt.verifyToken, auth.deletePrnMedicationLog);
+        app.post('/api/v1/employee/createInformedConsentForMedication', authJwt.verifyToken, auth.createInformedConsentForMedication);
+        app.get('/api/v1/employee/getInformedConsentForMedicationById/:id', authJwt.verifyToken, auth.getInformedConsentForMedicationById);
+        app.put('/api/v1/employee/editInformedConsentForMedicationById/:id', authJwt.verifyToken, auth.editInformedConsentForMedicationById);
+        app.get('/api/v1/employee/getAllInformedConsentForMedication', authJwt.verifyToken, auth.getAllInformedConsentForMedication);
+        app.delete('/api/v1/employee/deleteInformedConsentForMedication/:id', authJwt.verifyToken, auth.deleteInformedConsentForMedication);
+        app.post('/api/v1/employee/createMedicationOpioidCount', authJwt.verifyToken, auth.createMedicationOpioidCount);
+        app.get('/api/v1/employee/getMedicationOpioidCountById/:id', authJwt.verifyToken, auth.getMedicationOpioidCountById);
+        app.put('/api/v1/employee/editMedicationOpioidCountById/:id', authJwt.verifyToken, auth.editMedicationOpioidCountById);
+        app.get('/api/v1/employee/getAllMedicationOpioidCount', authJwt.verifyToken, auth.getAllMedicationOpioidCount);
+        app.delete('/api/v1/employee/deleteMedicationOpioidCount/:id', authJwt.verifyToken, auth.deleteMedicationOpioidCount);
+        app.post('/api/v1/employee/createMedicationReconciliation', authJwt.verifyToken, auth.createMedicationReconciliation);
+        app.get('/api/v1/employee/getMedicationReconciliationById/:id', authJwt.verifyToken, auth.getMedicationReconciliationById);
+        app.put('/api/v1/employee/editMedicationReconciliationById/:id', authJwt.verifyToken, auth.editMedicationReconciliationById);
+        app.get('/api/v1/employee/getAllMedicationReconciliation', authJwt.verifyToken, auth.getAllMedicationReconciliation);
+        app.delete('/api/v1/employee/deleteMedicationReconciliation/:id', authJwt.verifyToken, auth.deleteMedicationReconciliation);
 }
