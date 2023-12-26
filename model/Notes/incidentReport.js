@@ -5,6 +5,10 @@ const incidentReportSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "user",
         },
+        partId: {
+                type: schema.Types.ObjectId,
+                ref: "IncidentReport",
+        },
         dateOfIncident: {
                 type: Date,
                 required: true,
@@ -251,6 +255,10 @@ const incidentReportSchema = new mongoose.Schema({
         },
         investigationCompletionDate: {
                 type: Date,
+        },
+        partType: {
+                type: String,
+                enum: ['A', 'B']
         },
 });
 

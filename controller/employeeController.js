@@ -41,6 +41,13 @@ const PrnMedicationLog = require('../model/Medication/employeeMedication/PrnMedi
 const informedConsentForMedication = require('../model/Medication/employeeMedication/informedConsentForMedication');
 const medicationOpioidCount = require('../model/Medication/employeeMedication/medicationOpioidCount');
 const medicationReconciliation = require('../model/Medication/employeeMedication/medicationReconciliation');
+const ADLTrackingForm = require('../model/patientChart/ADLTrackingForm');
+const dischargeSummary = require('../model/patientChart/DischargeSummary');
+const financialTransactionsRecord = require('../model/patientChart/financialTransactionsRecord');
+const progressNote = require('../model/patientChart/progressNote');
+const staffingNote = require('../model/patientChart/StaffingNote');
+const authorizationForReleaseOfInformation = require('../model/patientChart/authorizationForReleaseOfInformation');
+const incidentReport = require('../model/patientChart/incidentReport');
 
 exports.signin = async (req, res) => {
         try {
@@ -2293,6 +2300,1228 @@ exports.getAllMedicationReconciliation = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "Medication Reconciliation not found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "Medication Reconciliation found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createProgressNote = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                let obj = {
+                        employeeId: user._id,
+                        adminId: user.adminId,
+                        patientId: user1._id,
+                        residentName: req.body.residentName,
+                        dateOfBirth: req.body.dateOfBirth,
+                        admitDate: req.body.admitDate,
+                        date: req.body.date,
+                        shift: req.body.shift,
+                        medicationAdministrationCompleted: req.body.medicationAdministrationCompleted,
+                        assistanceInMedicationAdministrationCompleted: req.body.assistanceInMedicationAdministrationCompleted,
+                        healthAndWelfareChecksCompleted: req.body.healthAndWelfareChecksCompleted,
+                        communityLivingSupport: req.body.communityLivingSupport,
+                        groupTherapy: req.body.groupTherapy,
+                        individualTherapy: req.body.individualTherapy,
+                        refusedTherapy: req.body.refusedTherapy,
+                        isolation: req.body.isolation,
+                        anxious: req.body.anxious,
+                        depressed: req.body.depressed,
+                        excited: req.body.excited,
+                        respondingToInternalStimuli: req.body.respondingToInternalStimuli,
+                        inappropriateSexualComment: req.body.inappropriateSexualComment,
+                        paranoia: req.body.paranoia,
+                        verballyAggressive: req.body.verballyAggressive,
+                        physicallyAggressive: req.body.physicallyAggressive,
+                        agitated: req.body.agitated,
+                        suicidalIdeation: req.body.suicidalIdeation,
+                        PCP: req.body.PCP,
+                        psychiatric: req.body.psychiatric,
+                        otherSpecialist: req.body.otherSpecialist,
+                        none: req.body.none,
+                        emergencyRoomVisit: req.body.emergencyRoomVisit,
+                        inpatient: req.body.inpatient,
+                        urgentCare: req.body.urgentCare,
+                        communityOutings: req.body.communityOutings,
+                        religiousService: req.body.religiousService,
+                        adlsCompleted: req.body.adlsCompleted,
+                        mealPreparation: req.body.mealPreparation,
+                        transportation: req.body.transportation,
+                        residentRedirectedOnBehaviors: req.body.residentRedirectedOnBehaviors,
+                        awolElopement: req.body.awolElopement,
+                        noteSummary: req.body.noteSummary,
+                        bhtName: req.body.bhtName,
+                        bhtSignature: req.body.bhtSignature,
+                };
+                let newEmployee = await progressNote.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "Progress note add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getProgressNoteById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await progressNote.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Progress note not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Progress note found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.editProgressNoteById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await progressNote.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Medication Reconciliation not found", data: {} });
+                } else {
+                        let patientId;
+                        if (req.body.patientId != (null || undefined)) {
+                                const user2 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                                if (!user2) {
+                                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                                }
+                                patientId = user2._id;
+                        } else {
+                                patientId = user1.patientId;
+                        }
+                        let obj = {
+                                employeeId: user._id,
+                                adminId: user.adminId,
+                                patientId: patientId,
+                                residentName: req.body.residentName || user1.residentName,
+                                dateOfBirth: req.body.dateOfBirth || user1.dateOfBirth,
+                                admitDate: req.body.admitDate || user1.admitDate,
+                                date: req.body.date || user1.date,
+                                shift: req.body.shift || user1.shift,
+                                medicationAdministrationCompleted: req.body.medicationAdministrationCompleted || user1.medicationAdministrationCompleted,
+                                assistanceInMedicationAdministrationCompleted: req.body.assistanceInMedicationAdministrationCompleted || user1.assistanceInMedicationAdministrationCompleted,
+                                healthAndWelfareChecksCompleted: req.body.healthAndWelfareChecksCompleted || user1.healthAndWelfareChecksCompleted,
+                                communityLivingSupport: req.body.communityLivingSupport || user1.communityLivingSupport,
+                                groupTherapy: req.body.groupTherapy || user1.groupTherapy,
+                                individualTherapy: req.body.individualTherapy || user1.individualTherapy,
+                                refusedTherapy: req.body.refusedTherapy || user1.refusedTherapy,
+                                isolation: req.body.isolation || user1.isolation,
+                                anxious: req.body.anxious || user1.anxious,
+                                depressed: req.body.depressed || user1.depressed,
+                                excited: req.body.excited || user1.excited,
+                                respondingToInternalStimuli: req.body.respondingToInternalStimuli || user1.respondingToInternalStimuli,
+                                inappropriateSexualComment: req.body.inappropriateSexualComment || user1.inappropriateSexualComment,
+                                paranoia: req.body.paranoia || user1.paranoia,
+                                verballyAggressive: req.body.verballyAggressive || user1.verballyAggressive,
+                                physicallyAggressive: req.body.physicallyAggressive || user1.physicallyAggressive,
+                                agitated: req.body.agitated || user1.agitated,
+                                suicidalIdeation: req.body.suicidalIdeation || user1.suicidalIdeation,
+                                PCP: req.body.PCP || user1.PCP,
+                                psychiatric: req.body.psychiatric || user1.psychiatric,
+                                otherSpecialist: req.body.otherSpecialist || user1.otherSpecialist,
+                                none: req.body.none || user1.none,
+                                emergencyRoomVisit: req.body.emergencyRoomVisit || user1.emergencyRoomVisit,
+                                inpatient: req.body.inpatient || user1.inpatient,
+                                urgentCare: req.body.urgentCare || user1.urgentCare,
+                                communityOutings: req.body.communityOutings || user1.communityOutings,
+                                religiousService: req.body.religiousService || user1.religiousService,
+                                adlsCompleted: req.body.adlsCompleted || user1.adlsCompleted,
+                                mealPreparation: req.body.mealPreparation || user1.mealPreparation,
+                                transportation: req.body.transportation || user1.transportation,
+                                residentRedirectedOnBehaviors: req.body.residentRedirectedOnBehaviors || user1.residentRedirectedOnBehaviors,
+                                awolElopement: req.body.awolElopement || user1.awolElopement,
+                                noteSummary: req.body.noteSummary || user1.noteSummary,
+                                bhtName: req.body.bhtName || user1.bhtName,
+                                bhtSignature: req.body.bhtSignature || user1.bhtSignature,
+                        };
+                        let update = await progressNote.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "Medication Reconciliation update.", data: update });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteProgressNote = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await progressNote.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Progress note  not found", data: {} });
+                } else {
+                        await progressNote.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Progress note delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllProgressNote = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let filter = {};
+                filter.employeeId = user._id;
+                if (req.query.patientId != (null || undefined)) {
+                        filter.patientId = req.query.patientId;
+                }
+                let findEmployee = await progressNote.find(filter);
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Progress note not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Medication Reconciliation found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createDischargeSummary = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                let obj = {
+                        employeeId: user._id,
+                        adminId: user.adminId,
+                        patientId: user1._id,
+                        clientName: req.body.clientName,
+                        dateOfBirth: req.body.dateOfBirth,
+                        dateOfAdmission: req.body.dateOfAdmission,
+                        dateOfDischarge: req.body.dateOfDischarge,
+                        presentingIssue: req.body.presentingIssue,
+                        treatmentProvided: req.body.treatmentProvided,
+                        progress: req.body.progress,
+                        medicationUponDischarge: req.body.medicationUponDischarge,
+                        fundsPropertiesUponDischarge: req.body.fundsPropertiesUponDischarge,
+                        reasonForDischarge: req.body.reasonForDischarge,
+                        dischargePlanReferralAftercarePlan: req.body.dischargePlanReferralAftercarePlan,
+                        patientGuardianSignature: req.body.patientGuardianSignature,
+                        patientGuardianSignatureDate: req.body.patientGuardianSignatureDate,
+                        staffNameAndTitle: req.body.staffNameAndTitle,
+                        staffSignature: req.body.staffSignature,
+                        staffSignatureDate: req.body.staffSignatureDate,
+                        bhpNameAndCredentials: req.body.bhpNameAndCredentials,
+                        bhpSignature: req.body.bhpSignature,
+                        bhpSignatureDate: req.body.bhpSignatureDate,
+                };
+                let newEmployee = await dischargeSummary.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "Discharge summary add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getDischargeSummaryById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await dischargeSummary.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Discharge summary not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Discharge summary found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.editDischargeSummaryById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await dischargeSummary.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Discharge summary not found", data: {} });
+                } else {
+                        let patientId;
+                        if (req.body.patientId != (null || undefined)) {
+                                const user2 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                                if (!user2) {
+                                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                                }
+                                patientId = user2._id;
+                        } else {
+                                patientId = user1.patientId;
+                        }
+                        let obj = {
+                                employeeId: user._id,
+                                adminId: user.adminId,
+                                patientId: patientId,
+                                clientName: req.body.clientName || user1.clientName,
+                                dateOfBirth: req.body.dateOfBirth || user1.dateOfBirth,
+                                dateOfAdmission: req.body.dateOfAdmission || user1.dateOfAdmission,
+                                dateOfDischarge: req.body.dateOfDischarge || user1.dateOfDischarge,
+                                presentingIssue: req.body.presentingIssue || user1.presentingIssue,
+                                treatmentProvided: req.body.treatmentProvided || user1.treatmentProvided,
+                                progress: req.body.progress || user1.progress,
+                                medicationUponDischarge: req.body.medicationUponDischarge || user1.medicationUponDischarge,
+                                fundsPropertiesUponDischarge: req.body.fundsPropertiesUponDischarge || user1.fundsPropertiesUponDischarge,
+                                reasonForDischarge: req.body.reasonForDischarge || user1.reasonForDischarge,
+                                dischargePlanReferralAftercarePlan: req.body.dischargePlanReferralAftercarePlan || user1.dischargePlanReferralAftercarePlan,
+                                patientGuardianSignature: req.body.patientGuardianSignature || user1.patientGuardianSignature,
+                                patientGuardianSignatureDate: req.body.patientGuardianSignatureDate || user1.patientGuardianSignatureDate,
+                                staffNameAndTitle: req.body.staffNameAndTitle || user1.staffNameAndTitle,
+                                staffSignature: req.body.staffSignature || user1.staffSignature,
+                                staffSignatureDate: req.body.staffSignatureDate || user1.staffSignatureDate,
+                                bhpNameAndCredentials: req.body.bhpNameAndCredentials || user1.bhpNameAndCredentials,
+                                bhpSignature: req.body.bhpSignature || user1.bhpSignature,
+                                bhpSignatureDate: req.body.bhpSignatureDate || user1.bhpSignatureDate,
+                        };
+                        let update = await dischargeSummary.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "Medication Reconciliation update.", data: update });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteDischargeSummary = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await dischargeSummary.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Discharge summary  not found", data: {} });
+                } else {
+                        await dischargeSummary.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Discharge summary delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllDischargeSummary = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let filter = {};
+                filter.employeeId = user._id;
+                if (req.query.patientId != (null || undefined)) {
+                        filter.patientId = req.query.patientId;
+                }
+                let findEmployee = await dischargeSummary.find(filter);
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Discharge summary not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Discharge summary found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createADLTrackingForm = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                let obj = {
+                        employeeId: user._id,
+                        adminId: user.adminId,
+                        patientId: user1._id,
+                        date: req.body.date,
+                        selectingClothes: req.body.selectingClothes,
+                        bathingOrShowering: req.body.bathingOrShowering,
+                        combingHair: req.body.combingHair,
+                        applyingLotion: req.body.applyingLotion,
+                        laundry: req.body.laundry,
+                        dressing: req.body.dressing,
+                        shampooingHair: req.body.shampooingHair,
+                        oralCareMorning: req.body.oralCareMorning,
+                        oralCareEvening: req.body.oralCareEvening,
+                        breakfast: req.body.breakfast,
+                        lunch: req.body.lunch,
+                        dinner: req.body.dinner,
+                        amSnack: req.body.amSnack,
+                        pmSnack: req.body.pmSnack,
+                        amBowelMovement: req.body.amBowelMovement,
+                        pmBowelMovement: req.body.pmBowelMovement,
+                        overnightBowelMovement: req.body.overnightBowelMovement,
+                        handAndFootNailCare: req.body.handAndFootNailCare,
+                        bedMobility: req.body.bedMobility,
+                };
+                let newEmployee = await ADLTrackingForm.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "ADLTrackingForm add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getADLTrackingFormById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await ADLTrackingForm.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "ADLTrackingForm not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "ADLTrackingForm found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.editADLTrackingFormById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await ADLTrackingForm.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "ADLTrackingForm not found", data: {} });
+                } else {
+                        let patientId;
+                        if (req.body.patientId != (null || undefined)) {
+                                const user2 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                                if (!user2) {
+                                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                                }
+                                patientId = user2._id;
+                        } else {
+                                patientId = user1.patientId;
+                        }
+                        let obj = {
+                                employeeId: user._id,
+                                adminId: user.adminId,
+                                patientId: patientId,
+                                date: req.body.date || user1.date,
+                                selectingClothes: req.body.selectingClothes || user1.selectingClothes,
+                                bathingOrShowering: req.body.bathingOrShowering || user1.bathingOrShowering,
+                                combingHair: req.body.combingHair || user1.combingHair,
+                                applyingLotion: req.body.applyingLotion || user1.applyingLotion,
+                                laundry: req.body.laundry || user1.laundry,
+                                dressing: req.body.dressing || user1.dressing,
+                                shampooingHair: req.body.shampooingHair || user1.shampooingHair,
+                                oralCareMorning: req.body.oralCareMorning || user1.oralCareMorning,
+                                oralCareEvening: req.body.oralCareEvening || user1.oralCareEvening,
+                                breakfast: req.body.breakfast || user1.breakfast,
+                                lunch: req.body.lunch || user1.lunch,
+                                dinner: req.body.dinner || user1.dinner,
+                                amSnack: req.body.amSnack || user1.amSnack,
+                                pmSnack: req.body.pmSnack || user1.pmSnack,
+                                amBowelMovement: req.body.amBowelMovement || user1.amBowelMovement,
+                                pmBowelMovement: req.body.pmBowelMovement || user1.pmBowelMovement,
+                                overnightBowelMovement: req.body.overnightBowelMovement || user1.overnightBowelMovement,
+                                handAndFootNailCare: req.body.handAndFootNailCare || user1.handAndFootNailCare,
+                                bedMobility: req.body.bedMobility || user1.bedMobility,
+                        };
+                        let update = await ADLTrackingForm.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "ADLTrackingForm update.", data: update });
+                        }
+                };
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteADLTrackingForm = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await ADLTrackingForm.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "ADLTrackingForm  not found", data: {} });
+                } else {
+                        await ADLTrackingForm.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "ADLTrackingForm delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllADLTrackingForm = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let filter = {};
+                filter.employeeId = user._id;
+                if (req.query.patientId != (null || undefined)) {
+                        filter.patientId = req.query.patientId;
+                }
+                let findEmployee = await ADLTrackingForm.find(filter);
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "ADLTrackingForm not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "ADLTrackingForm found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createFinancialTransactionsRecord = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                let obj = {
+                        employeeId: user._id,
+                        adminId: user.adminId,
+                        patientId: user1._id,
+                        residentName: req.body.residentName,
+                        dateOfBirth: req.body.dateOfBirth,
+                        admitDate: req.body.admitDate,
+                        transactions: req.body.transactions,
+                };
+                let newEmployee = await financialTransactionsRecord.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "Financial transactions record add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getFinancialTransactionsRecordById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await financialTransactionsRecord.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Financial transactions record not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Financial transactions record found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.editFinancialTransactionsRecordById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await financialTransactionsRecord.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Financial transactions record not found", data: {} });
+                } else {
+                        let patientId;
+                        if (req.body.patientId != (null || undefined)) {
+                                const user2 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                                if (!user2) {
+                                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                                }
+                                patientId = user2._id;
+                        } else {
+                                patientId = user1.patientId;
+                        }
+                        let obj = {
+                                employeeId: user._id,
+                                adminId: user.adminId,
+                                patientId: patientId,
+                                residentName: req.body.residentName || user1.residentName,
+                                admitDate: req.body.admitDate || user1.admitDate,
+                                dateOfBirth: req.body.dateOfBirth || user1.dateOfBirth,
+                                transactions: req.body.transactions || user1.transactions,
+                        };
+                        let update = await financialTransactionsRecord.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "Financial transactions record update.", data: update });
+                        }
+                };
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteFinancialTransactionsRecord = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await financialTransactionsRecord.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Financial transactions record  not found", data: {} });
+                } else {
+                        await financialTransactionsRecord.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Financial transactions record delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllFinancialTransactionsRecord = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let filter = {};
+                filter.employeeId = user._id;
+                if (req.query.patientId != (null || undefined)) {
+                        filter.patientId = req.query.patientId;
+                }
+                let findEmployee = await financialTransactionsRecord.find(filter);
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Financial transactions record not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Financial transactions record found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createStaffingNote = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                let obj = {
+                        employeeId: user._id,
+                        adminId: user.adminId,
+                        patientId: user1._id,
+                        residentName: req.body.residentName,
+                        dateOfBirth: req.body.dateOfBirth,
+                        todayDate: req.body.todayDate,
+                        beginTime: req.body.beginTime,
+                        endTime: req.body.endTime,
+                        participantsPresent: req.body.participantsPresent,
+                        presentingIssues: req.body.presentingIssues,
+                        progress: req.body.progress,
+                        barriers: req.body.barriers,
+                        recommendations: req.body.recommendations,
+                        staffSignature: req.body.staffSignature,
+                };
+                let newEmployee = await staffingNote.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "Staffing Note add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getStaffingNoteById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await staffingNote.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Staffing Note not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Staffing Note found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.editStaffingNoteById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await staffingNote.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Staffing Note not found", data: {} });
+                } else {
+                        let patientId;
+                        if (req.body.patientId != (null || undefined)) {
+                                const user2 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                                if (!user2) {
+                                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                                }
+                                patientId = user2._id;
+                        } else {
+                                patientId = user1.patientId;
+                        }
+                        let obj = {
+                                employeeId: user._id,
+                                adminId: user.adminId,
+                                patientId: patientId,
+                                residentName: req.body.residentName || user1.residentName,
+                                dateOfBirth: req.body.dateOfBirth || user1.dateOfBirth,
+                                todayDate: req.body.todayDate || user1.todayDate,
+                                beginTime: req.body.beginTime || user1.beginTime,
+                                endTime: req.body.endTime || user1.endTime,
+                                participantsPresent: req.body.participantsPresent || user1.participantsPresent,
+                                presentingIssues: req.body.presentingIssues || user1.presentingIssues,
+                                progress: req.body.progress || user1.progress,
+                                barriers: req.body.barriers || user1.barriers,
+                                recommendations: req.body.recommendations || user1.recommendations,
+                                staffSignature: req.body.staffSignature || user1.staffSignature,
+                        };
+                        let update = await staffingNote.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "Staffing Note update.", data: update });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteStaffingNote = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await staffingNote.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Staffing Note  not found", data: {} });
+                } else {
+                        await staffingNote.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Staffing Note delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllStaffingNote = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let filter = {};
+                filter.employeeId = user._id;
+                if (req.query.patientId != (null || undefined)) {
+                        filter.patientId = req.query.patientId;
+                }
+                let findEmployee = await staffingNote.find(filter);
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Staffing Note not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Staffing Note found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createAuthorizationForReleaseOfInformation = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                let obj = {
+                        employeeId: user._id,
+                        adminId: user.adminId,
+                        patientId: user1._id,
+                        residentName: req.body.residentName,
+                        dateOfBirth: req.body.dateOfBirth,
+                        authorizedPersonName: req.body.authorizedPersonName,
+                        authorizedPersonAgency: req.body.authorizedPersonAgency,
+                        authorizedPersonAddress: req.body.authorizedPersonAddress,
+                        authorizedPersonPhone: req.body.authorizedPersonPhone,
+                        authorizedPersonFax: req.body.authorizedPersonFax,
+                        authorizedPersonEmail: req.body.authorizedPersonEmail,
+                        dropDown: req.body.dropDown,
+                        purposeOfDisclosure: req.body.purposeOfDisclosure,
+                        companyName: req.body.companyName,
+                        expirationFrom: req.body.expirationFrom,
+                        expirationTo: req.body.expirationTo,
+                        revocation: req.body.revocation,
+                        specify: req.body.specify,
+                        signature: req.body.signature,
+                        dateSigned: req.body.dateSigned,
+                        relationshipToPerson: req.body.relationshipToPerson,
+                        witness: req.body.witness,
+                };
+                let newEmployee = await authorizationForReleaseOfInformation.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "Authorization For Release Of Information add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAuthorizationForReleaseOfInformationById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await authorizationForReleaseOfInformation.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Authorization For Release Of Information not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Authorization For Release Of Information found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.editAuthorizationForReleaseOfInformationById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await authorizationForReleaseOfInformation.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Authorization For Release Of Information not found", data: {} });
+                } else {
+                        let patientId;
+                        if (req.body.patientId != (null || undefined)) {
+                                const user2 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                                if (!user2) {
+                                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                                }
+                                patientId = user2._id;
+                        } else {
+                                patientId = user1.patientId;
+                        }
+                        let obj = {
+                                employeeId: user._id,
+                                adminId: user.adminId,
+                                patientId: patientId,
+                                residentName: req.body.residentName || user1.residentName,
+                                dateOfBirth: req.body.dateOfBirth || user1.dateOfBirth,
+                                authorizedPersonName: req.body.authorizedPersonName || user1.authorizedPersonName,
+                                authorizedPersonAgency: req.body.authorizedPersonAgency || user1.authorizedPersonAgency,
+                                authorizedPersonAddress: req.body.authorizedPersonAddress || user1.authorizedPersonAddress,
+                                authorizedPersonPhone: req.body.authorizedPersonPhone || user1.authorizedPersonPhone,
+                                authorizedPersonFax: req.body.authorizedPersonFax || user1.authorizedPersonFax,
+                                authorizedPersonEmail: req.body.authorizedPersonEmail || user1.authorizedPersonEmail,
+                                dropDown: req.body.dropDown || user1.dropDown,
+                                purposeOfDisclosure: req.body.purposeOfDisclosure || user1.purposeOfDisclosure,
+                                companyName: req.body.companyName || user1.companyName,
+                                expirationFrom: req.body.expirationFrom || user1.expirationFrom,
+                                expirationTo: req.body.expirationTo || user1.expirationTo,
+                                revocation: req.body.revocation || user1.revocation,
+                                specify: req.body.specify || user1.specify,
+                                signature: req.body.signature || user1.signature,
+                                dateSigned: req.body.dateSigned || user1.dateSigned,
+                                relationshipToPerson: req.body.relationshipToPerson || user1.relationshipToPerson,
+                                witness: req.body.witness || user1.witness,
+                        };
+                        let update = await authorizationForReleaseOfInformation.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "Authorization For Release Of Information update.", data: update });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteAuthorizationForReleaseOfInformation = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await authorizationForReleaseOfInformation.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Authorization For Release Of Information  not found", data: {} });
+                } else {
+                        await authorizationForReleaseOfInformation.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Authorization For Release Of Information delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllAuthorizationForReleaseOfInformation = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let filter = {};
+                filter.employeeId = user._id;
+                if (req.query.patientId != (null || undefined)) {
+                        filter.patientId = req.query.patientId;
+                }
+                let findEmployee = await authorizationForReleaseOfInformation.find(filter);
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Authorization For Release Of Information not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Authorization For Release Of Information found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createIncidentReportPartA = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                let residentsInvolved = [], employeesInvolved = [];
+                employeesInvolved.push(user._id);
+                residentsInvolved.push(user1._id)
+                let obj = {
+                        residentsInvolved: residentsInvolved,
+                        adminId: user.adminId,
+                        employeesInvolved: employeesInvolved,
+                        dateOfIncident: req.body.dateOfIncident,
+                        timeOfIncident: req.body.timeOfIncident,
+                        personObservingReporting: req.body.personObservingReporting,
+                        incidentsAltercationVerbal: req.body.incidentsAltercationVerbal,
+                        incidentsPropertyLoss: req.body.incidentsPropertyLoss,
+                        incidentsWeapon: req.body.incidentsWeapon,
+                        incidentsRuleViolation: req.body.incidentsRuleViolation,
+                        incidentsAltercationPhysical: req.body.incidentsAltercationPhysical,
+                        incidentsPropertyDamage: req.body.incidentsPropertyDamage,
+                        incidentsContraband: req.body.incidentsContraband,
+                        incidentsSeizure: req.body.incidentsSeizure,
+                        incidentsViolentThreatSelf: req.body.incidentsViolentThreatSelf,
+                        incidentsVehicularAccident: req.body.incidentsVehicularAccident,
+                        incidentsAlcoholDrugUse: req.body.incidentsAlcoholDrugUse,
+                        incidentsMedicationErrors: req.body.incidentsMedicationErrors,
+                        incidentsViolentThreatOthers: req.body.incidentsViolentThreatOthers,
+                        incidentsMedicalEmergency911: req.body.incidentsMedicalEmergency911,
+                        incidentsEquipmentUtilityFailure: req.body.incidentsEquipmentUtilityFailure,
+                        incidentsAWOL: req.body.incidentsAWOL,
+                        incidentsViolentActionSelf: req.body.incidentsViolentActionSelf,
+                        incidentsEmployeeInjury: req.body.incidentsEmployeeInjury,
+                        incidentsBiohazardousMaterial: req.body.incidentsBiohazardousMaterial,
+                        incidentsPsychiatricEmergency: req.body.incidentsPsychiatricEmergency,
+                        incidentsViolentActionOthers: req.body.incidentsViolentActionOthers,
+                        incidentsClientConsumerInjury: req.body.incidentsClientConsumerInjury,
+                        incidentsAMA: req.body.incidentsAMA,
+                        incidentsAbuseNeglect: req.body.incidentsAbuseNeglect,
+                        incidentsTrespassing: req.body.incidentsTrespassing,
+                        incidentsProceduralBreak: req.body.incidentsProceduralBreak,
+                        incidentsSlipFall: req.body.incidentsSlipFall,
+                        incidentsCutAbrasion: req.body.incidentsCutAbrasion,
+                        incidentspharmacyError: req.body.incidentspharmacyError,
+                        eventDetails: req.body.eventDetails,
+                        medicationErrorsMissedDose: req.body.medicationErrorsMissedDose,
+                        medicationErrorsRefusedMedication: req.body.medicationErrorsRefusedMedication,
+                        medicationErrorsWrongClient: req.body.medicationErrorsWrongClient,
+                        medicationErrorsWrongTime: req.body.medicationErrorsWrongTime,
+                        medicationErrorsWrongMed: req.body.medicationErrorsWrongMed,
+                        actionsTakenSenttoERHospital: req.body.actionsTakenSenttoERHospital,
+                        actionsTakenFirstAid: req.body.actionsTakenFirstAid,
+                        actionsTakenNoMedicalCareRequired: req.body.actionsTakenNoMedicalCareRequired,
+                        CareRefused: req.body.CareRefused,
+                        actionsTakenFireDepartmentCalled: req.body.actionsTakenFireDepartmentCalled,
+                        actionsTakenPoliceCalled: req.body.actionsTakenPoliceCalled,
+                        actionsTakenReferredtoAdministratorRiskManagement: req.body.actionsTakenReferredtoAdministratorRiskManagement,
+                        actionsTakenMaintenanceCalledWorkOrderCompleted: req.body.actionsTakenMaintenanceCalledWorkOrderCompleted,
+                        actionsTakenOther: req.body.actionsTakenOther,
+                        abuseNeglectInvolved: req.body.abuseNeglectInvolved,
+                        abuseNeglectInvolvedifYes: req.body.abuseNeglectInvolvedifYes,
+                        notificationsFamily: req.body.notificationsFamily,
+                        notificationsGuardian: req.body.notificationsGuardian,
+                        notificationsCaseManager: req.body.notificationsCaseManager,
+                        notificationsOther: req.body.notificationsOther,
+                        notificationIfOther: req.body.notificationIfOther,
+                        notificationDate: req.body.notificationDate,
+                        notificationTime: req.body.notificationTime,
+                        reportCompletedBy: req.body.reportCompletedBy,
+                        partType: "A",
+                };
+                let newEmployee = await incidentReport.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "Authorization For Release Of Information add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createIncidentReportPartB = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const checklist = await incidentReport.findOne({ _id: req.body.aPartId });
+                if (checklist) {
+                        let obj1 = {
+                                residentsInvolved: checklist.residentsInvolved,
+                                adminId: checklist.adminId,
+                                employeesInvolved: checklist.employeesInvolved,
+                                partId: checklist._id,
+                                investigationDetails: req.body.investigationDetails,
+                                investigationRecommendationsAndActions: req.body.investigationRecommendationsAndActions,
+                                investigationFollowUp: req.body.investigationFollowUp,
+                                investigationCompletedBy: req.body.investigationCompletedBy,
+                                investigationCompletionDate: req.body.investigationCompletionDate,
+                                partType: "B",
+                        };
+                        const checklist1 = await incidentReport.create(obj1);
+                        if (checklist1) {
+                                return res.status(200).send({ status: 200, message: "Incident Report added successfully.", data: checklist1 });
+                        }
+                } else {
+                        return res.status(404).send({ status: 404, message: "Incident Report not found", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getIncidentReportById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await incidentReport.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Incident report not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Incident report found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.editIncidentReportPartA = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user2 = await incidentReport.findOne({ _id: req.params.id, partType: "A" });
+                if (!user2) {
+                        return res.status(404).send({ status: 404, message: "Incident report not found", data: {} });
+                }
+                let residentsInvolved = [], employeesInvolved = [];
+                if (req.body.patientId != (null || undefined)) {
+                        const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                        if (!user1) {
+                                return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                        }
+                        employeesInvolved.push(user._id);
+                        residentsInvolved.push(user1._id)
+                } else {
+                        residentsInvolved = user2.residentsInvolved;
+                        employeesInvolved = user2.employeesInvolved;
+                }
+                let obj = {
+                        residentsInvolved: residentsInvolved,
+                        adminId: user.adminId,
+                        employeesInvolved: employeesInvolved,
+                        dateOfIncident: req.body.dateOfIncident || user2.dateOfIncident,
+                        timeOfIncident: req.body.timeOfIncident || user2.timeOfIncident,
+                        personObservingReporting: req.body.personObservingReporting,
+                        incidentsAltercationVerbal: req.body.incidentsAltercationVerbal,
+                        incidentsPropertyLoss: req.body.incidentsPropertyLoss,
+                        incidentsWeapon: req.body.incidentsWeapon,
+                        incidentsRuleViolation: req.body.incidentsRuleViolation,
+                        incidentsAltercationPhysical: req.body.incidentsAltercationPhysical,
+                        incidentsPropertyDamage: req.body.incidentsPropertyDamage,
+                        incidentsContraband: req.body.incidentsContraband,
+                        incidentsSeizure: req.body.incidentsSeizure,
+                        incidentsViolentThreatSelf: req.body.incidentsViolentThreatSelf,
+                        incidentsVehicularAccident: req.body.incidentsVehicularAccident,
+                        incidentsAlcoholDrugUse: req.body.incidentsAlcoholDrugUse,
+                        incidentsMedicationErrors: req.body.incidentsMedicationErrors,
+                        incidentsViolentThreatOthers: req.body.incidentsViolentThreatOthers,
+                        incidentsMedicalEmergency911: req.body.incidentsMedicalEmergency911,
+                        incidentsEquipmentUtilityFailure: req.body.incidentsEquipmentUtilityFailure,
+                        incidentsAWOL: req.body.incidentsAWOL,
+                        incidentsViolentActionSelf: req.body.incidentsViolentActionSelf,
+                        incidentsEmployeeInjury: req.body.incidentsEmployeeInjury,
+                        incidentsBiohazardousMaterial: req.body.incidentsBiohazardousMaterial,
+                        incidentsPsychiatricEmergency: req.body.incidentsPsychiatricEmergency,
+                        incidentsViolentActionOthers: req.body.incidentsViolentActionOthers,
+                        incidentsClientConsumerInjury: req.body.incidentsClientConsumerInjury,
+                        incidentsAMA: req.body.incidentsAMA,
+                        incidentsAbuseNeglect: req.body.incidentsAbuseNeglect,
+                        incidentsTrespassing: req.body.incidentsTrespassing,
+                        incidentsProceduralBreak: req.body.incidentsProceduralBreak,
+                        incidentsSlipFall: req.body.incidentsSlipFall,
+                        incidentsCutAbrasion: req.body.incidentsCutAbrasion,
+                        incidentspharmacyError: req.body.incidentspharmacyError,
+                        eventDetails: req.body.eventDetails,
+                        medicationErrorsMissedDose: req.body.medicationErrorsMissedDose,
+                        medicationErrorsRefusedMedication: req.body.medicationErrorsRefusedMedication,
+                        medicationErrorsWrongClient: req.body.medicationErrorsWrongClient,
+                        medicationErrorsWrongTime: req.body.medicationErrorsWrongTime,
+                        medicationErrorsWrongMed: req.body.medicationErrorsWrongMed,
+                        actionsTakenSenttoERHospital: req.body.actionsTakenSenttoERHospital,
+                        actionsTakenFirstAid: req.body.actionsTakenFirstAid,
+                        actionsTakenNoMedicalCareRequired: req.body.actionsTakenNoMedicalCareRequired,
+                        CareRefused: req.body.CareRefused,
+                        actionsTakenFireDepartmentCalled: req.body.actionsTakenFireDepartmentCalled,
+                        actionsTakenPoliceCalled: req.body.actionsTakenPoliceCalled,
+                        actionsTakenReferredtoAdministratorRiskManagement: req.body.actionsTakenReferredtoAdministratorRiskManagement,
+                        actionsTakenMaintenanceCalledWorkOrderCompleted: req.body.actionsTakenMaintenanceCalledWorkOrderCompleted,
+                        actionsTakenOther: req.body.actionsTakenOther,
+                        abuseNeglectInvolved: req.body.abuseNeglectInvolved,
+                        abuseNeglectInvolvedifYes: req.body.abuseNeglectInvolvedifYes,
+                        notificationsFamily: req.body.notificationsFamily,
+                        notificationsGuardian: req.body.notificationsGuardian,
+                        notificationsCaseManager: req.body.notificationsCaseManager,
+                        notificationsOther: req.body.notificationsOther,
+                        notificationIfOther: req.body.notificationIfOther,
+                        notificationDate: req.body.notificationDate,
+                        notificationTime: req.body.notificationTime,
+                        reportCompletedBy: req.body.reportCompletedBy,
+                        partType: "A",
+                };
+                let update = await incidentReport.findByIdAndUpdate({ _id: user2._id }, { $set: obj }, { new: true });
+                if (update) {
+                        return res.status(200).send({ status: 200, message: "Incident report update.", data: update });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.editIncidentReportPartB = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const checklist = await incidentReport.findOne({ _id: req.body.aPartId });
+                if (checklist) {
+                        let obj1 = {
+                                residentsInvolved: checklist.residentsInvolved,
+                                adminId: checklist.adminId,
+                                employeesInvolved: checklist.employeesInvolved,
+                                partId: checklist._id,
+                                investigationDetails: req.body.investigationDetails,
+                                investigationRecommendationsAndActions: req.body.investigationRecommendationsAndActions,
+                                investigationFollowUp: req.body.investigationFollowUp,
+                                investigationCompletedBy: req.body.investigationCompletedBy,
+                                investigationCompletionDate: req.body.investigationCompletionDate,
+                                partType: "B",
+                        };
+                        const checklist1 = await incidentReport.create(obj1);
+                        if (checklist1) {
+                                return res.status(200).send({ status: 200, message: "Incident Report added successfully.", data: checklist1 });
+                        }
+                } else {
+                        return res.status(404).send({ status: 404, message: "Incident Report not found", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteIncidentReport = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await incidentReport.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Incident report  not found", data: {} });
+                } else {
+                        await incidentReport.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Incident report delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllIncidentReport = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let filter = {};
+                filter.employeeId = user._id;
+                if (req.query.partType != (null || undefined)) {
+                        filter.partType = req.query.partType;
+                }
+                let findEmployee = await incidentReport.find(filter);
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Incident report not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Incident report found.", data: findEmployee });
                 }
         } catch (error) {
                 console.error(error);

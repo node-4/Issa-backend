@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const schema = mongoose.Schema;
 const progressNoteSchema = new mongoose.Schema({
         employeeId: {
                 type: schema.Types.ObjectId,
@@ -28,50 +29,115 @@ const progressNoteSchema = new mongoose.Schema({
                 type: String,
                 enum: ['7am-3pm', '3pm-11pm', '11pm-7am', '8am-4pm', '4pm-12am', '12am-8am', '7am-7pm', '7pm-7am', '8am-8pm', '8pm-8am',],
         },
-        medicationAdministrationCompleted: Boolean,
-        assistanceInMedicationAdministrationCompleted: Boolean,
-        healthAndWelfareChecksCompleted: Boolean,
+        medicationAdministrationCompleted: {
+                type: Boolean
+        },
+        assistanceInMedicationAdministrationCompleted: {
+                type: Boolean
+        },
+        healthAndWelfareChecksCompleted: {
+                type: Boolean
+        },
         communityLivingSupport: {
-                monitorsAndPrompts: Boolean,
+                type: String,
+                enum: ['monitors', 'Prompts']
         },
-        therapy: {
-                groupTherapy: Boolean,
-                individualTherapy: Boolean,
-                refusedTherapy: Boolean,
+        groupTherapy: {
+                type: Boolean
         },
-        mood: {
-                isolation: Boolean,
-                anxious: Boolean,
-                depressed: Boolean,
-                excited: Boolean,
-                respondingToInternalStimuli: Boolean,
-                inappropriateSexualComment: Boolean,
-                paranoia: Boolean,
-                verballyAggressive: Boolean,
-                physicallyAggressive: Boolean,
-                agitated: Boolean,
-                suicidalIdeation: Boolean,
+        individualTherapy: {
+                type: Boolean
         },
-        appointments: {
-                PCP: Boolean,
-                psychiatric: Boolean,
-                otherSpecialist: Boolean,
-                none: Boolean,
+        refusedTherapy: {
+                type: Boolean
         },
-        emergencyAppointment: {
-                emergencyRoomVisit: Boolean,
-                inpatient: Boolean,
-                urgentCare: Boolean,
-                none: Boolean,
+        isolation: {
+                type: Boolean
         },
-        outings: Boolean,
-        adlsCompleted: Boolean,
-        mealPreparation: Boolean,
-        transportation: Boolean,
-        residentRedirectedOnBehaviors: Boolean,
-        awolElopement: Boolean,
-        noteSummary: String,
-        bhtNameAndSignature: String,
+        anxious: {
+                type: Boolean
+        },
+        depressed: {
+                type: Boolean
+        },
+        excited: {
+                type: Boolean
+        },
+        respondingToInternalStimuli: {
+                type: Boolean
+        },
+        inappropriateSexualComment: {
+                type: Boolean
+        },
+        paranoia: {
+                type: Boolean
+        },
+        verballyAggressive: {
+                type: Boolean
+        },
+        physicallyAggressive: {
+                type: Boolean
+        },
+        agitated: {
+                type: Boolean
+        },
+        suicidalIdeation: {
+                type: Boolean
+        },
+        PCP: {
+                type: Boolean
+        },
+        psychiatric: {
+                type: Boolean
+        },
+        otherSpecialist: {
+                type: Boolean
+        },
+        none: {
+                type: Boolean
+        },
+        emergencyRoomVisit: {
+                type: Boolean
+        },
+        inpatient: {
+                type: Boolean
+        },
+        urgentCare: {
+                type: Boolean
+        },
+        none: {
+                type: Boolean
+        },
+        communityOutings: {
+                type: Boolean
+        },
+        religiousService: {
+                type: Boolean
+        },
+        adlsCompleted: {
+                type: Boolean
+        },
+        mealPreparation: {
+                type: Boolean
+        },
+        transportation: {
+                type: Boolean
+        },
+        residentRedirectedOnBehaviors: {
+                type: Boolean
+        },
+        awolElopement: {
+                type: Boolean
+        },
+        noteSummary: {
+                type: String,
+        },
+        bhtName: {
+                type: String,
+        },
+        bhtSignature: {
+                type: String,
+        },
 });
 const ProgressNote = mongoose.model('ProgressNote', progressNoteSchema);
 module.exports = ProgressNote;

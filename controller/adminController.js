@@ -765,10 +765,87 @@ exports.addIncidentReport = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
-                req.body.adminId = user._id;
-                const checklist = await incidentReport.create(req.body);
+                let obj = {
+                        residentsInvolved: residentsInvolved,
+                        adminId: user.adminId,
+                        employeesInvolved: employeesInvolved,
+                        dateOfIncident: req.body.dateOfIncident,
+                        timeOfIncident: req.body.timeOfIncident,
+                        personObservingReporting: req.body.personObservingReporting,
+                        incidentsAltercationVerbal: req.body.incidentsAltercationVerbal,
+                        incidentsPropertyLoss: req.body.incidentsPropertyLoss,
+                        incidentsWeapon: req.body.incidentsWeapon,
+                        incidentsRuleViolation: req.body.incidentsRuleViolation,
+                        incidentsAltercationPhysical: req.body.incidentsAltercationPhysical,
+                        incidentsPropertyDamage: req.body.incidentsPropertyDamage,
+                        incidentsContraband: req.body.incidentsContraband,
+                        incidentsSeizure: req.body.incidentsSeizure,
+                        incidentsViolentThreatSelf: req.body.incidentsViolentThreatSelf,
+                        incidentsVehicularAccident: req.body.incidentsVehicularAccident,
+                        incidentsAlcoholDrugUse: req.body.incidentsAlcoholDrugUse,
+                        incidentsMedicationErrors: req.body.incidentsMedicationErrors,
+                        incidentsViolentThreatOthers: req.body.incidentsViolentThreatOthers,
+                        incidentsMedicalEmergency911: req.body.incidentsMedicalEmergency911,
+                        incidentsEquipmentUtilityFailure: req.body.incidentsEquipmentUtilityFailure,
+                        incidentsAWOL: req.body.incidentsAWOL,
+                        incidentsViolentActionSelf: req.body.incidentsViolentActionSelf,
+                        incidentsEmployeeInjury: req.body.incidentsEmployeeInjury,
+                        incidentsBiohazardousMaterial: req.body.incidentsBiohazardousMaterial,
+                        incidentsPsychiatricEmergency: req.body.incidentsPsychiatricEmergency,
+                        incidentsViolentActionOthers: req.body.incidentsViolentActionOthers,
+                        incidentsClientConsumerInjury: req.body.incidentsClientConsumerInjury,
+                        incidentsAMA: req.body.incidentsAMA,
+                        incidentsAbuseNeglect: req.body.incidentsAbuseNeglect,
+                        incidentsTrespassing: req.body.incidentsTrespassing,
+                        incidentsProceduralBreak: req.body.incidentsProceduralBreak,
+                        incidentsSlipFall: req.body.incidentsSlipFall,
+                        incidentsCutAbrasion: req.body.incidentsCutAbrasion,
+                        incidentspharmacyError: req.body.incidentspharmacyError,
+                        eventDetails: req.body.eventDetails,
+                        medicationErrorsMissedDose: req.body.medicationErrorsMissedDose,
+                        medicationErrorsRefusedMedication: req.body.medicationErrorsRefusedMedication,
+                        medicationErrorsWrongClient: req.body.medicationErrorsWrongClient,
+                        medicationErrorsWrongTime: req.body.medicationErrorsWrongTime,
+                        medicationErrorsWrongMed: req.body.medicationErrorsWrongMed,
+                        actionsTakenSenttoERHospital: req.body.actionsTakenSenttoERHospital,
+                        actionsTakenFirstAid: req.body.actionsTakenFirstAid,
+                        actionsTakenNoMedicalCareRequired: req.body.actionsTakenNoMedicalCareRequired,
+                        CareRefused: req.body.CareRefused,
+                        actionsTakenFireDepartmentCalled: req.body.actionsTakenFireDepartmentCalled,
+                        actionsTakenPoliceCalled: req.body.actionsTakenPoliceCalled,
+                        actionsTakenReferredtoAdministratorRiskManagement: req.body.actionsTakenReferredtoAdministratorRiskManagement,
+                        actionsTakenMaintenanceCalledWorkOrderCompleted: req.body.actionsTakenMaintenanceCalledWorkOrderCompleted,
+                        actionsTakenOther: req.body.actionsTakenOther,
+                        abuseNeglectInvolved: req.body.abuseNeglectInvolved,
+                        abuseNeglectInvolvedifYes: req.body.abuseNeglectInvolvedifYes,
+                        notificationsFamily: req.body.notificationsFamily,
+                        notificationsGuardian: req.body.notificationsGuardian,
+                        notificationsCaseManager: req.body.notificationsCaseManager,
+                        notificationsOther: req.body.notificationsOther,
+                        notificationIfOther: req.body.notificationIfOther,
+                        notificationDate: req.body.notificationDate,
+                        notificationTime: req.body.notificationTime,
+                        reportCompletedBy: req.body.reportCompletedBy,
+                        partType: "A",
+                };
+                const checklist = await incidentReport.create(obj);
                 if (checklist) {
-                        return res.status(200).send({ status: 200, message: "Incident Report added successfully.", data: checklist });
+                        let obj1 = {
+                                residentsInvolved: residentsInvolved,
+                                adminId: user.adminId,
+                                employeesInvolved: employeesInvolved,
+                                partId: checklist._id,
+                                investigationDetails: req.body.investigationDetails,
+                                investigationRecommendationsAndActions: req.body.investigationRecommendationsAndActions,
+                                investigationFollowUp: req.body.investigationFollowUp,
+                                investigationCompletedBy: req.body.investigationCompletedBy,
+                                investigationCompletionDate: req.body.investigationCompletionDate,
+                                partType: "B",
+                        };
+                        const checklist1 = await incidentReport.create(obj1);
+                        if (checklist1) {
+                                return res.status(200).send({ status: 200, message: "Incident Report added successfully.", data: { checklist1, checklist } });
+                        }
                 }
         } catch (error) {
                 console.error(error);
