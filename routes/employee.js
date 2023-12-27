@@ -5,6 +5,7 @@ module.exports = (app) => {
         app.post('/api/v1/employee/signin', auth.signin);
         app.get('/api/v1/employee/getProfile', authJwt.verifyToken, auth.getProfile);
         app.get('/api/v1/employee/getPatient', authJwt.verifyToken, auth.getPatient);
+        app.get('/api/v1/employee/getPatientById/:id', authJwt.verifyToken, auth.getPatientById);
         app.put('/api/v1/employee/updateProfile', authJwt.verifyToken, upload.single('image'), auth.updateProfile);
         app.post('/api/v1/employee/addEmployeeApplication', authJwt.verifyToken, auth.addEmployeeApplication);
         app.get('/api/v1/employee/viewEmployeeApplication', authJwt.verifyToken, auth.viewEmployeeApplication);
@@ -127,6 +128,20 @@ module.exports = (app) => {
         app.post('/api/v1/employee/createIncidentReportPartA', authJwt.verifyToken, auth.createIncidentReportPartA);
         app.post('/api/v1/employee/createIncidentReportPartB', authJwt.verifyToken, auth.createIncidentReportPartB);
         app.get('/api/v1/employee/getIncidentReportById/:id', authJwt.verifyToken, auth.getIncidentReportById);
+        app.put('/api/v1/employee/editIncidentReportPartA/:id', authJwt.verifyToken, auth.editIncidentReportPartA);
+        app.put('/api/v1/employee/editIncidentReportPartB/:id', authJwt.verifyToken, auth.editIncidentReportPartB);
         app.get('/api/v1/employee/getAllIncidentReport', authJwt.verifyToken, auth.getAllIncidentReport);
         app.delete('/api/v1/employee/deleteIncidentReport/:id', authJwt.verifyToken, auth.deleteIncidentReport);
+        app.post('/api/v1/employee/createContactNote', authJwt.verifyToken, auth.createContactNote);
+        app.get('/api/v1/employee/getContactNoteById/:id', authJwt.verifyToken, auth.getContactNoteById);
+        app.put('/api/v1/employee/editContactNoteById/:id', authJwt.verifyToken, auth.editContactNoteById);
+        app.get('/api/v1/employee/getAllContactNote', authJwt.verifyToken, auth.getAllContactNote);
+        app.delete('/api/v1/employee/deleteContactNote/:id', authJwt.verifyToken, auth.deleteContactNote);
+        app.post('/api/v1/employee/createUploadDocument', authJwt.verifyToken, upload.single('file'), auth.createUploadDocument);
+        app.get('/api/v1/employee/getUploadDocumentById/:id', authJwt.verifyToken, auth.getUploadDocumentById);
+        app.get('/api/v1/employee/getAllUploadDocument', authJwt.verifyToken, auth.getAllUploadDocument);
+        app.delete('/api/v1/employee/deleteUploadDocument/:id', authJwt.verifyToken, auth.deleteUploadDocument);
+        app.post('/api/v1/employee/createAppointment', authJwt.verifyToken, auth.createAppointment);
+        app.get('/api/v1/employee/getAllUpcomingAppointments', authJwt.verifyToken, auth.getAllUpcomingAppointments);
+        app.get('/api/v1/employee/getAllPastAppointments', authJwt.verifyToken, auth.getAllPastAppointments);
 }

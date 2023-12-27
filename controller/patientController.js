@@ -99,6 +99,7 @@ exports.createAppointment = async (req, res) => {
                         date: appointmentDate,
                         time: appointmentTime,
                         patientId: req.user._id,
+                        employeeId: req.user.employeeId,
                         adminId: req.user.adminId,
                 }
                 let findAppointment = await appointment.create(obj);

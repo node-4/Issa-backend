@@ -6,6 +6,7 @@ const AdminTracking = require('../model/Tracking/adminTracking');
 const admitDetail = require('../model/admitDetail');
 const task = require('../model/task');
 const reciept = require('../model/reciept');
+const appointment = require('../model/appointment');
 const firstAidChecklist = require('../model/Notes/firstAidChecklist');
 const fireEquipementMonitoring = require('../model/Notes/fireEquipementMonitoring');
 const evacuationAndFireDrill = require('../model/Notes/evacuationandFireDrill');
@@ -1108,5 +1109,30 @@ exports.getPatientVitalsByPatientId = async (req, res) => {
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message });
+        }
+};
+exports.assignPatientToEmployee = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Admin" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user2 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!user2) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                } else {
+                        const user3 = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
+                        if (!user3) {
+                                return res.status(404).send({ status: 404, message: "Employee not found", data: {} });
+                        } else {
+                                let update = await User.findOneAndUpdate({ _id: user2._id }, { $set: { employeeId: user3._id } }, { new: true });
+                                if (update) {
+                                        return res.status(200).send({ status: 200, message: "Patient assigned to employee get successfully.", data: update })
+                                }
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };

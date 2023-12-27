@@ -11,6 +11,10 @@ const userSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "user",
         },
+        employeeId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
         fullName: {
                 type: String
         },
