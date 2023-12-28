@@ -22,6 +22,8 @@ const notes = require('../model/Notes/notes');
 const package = require('../model/package');
 const appointment = require('../model/appointment');
 const patientTracking = require('../model/Tracking/patientTracking');
+const medicationEmployee = require('../model/Medication/employeeMedication/medicationEmployee');
+const patientMedication = require('../model/Medication/patientMedication/patientMedication');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -125,5 +127,22 @@ exports.getAllPatientTracking = async (req, res) => {
                 }
         } catch (error) {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllPatientMedication = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await patientMedication.find({ patientId: user._id }).sort({ createdAt: -1 })
+                if (filteredTasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No PatientMedication found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "PatientMedication found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };

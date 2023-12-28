@@ -28,6 +28,10 @@ const timeOffRequest = require('../model/timeOffRequest/timeOffrequest');
 const employeePerformanceReview = require('../model/EmployeePerformanceReview/employeePerformanceReview');
 const patientTracking = require('../model/Tracking/patientTracking');
 const patientVitals = require('../model/patientVitals/patientVitals');
+const medicationEmployee = require('../model/Medication/employeeMedication/medicationEmployee');
+const patientMedication = require('../model/Medication/patientMedication/patientMedication');
+const offerLetter = require('../model/EmployeeInformation/offerLetter');
+const jobDescription = require('../model/EmployeeInformation/jobDescription');
 
 exports.signin = async (req, res) => {
         try {
@@ -1134,5 +1138,471 @@ exports.assignPatientToEmployee = async (req, res) => {
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.addMedicationEmployee = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                let findData = await medicationEmployee.findOne({ adminId: user._id, name: req.body.name });
+                if (findData) {
+                        return res.status(409).send({ status: 409, message: "Medication employee already exit.", data: {} });
+                } else {
+                        req.body.adminId = user._id;
+                        const checklist = await medicationEmployee.create(req.body);
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Medication employee added successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getMedicationEmployeeById = async (req, res) => {
+        try {
+                const user1 = await medicationEmployee.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Medication employee not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get Medication employee fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.updateMedicationEmployee = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await medicationEmployee.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Medication employee  not found", data: {} });
+                } else {
+                        let obj = {
+                                adminId: user._id,
+                                name: req.body.name || user1.name,
+                                instruction: req.body.instruction || user1.instruction,
+                        }
+                        let update = await medicationEmployee.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "Medication employee update successfully.", data: update })
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteMedicationEmployee = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found", data: {} });
+                }
+                const user1 = await medicationEmployee.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Medication employee not found", data: {} });
+                } else {
+                        await medicationEmployee.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Medication employee delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllMedicationEmployee = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const tasks = await medicationEmployee.find({ adminId: user._id }).sort({ createdAt: -1 })
+                if (tasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No Medication employee found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Medication employee found successfully.", data: tasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addInstructionInMedicationEmployee = async (req, res) => {
+        try {
+                const { instruction } = req.body;
+                let findBanner = await medicationEmployee.findOne({ _id: req.params.id });
+                if (findBanner) {
+                        let data = {
+                                instruction: instruction,
+                        }
+                        const newCategory = await medicationEmployee.findByIdAndUpdate({ _id: findBanner._id }, { $push: { instruction: data } }, { new: true });
+                        return res.status(200).json({ status: 200, message: 'medication Employee update successfully', data: newCategory });
+                } else {
+                        return res.status(200).json({ status: 200, message: 'medication Employee not found.', data: newCategory });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).json({ error: 'Failed to create medication Employee' });
+        }
+};
+exports.deleteInstructionInMedicationEmployee = async (req, res) => {
+        try {
+                let findCart = await medicationEmployee.findOne({ _id: req.params.id });
+                if (findCart) {
+                        for (let i = 0; i < findCart.instruction.length; i++) {
+                                if (findCart.instruction.length > 1) {
+                                        if (((findCart.instruction[i]._id).toString() == req.params.instructionId) == true) {
+                                                let updateCart = await medicationEmployee.findByIdAndUpdate({ _id: findCart._id, 'instruction._id': req.params.instructionId }, {
+                                                        $pull: {
+                                                                'instruction':
+                                                                {
+                                                                        _id: req.params.instructionId,
+                                                                        instruction: findCart.instruction[i].instruction,
+                                                                }
+                                                        }
+                                                }, { new: true })
+                                                if (updateCart) {
+                                                        return res.status(200).send({ message: "Instruction delete from medication Employee.", data: updateCart, });
+                                                }
+                                        }
+                                } else {
+                                        return res.status(200).send({ status: 200, message: "No Data Found ", data: [] });
+                                }
+                        }
+                } else {
+                        return res.status(200).send({ status: 200, message: "No Data Found ", cart: [] });
+                }
+
+        } catch (error) {
+                console.log("353====================>", error)
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.createPatientMedication = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found! Not registered.", data: {} });
+                } else {
+                        const user2 = await patientMedication.findOne({ _id: req.body.patientId });
+                        if (user2) {
+                                let uploadDate = new Date(), documentType, size, document;
+                                let getDate = new Date();
+                                let options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true };
+                                let formattedDate = getDate.toLocaleDateString('en-IN', options);
+                                uploadDate = formattedDate;
+                                if (req.file) {
+                                        const fullMimeType = req.file.mimetype;
+                                        documentType = fullMimeType.startsWith('application/') ? fullMimeType.substring(12) : fullMimeType;
+                                        if (req.file.size < 1024 * 1024) {
+                                                size = (req.file.size / 1024).toFixed(2) + ' KB';
+                                        } else {
+                                                size = (req.file.size / (1024 * 1024)).toFixed(2) + ' MB';
+                                        }
+                                        document = req.file.path;
+                                }
+                                let obj = {
+                                        patientId: user2.patientId,
+                                        employeeId: user2.employeeId,
+                                        adminId: user2.adminId,
+                                        uploadDate: uploadDate,
+                                        documentType: documentType,
+                                        document: document,
+                                        size: size,
+                                };
+                                const userCreate = await patientMedication.findByIdAndUpdate({ _id: user2._id }, { $set: obj }, { new: true });
+                                return res.status(200).send({ status: 200, message: "PatientMedication added successfully", data: userCreate, });
+                        } else {
+                                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                                if (!user1) {
+                                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                                }
+                                let uploadDate = new Date(), documentType, size, document;
+                                let getDate = new Date();
+                                let options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true };
+                                let formattedDate = getDate.toLocaleDateString('en-IN', options);
+                                uploadDate = formattedDate;
+                                if (req.file) {
+                                        const fullMimeType = req.file.mimetype;
+                                        documentType = fullMimeType.startsWith('application/') ? fullMimeType.substring(12) : fullMimeType;
+                                        if (req.file.size < 1024 * 1024) {
+                                                size = (req.file.size / 1024).toFixed(2) + ' KB';
+                                        } else {
+                                                size = (req.file.size / (1024 * 1024)).toFixed(2) + ' MB';
+                                        }
+                                        document = req.file.path;
+                                }
+                                let obj = {
+                                        patientId: user1._id,
+                                        employeeId: user1.employeeId,
+                                        adminId: user._id,
+                                        uploadDate: uploadDate,
+                                        documentType: documentType,
+                                        document: document,
+                                        size: size,
+                                };
+                                const userCreate = await patientMedication.create(obj);
+                                return res.status(200).send({ status: 200, message: "PatientMedication added successfully", data: userCreate, });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {}, });
+        }
+};
+exports.getPatientMedicationById = async (req, res) => {
+        try {
+                const user1 = await patientMedication.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "PatientMedication not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get PatientMedication fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deletePatientMedication = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await patientMedication.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "PatientMedication not found", data: {} });
+                } else {
+                        await patientMedication.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "PatientMedication delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllPatientMedication = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await patientMedication.find({ adminId: user._id }).sort({ createdAt: -1 })
+                if (filteredTasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No PatientMedication found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "PatientMedication found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.addOfferLetter = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                } else {
+                        const user1 = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
+                        if (!user1) {
+                                return res.status(404).send({ status: 404, message: "Employee not found.", data: {} });
+                        } else {
+                                let findData = await offerLetter.findOne({ employeeId: user1._id, adminId: user1.adminId });
+                                if (findData) {
+                                        let obj = {
+                                                adminId: user1.adminId,
+                                                employeeId: user1._id,
+                                                employeeName: req.body.employeeName || findData.employeeName,
+                                                companyName: req.body.companyName || findData.companyName,
+                                                positionOffered: req.body.positionOffered || findData.positionOffered,
+                                                startingPay: req.body.startingPay || findData.startingPay,
+                                                startDate: req.body.startDate || findData.startDate,
+                                                offerDate: req.body.offerDate || findData.offerDate,
+                                                administratorsName: req.body.administratorsName || findData.administratorsName,
+                                                administratorsSignature: req.body.administratorsSignature || findData.administratorsSignature,
+                                                administratorsSignatureDate: req.body.administratorsSignatureDate || findData.administratorsSignatureDate,
+                                        }
+                                        const userCreate = await offerLetter.findByIdAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
+                                        return res.status(200).send({ status: 200, message: "Offer Letter add successfully ", data: userCreate, });
+                                } else {
+                                        let obj = {
+                                                adminId: user1.adminId,
+                                                employeeId: user1._id,
+                                                employeeName: req.body.employeeName,
+                                                companyName: req.body.companyName,
+                                                positionOffered: req.body.positionOffered,
+                                                startingPay: req.body.startingPay,
+                                                startDate: req.body.startDate,
+                                                offerDate: req.body.offerDate,
+                                                administratorsName: req.body.administratorsName,
+                                                administratorsSignature: req.body.administratorsSignature,
+                                                administratorsSignatureDate: req.body.administratorsSignatureDate,
+                                        }
+                                        const userCreate = await offerLetter.create(obj);
+                                        return res.status(200).send({ status: 200, message: "Offer Letter add successfully ", data: userCreate, });
+                                }
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getOfferLetterById = async (req, res) => {
+        try {
+                const user1 = await offerLetter.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "OfferLetter not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get OfferLetter fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteOfferLetter = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await offerLetter.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "OfferLetter not found", data: {} });
+                } else {
+                        await offerLetter.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "OfferLetter delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllOfferLetter = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await offerLetter.find({ adminId: user._id }).sort({ createdAt: -1 })
+                if (filteredTasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No OfferLetter found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "OfferLetter found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+
+exports.addJobDescription = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                } else {
+                        const user1 = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
+                        if (!user1) {
+                                return res.status(404).send({ status: 404, message: "Employee not found.", data: {} });
+                        } else {
+                                let findData = await jobDescription.findOne({ employeeId: user1._id, adminId: user1.adminId });
+                                if (findData) {
+                                        let obj = {
+                                                adminId: user1.adminId,
+                                                employeeId: user1._id,
+                                                jobDescription: req.body.jobDescription || findData.employeeName,
+                                                positionsSupervised: req.body.positionsSupervised || findData.employeeName,
+                                                primaryResponsibilities: req.body.primaryResponsibilities || findData.employeeName,
+                                                coreCompetencies: req.body.coreCompetencies || findData.employeeName,
+                                                minimumQualifications: req.body.minimumQualifications || findData.employeeName,
+                                                minimumDescription: req.body.minimumDescription || findData.employeeName,
+                                                employeeInfoName: req.body.employeeInfoName || findData.employeeName,
+                                                employeeInfoSignature: req.body.employeeInfoSignature || findData.employeeName,
+                                                employeeInfoDate: req.body.employeeInfoDate || findData.employeeName,
+                                                pleaseNote: req.body.pleaseNote || findData.employeeName,
+                                        }
+                                        const userCreate = await jobDescription.findByIdAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
+                                        return res.status(200).send({ status: 200, message: "Offer Letter add successfully ", data: userCreate, });
+                                } else {
+                                        let obj = {
+                                                adminId: user1.adminId,
+                                                employeeId: user1._id,
+                                                jobDescription: req.body.jobDescription,
+                                                positionsSupervised: req.body.positionsSupervised,
+                                                primaryResponsibilities: req.body.primaryResponsibilities,
+                                                coreCompetencies: req.body.coreCompetencies,
+                                                minimumQualifications: req.body.minimumQualifications,
+                                                minimumDescription: req.body.minimumDescription,
+                                                employeeInfoName: req.body.employeeInfoName,
+                                                employeeInfoSignature: req.body.employeeInfoSignature,
+                                                employeeInfoDate: req.body.employeeInfoDate,
+                                                pleaseNote: req.body.pleaseNote,
+                                        }
+                                        const userCreate = await jobDescription.create(obj);
+                                        return res.status(200).send({ status: 200, message: "Offer Letter add successfully ", data: userCreate, });
+                                }
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getJobDescriptionById = async (req, res) => {
+        try {
+                const user1 = await jobDescription.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "JobDescription not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get JobDescription fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteJobDescription = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await jobDescription.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "JobDescription not found", data: {} });
+                } else {
+                        await jobDescription.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "JobDescription delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllJobDescription = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await jobDescription.find({ adminId: user._id }).sort({ createdAt: -1 })
+                if (filteredTasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No JobDescription found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "JobDescription found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };

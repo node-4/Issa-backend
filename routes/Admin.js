@@ -50,4 +50,19 @@ module.exports = (app) => {
         app.get('/api/v1/admin/getAllPatientTracking', authJwt.verifyToken, auth.getAllPatientTracking);
         app.get('/api/v1/admin/getPatientVitalsByPatientId/:patientId', authJwt.verifyToken, auth.getPatientVitalsByPatientId);
         app.post('/api/v1/admin/assignPatientToEmployee', authJwt.verifyToken, auth.assignPatientToEmployee);
+        app.post('/api/v1/admin/addMedicationEmployee', authJwt.verifyToken, auth.addMedicationEmployee);
+        app.get('/api/v1/admin/getMedicationEmployeeById/:id', auth.getMedicationEmployeeById);
+        app.put('/api/v1/admin/updateMedicationEmployee/:id', authJwt.verifyToken, auth.updateMedicationEmployee);
+        app.delete('/api/v1/admin/deleteMedicationEmployee/:id', authJwt.verifyToken, auth.deleteMedicationEmployee);
+        app.get('/api/v1/admin/getAllMedicationEmployee', authJwt.verifyToken, auth.getAllMedicationEmployee);
+        app.put("/api/v1/admin/addInstructionInMedicationEmployee/:id", authJwt.verifyToken, auth.addInstructionInMedicationEmployee);
+        app.delete("/api/v1/admin/deleteInstructionInMedicationEmployee/:id/:instructionId", authJwt.verifyToken, auth.deleteInstructionInMedicationEmployee);
+        app.post('/api/v1/admin/createPatientMedication', authJwt.verifyToken, upload.single('file'), auth.createPatientMedication);
+        app.get('/api/v1/admin/getPatientMedicationById/:id', authJwt.verifyToken, auth.getPatientMedicationById);
+        app.get('/api/v1/admin/getAllPatientMedication', authJwt.verifyToken, auth.getAllPatientMedication);
+        app.delete('/api/v1/admin/deletePatientMedication/:id', authJwt.verifyToken, auth.deletePatientMedication);
+        app.post('/api/v1/admin/addOfferLetter', authJwt.verifyToken, auth.addOfferLetter);
+        app.get('/api/v1/admin/getOfferLetterById/:id', authJwt.verifyToken, auth.getOfferLetterById);
+        app.get('/api/v1/admin/getAllOfferLetter', authJwt.verifyToken, auth.getAllOfferLetter);
+        app.delete('/api/v1/admin/deleteOfferLetter/:id', authJwt.verifyToken, auth.deleteOfferLetter);
 }

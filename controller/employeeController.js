@@ -50,6 +50,13 @@ const staffingNote = require('../model/patientChart/StaffingNote');
 const authorizationForReleaseOfInformation = require('../model/patientChart/authorizationForReleaseOfInformation');
 const contactNote = require('../model/patientChart/contactNote');
 const uploadAnyWordOrPdfDocument = require('../model/patientChart/uploadAnyWordOrPdfDocument');
+const patientMedication = require('../model/Medication/patientMedication/patientMedication');
+const medicationEmployee = require('../model/Medication/employeeMedication/medicationEmployee');
+const personalInformation = require('../model/EmployeeInformation/personalInformation');
+const offerLetter = require('../model/EmployeeInformation/offerLetter');
+const appendix = require('../model/EmployeeInformation/appendix');
+const forms2023 = require('../model/EmployeeInformation/2023Forms');
+const referenceCheck = require('../model/EmployeeInformation/referenceCheck');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -3776,7 +3783,7 @@ exports.getAllUploadDocument = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
-                const filteredTasks = await uploadAnyWordOrPdfDocument.find({ adminId: user._id }).sort({ createdAt: -1 })
+                const filteredTasks = await uploadAnyWordOrPdfDocument.find({ employeeId: user._id }).sort({ createdAt: -1 })
                 if (filteredTasks.length === 0) {
                         return res.status(404).send({ status: 404, message: "No Upload Document found.", data: {} });
                 } else {
@@ -3847,6 +3854,380 @@ exports.getAllPastAppointments = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "No appointment found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "Appointment found successfully.", data: upcomingAppointments });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getAllMedicationEmployee = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const tasks = await medicationEmployee.find({ adminId: user.adminId }).sort({ createdAt: -1 })
+                if (tasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No Medication employee found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Medication employee found successfully.", data: tasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.createPersonalInformation = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                } else {
+                        let findEmployee = await personalInformation.findOne({ employeeId: user._id });
+                        if (!findEmployee) {
+                                req.body.employeeId = user._id;
+                                req.body.adminId = user.adminId;
+                                let newEmployee = await personalInformation.create(req.body);
+                                if (newEmployee) {
+                                        return res.status(200).send({ status: 200, message: "Personal information add successfully.", data: newEmployee });
+                                }
+                        } else {
+                                let obj = {
+                                        employeeId: user._id,
+                                        adminId: user.adminId,
+                                        date: req.body.date || findEmployee.date,
+                                        lastName: req.body.lastName || findEmployee.lastName,
+                                        firstName: req.body.firstName || findEmployee.firstName,
+                                        middleInitial: req.body.middleInitial || findEmployee.middleInitial,
+                                        addressStreet: req.body.addressStreet || findEmployee.address.street,
+                                        addressCity: req.body.addressCity || findEmployee.address.city,
+                                        addressState: req.body.addressState || findEmployee.address.state,
+                                        addressZip: req.body.addressZip || findEmployee.address.zip,
+                                        socSecNo: req.body.socSecNo || findEmployee.socSecNo,
+                                        birthDate: req.body.birthDate || findEmployee.birthDate,
+                                        telephoneHome: req.body.telephoneHome || findEmployee.telephone.home,
+                                        telephonePersonalCell: req.body.telephonePersonalCell || findEmployee.telephone.personalCell,
+                                        telephoneWork: req.body.telephoneWork || findEmployee.telephone.work,
+                                        telephoneBusinessCell: req.body.telephoneBusinessCell || findEmployee.telephone.businessCell,
+                                        dLStateOfIssue: req.body.dLStateOfIssue || findEmployee.driversLicense.stateOfIssue,
+                                        dLNumber: req.body.dLNumber || findEmployee.driversLicense.number,
+                                        dLExpirationDate: req.body.dLExpirationDate || findEmployee.driversLicense.expirationDate,
+                                        businessEmail: req.body.businessEmail || findEmployee.businessEmail,
+                                        personalEmail: req.body.personalEmail || findEmployee.personalEmail,
+                                        emergencyContactName: req.body.emergencyContactName || findEmployee.emergencyContact.name,
+                                        emergencyContactRelationship: req.body.emergencyContactRelationship || findEmployee.emergencyContact.relationship,
+                                        emergencyContactNumber: req.body.emergencyContactNumber || findEmployee.emergencyContact.phone,
+                                        savedSigned: req.body.savedSigned || findEmployee.savedSigned,
+                                };
+                                let update = await personalInformation.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
+                                if (update) {
+                                        return res.status(200).send({ status: 200, message: "Personal information add successfully.", data: update })
+                                }
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getPersonalInformation = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const tasks = await personalInformation.findOne({ employeeId: user._id }).sort({ createdAt: -1 })
+                if (!tasks) {
+                        return res.status(404).send({ status: 404, message: "No Personal information found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Personal information found successfully.", data: tasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.deletePersonalInformation = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const tasks = await personalInformation.findOne({ employeeId: user._id });
+                if (!tasks) {
+                        return res.status(404).send({ status: 404, message: "No Personal information found.", data: {} });
+                }
+                await personalInformation.findOneAndDelete({ employeeId: user._id })
+                return res.status(200).send({ status: 200, message: "Personal Information delete successfully.", data: {} });
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllOfferLetter = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await offerLetter.findOne({ employeeId: user._id }).sort({ createdAt: -1 })
+                if (!filteredTasks) {
+                        return res.status(404).send({ status: 404, message: "No OfferLetter found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "OfferLetter found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.createAppendix = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                } else {
+                        let findEmployee = await appendix.findOne({ employeeId: user._id });
+                        if (!findEmployee) {
+                                req.body.employeeId = user._id;
+                                req.body.adminId = user.adminId;
+                                let newEmployee = await appendix.create(req.body);
+                                if (newEmployee) {
+                                        return res.status(200).send({ status: 200, message: "Appendix add successfully.", data: newEmployee });
+                                }
+                        } else {
+                                let obj = {
+                                        employeeId: user._id,
+                                        adminId: user.adminId,
+                                        name: req.body.name || findEmployee.name,
+                                        date: req.body.date || findEmployee.date,
+                                        preferredContactInformation: req.body.preferredContactInformation || findEmployee.preferredContactInformation,
+                                        positionHiredFor: req.body.positionHiredFor || findEmployee.positionHiredFor,
+                                        startDate: req.body.startDate || findEmployee.startDate,
+                                        spentMoreThan30DaysAbroad: req.body.spentMoreThan30DaysAbroad || findEmployee.spentMoreThan30DaysAbroad,
+                                        closeContactWithActiveTB: req.body.closeContactWithActiveTB || findEmployee.closeContactWithActiveTB,
+                                        symptomsFever: req.body.symptomsFever || findEmployee.symptomsFever,
+                                        symptomsCough: req.body.symptomsCough || findEmployee.symptomsCough,
+                                        symptomsBloodySputum: req.body.symptomsBloodySputum || findEmployee.symptomsBloodySputum,
+                                        symptomsUnintendedWeightLoss: req.body.symptomsUnintendedWeightLoss || findEmployee.symptomsUnintendedWeightLoss,
+                                        symptomsNightSweats: req.body.symptomsNightSweats || findEmployee.symptomsNightSweats,
+                                        symptomsUnexplainedFatigue: req.body.symptomsUnexplainedFatigue || findEmployee.symptomsUnexplainedFatigue,
+                                        diagnosedWithActiveTB: req.body.diagnosedWithActiveTB || findEmployee.diagnosedWithActiveTB,
+                                        diagnosedWithLatentTB: req.body.diagnosedWithLatentTB || findEmployee.diagnosedWithLatentTB,
+                                        tbTreatmentHistoryYear: req.body.tbTreatmentHistoryYear || findEmployee.tbTreatmentHistoryYear,
+                                        tbTreatmentHistoryMedication: req.body.tbTreatmentHistoryMedication || findEmployee.tbTreatmentHistoryMedication,
+                                        tbTreatmentHistoryDuration: req.body.tbTreatmentHistoryDuration || findEmployee.tbTreatmentHistoryDuration,
+                                        tbTreatmentHistoryCompletedTreatment: req.body.tbTreatmentHistoryCompletedTreatment || findEmployee.tbTreatmentHistoryCompletedTreatment,
+                                        weakenedImmuneSystem: req.body.weakenedImmuneSystem || findEmployee.weakenedImmuneSystem,
+                                        reviewerSignature: req.body.reviewerSignature || findEmployee.reviewerSignature,
+                                        reviewDate: req.body.reviewDate || findEmployee.reviewDate,
+                                };
+                                let update = await appendix.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
+                                if (update) {
+                                        return res.status(200).send({ status: 200, message: "Appendix add successfully.", data: update })
+                                }
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAppendix = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const tasks = await appendix.findOne({ employeeId: user._id })
+                if (!tasks) {
+                        return res.status(404).send({ status: 404, message: "No Appendix found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Appendix found successfully.", data: tasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.deleteAppendix = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const tasks = await appendix.findOne({ employeeId: user._id })
+                if (!tasks) {
+                        return res.status(404).send({ status: 404, message: "No Appendix found.", data: {} });
+                }
+                await appendix.findOneAndDelete({ employeeId: user._id })
+                return res.status(200).send({ status: 200, message: "Appendix delete successfully.", data: {} });
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createForms2023 = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                } else {
+                        let findEmployee = await forms2023.findOne({ employeeId: user._id });
+                        if (!findEmployee) {
+                                req.body.employeeId = user._id;
+                                req.body.adminId = user.adminId;
+                                let newEmployee = await forms2023.create(req.body);
+                                if (newEmployee) {
+                                        return res.status(200).send({ status: 200, message: "Forms2023 add successfully.", data: newEmployee });
+                                }
+                        } else {
+                                let obj = {
+                                        employeeId: user._id,
+                                        adminId: user.adminId,
+                                        fullName: req.body.fullName || findEmployee.fullName,
+                                        socialSecurityNumber: req.body.socialSecurityNumber || findEmployee.socialSecurityNumber,
+                                        numberAndStreet: req.body.numberAndStreet || findEmployee.numberAndStreet,
+                                        cityOrTown: req.body.cityOrTown || findEmployee.cityOrTown,
+                                        state: req.body.state || findEmployee.state,
+                                        zipCode: req.body.zipCode || findEmployee.zipCode,
+                                        withholdingOption: req.body.withholdingOption || findEmployee.withholdingOption,
+                                        signature: req.body.signature || findEmployee.signature,
+                                        date: req.body.date || findEmployee.date,
+                                };
+                                let update = await forms2023.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
+                                if (update) {
+                                        return res.status(200).send({ status: 200, message: "Forms2023 add successfully.", data: update })
+                                }
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getForms2023 = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const tasks = await forms2023.findOne({ employeeId: user._id }).sort({ createdAt: -1 })
+                if (!tasks) {
+                        return res.status(404).send({ status: 404, message: "No Forms2023 found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Forms2023 found successfully.", data: tasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.deleteForms2023 = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const tasks = await forms2023.findOne({ employeeId: user._id });
+                if (!tasks) {
+                        return res.status(404).send({ status: 404, message: "No Forms2023 found.", data: {} });
+                }
+                await forms2023.findOneAndDelete({ employeeId: user._id })
+                return res.status(200).send({ status: 200, message: "Forms2023 delete successfully.", data: {} });
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createReferenceCheck = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                } else {
+                        req.body.employeeId = user._id;
+                        req.body.adminId = user.adminId;
+                        let newEmployee = await referenceCheck.create(req.body);
+                        if (newEmployee) {
+                                return res.status(200).send({ status: 200, message: "Reference check add successfully.", data: newEmployee });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getReferenceCheckById = async (req, res) => {
+        try {
+                const user1 = await referenceCheck.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Reference check not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get Reference check fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.editReferenceCheckById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await referenceCheck.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Reference check not found", data: {} });
+                } else {
+                        let obj = {
+                                employeeId: user._id,
+                                adminId: user.adminId,
+                                date: req.body.date || user1.date,
+                                referenceName: req.body.referenceName || user1.referenceName,
+                                referenceRecommendation: req.body.referenceRecommendation || user1.referenceRecommendation,
+                                savedSigned: req.body.savedSigned || user1.savedSigned,
+                        };
+                        let update = await referenceCheck.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "Reference check update.", data: update });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteReferenceCheck = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await referenceCheck.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Reference check not found", data: {} });
+                } else {
+                        await referenceCheck.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Reference check delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getReferenceCheck = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const tasks = await referenceCheck.find({ employeeId: user._id }).sort({ createdAt: -1 })
+                if (tasks.length == 0) {
+                        return res.status(404).send({ status: 404, message: "No Reference check found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Reference check found successfully.", data: tasks });
                 }
         } catch (error) {
                 console.error(error);

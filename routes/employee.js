@@ -144,4 +144,20 @@ module.exports = (app) => {
         app.post('/api/v1/employee/createAppointment', authJwt.verifyToken, auth.createAppointment);
         app.get('/api/v1/employee/getAllUpcomingAppointments', authJwt.verifyToken, auth.getAllUpcomingAppointments);
         app.get('/api/v1/employee/getAllPastAppointments', authJwt.verifyToken, auth.getAllPastAppointments);
+        app.get('/api/v1/employee/getAllMedicationEmployee', authJwt.verifyToken, auth.getAllMedicationEmployee);
+        app.post('/api/v1/employee/createPersonalInformation', authJwt.verifyToken, auth.createPersonalInformation);
+        app.get('/api/v1/employee/getPersonalInformation', authJwt.verifyToken, auth.getPersonalInformation);
+        app.delete('/api/v1/employee/deletePersonalInformation', authJwt.verifyToken, auth.deletePersonalInformation);
+        app.get('/api/v1/employee/getMyOfferLetter', authJwt.verifyToken, auth.getAllOfferLetter);
+        app.post('/api/v1/employee/createAppendix', authJwt.verifyToken, auth.createAppendix);
+        app.get('/api/v1/employee/getAppendix', authJwt.verifyToken, auth.getAppendix);
+        app.delete('/api/v1/employee/deleteAppendix', authJwt.verifyToken, auth.deleteAppendix);
+        app.post('/api/v1/employee/createForms2023', authJwt.verifyToken, auth.createForms2023);
+        app.get('/api/v1/employee/getForms2023', authJwt.verifyToken, auth.getForms2023);
+        app.delete('/api/v1/employee/deleteForms2023', authJwt.verifyToken, auth.deleteForms2023);
+        app.post('/api/v1/employee/createReferenceCheck', authJwt.verifyToken, auth.createReferenceCheck);
+        app.get('/api/v1/employee/getReferenceCheckById/:id', authJwt.verifyToken, auth.getReferenceCheckById);
+        app.put('/api/v1/employee/editReferenceCheckById/:id', authJwt.verifyToken, auth.editReferenceCheckById);
+        app.get('/api/v1/employee/getReferenceCheck', authJwt.verifyToken, auth.getReferenceCheck);
+        app.delete('/api/v1/employee/deleteReferenceCheck/:id', authJwt.verifyToken, auth.deleteReferenceCheck);
 }
