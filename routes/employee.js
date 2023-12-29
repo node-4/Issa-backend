@@ -179,4 +179,7 @@ module.exports = (app) => {
         app.post('/api/v1/employee/createFW4', authJwt.verifyToken, auth.createFW4);
         app.get('/api/v1/employee/getFW4', authJwt.verifyToken, auth.getFW4);
         app.delete('/api/v1/employee/deleteFW4', authJwt.verifyToken, auth.deleteFW4);
+        app.post('/api/v1/employee/createLrc1031A', authJwt.verifyToken, auth.createLrc1031A);
+        app.get('/api/v1/employee/getLrc1031A', authJwt.verifyToken, auth.getLrc1031A);
+        app.delete('/api/v1/employee/deleteLrc1031A', authJwt.verifyToken, auth.deleteLrc1031A);
 }

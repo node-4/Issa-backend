@@ -52,17 +52,18 @@ const contactNote = require('../model/patientChart/contactNote');
 const uploadAnyWordOrPdfDocument = require('../model/patientChart/uploadAnyWordOrPdfDocument');
 const patientMedication = require('../model/Medication/patientMedication/patientMedication');
 const medicationEmployee = require('../model/Medication/employeeMedication/medicationEmployee');
-const personalInformation = require('../model/EmployeeInformation/personalInformation');
-const offerLetter = require('../model/EmployeeInformation/offerLetter');
-const appendix = require('../model/EmployeeInformation/appendix');
 const forms2023 = require('../model/EmployeeInformation/2023Forms');
-const referenceCheck = require('../model/EmployeeInformation/referenceCheck');
-const jobDescription = require('../model/EmployeeInformation/jobDescription');
+const appendix = require('../model/EmployeeInformation/appendix');
 const apsConsent = require('../model/EmployeeInformation/apsConsent');
-const termination = require('../model/EmployeeInformation/termination');
+const fw4 = require('../model/EmployeeInformation/fw4');
 const fw9 = require('../model/EmployeeInformation/fw9');
 const i9 = require('../model/EmployeeInformation/i9');
-const fw4 = require('../model/EmployeeInformation/fw4');
+const jobDescription = require('../model/EmployeeInformation/jobDescription');
+const lrc1031A = require('../model/EmployeeInformation/lrc1031A');
+const offerLetter = require('../model/EmployeeInformation/offerLetter');
+const personalInformation = require('../model/EmployeeInformation/personalInformation');
+const referenceCheck = require('../model/EmployeeInformation/referenceCheck');
+const termination = require('../model/EmployeeInformation/termination');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -4745,6 +4746,95 @@ exports.deleteFW4 = async (req, res) => {
                 }
                 await fw4.findOneAndDelete({ employeeId: user._id })
                 return res.status(200).send({ status: 200, message: "FW4 delete successfully.", data: {} });
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createLrc1031A = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                } else {
+                        let findEmployee = await lrc1031A.findOne({ employeeId: user._id });
+                        if (!findEmployee) {
+                                req.body.employeeId = user._id;
+                                req.body.adminId = user.adminId;
+                                let newEmployee = await lrc1031A.create(req.body);
+                                if (newEmployee) {
+                                        return res.status(200).send({ status: 200, message: "Lrc1031A add successfully.", data: newEmployee });
+                                }
+                        } else {
+                                let obj = {
+                                        adminId: user._id,
+                                        employeeId: user.adminId,
+                                        firstName: req.body.firstName || findEmployee.firstName,
+                                        lastName: req.body.lastName || findEmployee.lastName,
+                                        middleName: req.body.middleName || findEmployee.middleName,
+                                        birthDate: req.body.birthDate || findEmployee.birthDate,
+                                        address: req.body.address || findEmployee.address,
+                                        street: req.body.street || findEmployee.street,
+                                        apartNumber: req.body.apartNumber || findEmployee.apartNumber,
+                                        city: req.body.city || findEmployee.city,
+                                        state: req.body.state || findEmployee.state,
+                                        zipCode: req.body.zipCode || findEmployee.zipCode,
+                                        checkDirected: req.body.checkDirected || findEmployee.checkDirected,
+                                        checkDirectedData: req.body.checkDirectedData || findEmployee.checkDirectedData,
+                                        checkAlso: req.body.checkAlso || findEmployee.checkAlso,
+                                        isCertified: req.body.isCertified || findEmployee.isCertified,
+                                        certificationSignature: req.body.certificationSignature || findEmployee.certificationSignature,
+                                        certificationDate: req.body.certificationDate || findEmployee.certificationDate,
+                                        notaryPublicCountryOf: req.body.notaryPublicCountryOf || findEmployee.notaryPublicCountryOf,
+                                        notaryPublicDate: req.body.notaryPublicDate || findEmployee.notaryPublicDate,
+                                        notaryPublicMonth: req.body.notaryPublicMonth || findEmployee.notaryPublicMonth,
+                                        notaryPublicYear: req.body.notaryPublicYear || findEmployee.notaryPublicYear,
+                                        notaryPublicCommissionExpiration: req.body.notaryPublicCommissionExpiration || findEmployee.notaryPublicCommissionExpiration,
+                                        notaryPublicSignature: req.body.notaryPublicSignature || findEmployee.notaryPublicSignature,
+                                        nonAppealableOffenses: req.body.nonAppealableOffenses || findEmployee.nonAppealableOffenses,
+                                        appealable5YearsAfterConviction: req.body.appealable5YearsAfterConviction || findEmployee.appealable5YearsAfterConviction,
+                                        appealableOffensesn: req.body.appealableOffensesn || findEmployee.appealableOffensesn,
+                                    };                                    
+                                let update = await lrc1031A.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
+                                if (update) {
+                                        return res.status(200).send({ status: 200, message: "Lrc1031A add successfully.", data: update })
+                                }
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getLrc1031A = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const tasks = await lrc1031A.findOne({ employeeId: user._id })
+                if (!tasks) {
+                        return res.status(404).send({ status: 404, message: "No lrc1031A found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "lrc1031A found successfully.", data: tasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.deleteLrc1031A = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const tasks = await lrc1031A.findOne({ employeeId: user._id })
+                if (!tasks) {
+                        return res.status(404).send({ status: 404, message: "No lrc1031A found.", data: {} });
+                }
+                await lrc1031A.findOneAndDelete({ employeeId: user._id })
+                return res.status(200).send({ status: 200, message: "lrc1031A delete successfully.", data: {} });
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
