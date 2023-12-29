@@ -160,4 +160,23 @@ module.exports = (app) => {
         app.put('/api/v1/employee/editReferenceCheckById/:id', authJwt.verifyToken, auth.editReferenceCheckById);
         app.get('/api/v1/employee/getReferenceCheck', authJwt.verifyToken, auth.getReferenceCheck);
         app.delete('/api/v1/employee/deleteReferenceCheck/:id', authJwt.verifyToken, auth.deleteReferenceCheck);
+        app.get('/api/v1/employee/getMyJobDescription', authJwt.verifyToken, auth.getJobDescription);
+        app.post('/api/v1/employee/updateJobDescription', authJwt.verifyToken, auth.updateJobDescription);
+        app.post('/api/v1/employee/createApsConsent', authJwt.verifyToken, auth.createApsConsent);
+        app.get('/api/v1/employee/getApsConsentById/:id', authJwt.verifyToken, auth.getApsConsentById);
+        app.put('/api/v1/employee/editApsConsentById/:id', authJwt.verifyToken, auth.editApsConsentById);
+        app.get('/api/v1/employee/getAllApsConsent', authJwt.verifyToken, auth.getAllApsConsent);
+        app.delete('/api/v1/employee/deleteApsConsent/:id', authJwt.verifyToken, auth.deleteApsConsent);
+        app.post('/api/v1/employee/createTermination', authJwt.verifyToken, auth.createTermination);
+        app.get('/api/v1/employee/getTermination', authJwt.verifyToken, auth.getTermination);
+        app.delete('/api/v1/employee/deleteTermination', authJwt.verifyToken, auth.deleteTermination);
+        app.post('/api/v1/employee/createFw9', authJwt.verifyToken, auth.createFw9);
+        app.get('/api/v1/employee/getFw9', authJwt.verifyToken, auth.getFw9);
+        app.delete('/api/v1/employee/deleteFw9', authJwt.verifyToken, auth.deleteFw9);
+        app.post('/api/v1/employee/createI9', authJwt.verifyToken, auth.createI9);
+        app.get('/api/v1/employee/getI9', authJwt.verifyToken, auth.getI9);
+        app.delete('/api/v1/employee/deleteI9', authJwt.verifyToken, auth.deleteI9);
+        app.post('/api/v1/employee/createFW4', authJwt.verifyToken, auth.createFW4);
+        app.get('/api/v1/employee/getFW4', authJwt.verifyToken, auth.getFW4);
+        app.delete('/api/v1/employee/deleteFW4', authJwt.verifyToken, auth.deleteFW4);
 }

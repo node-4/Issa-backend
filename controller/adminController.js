@@ -1504,7 +1504,6 @@ exports.getAllOfferLetter = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
-
 exports.addJobDescription = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -1520,16 +1519,14 @@ exports.addJobDescription = async (req, res) => {
                                         let obj = {
                                                 adminId: user1.adminId,
                                                 employeeId: user1._id,
-                                                jobDescription: req.body.jobDescription || findData.employeeName,
-                                                positionsSupervised: req.body.positionsSupervised || findData.employeeName,
-                                                primaryResponsibilities: req.body.primaryResponsibilities || findData.employeeName,
-                                                coreCompetencies: req.body.coreCompetencies || findData.employeeName,
-                                                minimumQualifications: req.body.minimumQualifications || findData.employeeName,
-                                                minimumDescription: req.body.minimumDescription || findData.employeeName,
-                                                employeeInfoName: req.body.employeeInfoName || findData.employeeName,
-                                                employeeInfoSignature: req.body.employeeInfoSignature || findData.employeeName,
-                                                employeeInfoDate: req.body.employeeInfoDate || findData.employeeName,
-                                                pleaseNote: req.body.pleaseNote || findData.employeeName,
+                                                jobDescription: req.body.jobDescription || findData.jobDescription,
+                                                positionsSupervised: req.body.positionsSupervised || findData.positionsSupervised,
+                                                primaryResponsibilities: req.body.primaryResponsibilities || findData.primaryResponsibilities,
+                                                coreCompetencies: req.body.coreCompetencies || findData.coreCompetencies,
+                                                minimumQualifications: req.body.minimumQualifications || findData.minimumQualifications,
+                                                minimumDescription: req.body.minimumDescription || findData.minimumDescription,
+                                                employeeInfoName: req.body.employeeInfoName || findData.employeeInfoName,
+                                                pleaseNote: req.body.pleaseNote || findData.pleaseNote,
                                         }
                                         const userCreate = await jobDescription.findByIdAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
                                         return res.status(200).send({ status: 200, message: "Offer Letter add successfully ", data: userCreate, });
@@ -1544,8 +1541,6 @@ exports.addJobDescription = async (req, res) => {
                                                 minimumQualifications: req.body.minimumQualifications,
                                                 minimumDescription: req.body.minimumDescription,
                                                 employeeInfoName: req.body.employeeInfoName,
-                                                employeeInfoSignature: req.body.employeeInfoSignature,
-                                                employeeInfoDate: req.body.employeeInfoDate,
                                                 pleaseNote: req.body.pleaseNote,
                                         }
                                         const userCreate = await jobDescription.create(obj);

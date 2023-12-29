@@ -65,4 +65,8 @@ module.exports = (app) => {
         app.get('/api/v1/admin/getOfferLetterById/:id', authJwt.verifyToken, auth.getOfferLetterById);
         app.get('/api/v1/admin/getAllOfferLetter', authJwt.verifyToken, auth.getAllOfferLetter);
         app.delete('/api/v1/admin/deleteOfferLetter/:id', authJwt.verifyToken, auth.deleteOfferLetter);
+        app.post('/api/v1/admin/addJobDescription', authJwt.verifyToken, auth.addJobDescription);
+        app.get('/api/v1/admin/getJobDescriptionById/:id', authJwt.verifyToken, auth.getJobDescriptionById);
+        app.get('/api/v1/admin/getAllJobDescription', authJwt.verifyToken, auth.getAllJobDescription);
+        app.delete('/api/v1/admin/deleteJobDescription/:id', authJwt.verifyToken, auth.deleteJobDescription);
 }
