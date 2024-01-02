@@ -58,7 +58,7 @@ module.exports = (app) => {
         app.get("/api/v1/Ebook/getIdEbook/:id", auth.getIdEbook);
         app.put("/api/v1/Ebook/updateEbook/:id", [authJwt.verifyToken], upload.single('image'), auth.updateEbook);
         app.delete("/api/v1/Ebook/deleteEbook/:id", [authJwt.verifyToken], auth.deleteEbook);
-        app.post('/api/v1/DemoRequest/createDemoRequest', authJwt.verifyToken, auth.createDemoRequest);
+        app.post('/api/v1/DemoRequest/createDemoRequest',  auth.createDemoRequest);
         app.get('/api/v1/DemoRequest/getDemoRequest', authJwt.verifyToken, auth.getDemoRequest);
         app.put('/api/v1/DemoRequest/demoRequestClose/:id', authJwt.verifyToken, auth.demoRequestClose);
         app.get('/api/v1/DemoRequest/getIdDemoRequest/:id', authJwt.verifyToken, auth.getIdDemoRequest);
