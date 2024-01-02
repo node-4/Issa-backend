@@ -9,6 +9,11 @@ const blogSchema = mongoose.Schema({
         description: {
                 type: String,
         },
+        descriptionArray: [{
+                description: {
+                        type: String,
+                }
+        }],
         image: {
                 type: String
         },

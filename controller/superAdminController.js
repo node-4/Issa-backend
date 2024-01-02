@@ -1582,7 +1582,7 @@ exports.createBottomBanner = async (req, res) => {
         try {
                 const findData = await banner.findOne({ type: "BOTTOM" })
                 if (findData) {
-                        let image;
+                        let image, descriptionArray = [];
                         if (req.file.path) {
                                 image = req.file.path
                         }
@@ -1591,20 +1591,27 @@ exports.createBottomBanner = async (req, res) => {
                                 title: req.body.title || findData.title,
                                 image: image || findData.image,
                                 description: req.body.description || findData.description,
+                                descriptionArray: descriptionArray || findData.descriptionArray,
                                 type: findData.type,
                         };
                         const Banner = await banner.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true })
                         return res.status(200).json({ message: "Banner update successfully.", status: 200, data: Banner });
                 } else {
-                        let image;
+                        let image, descriptionArray = []
                         if (req.file.path) {
                                 image = req.file.path
+                        }
+                        if (req.body.descriptionArray.length > 0) {
+                                for (let i = 0; i < req.body.descriptionArray.length; i++) {
+                                        descriptionArray.push({ description: req.body.descriptionArray[i] })
+                                }
                         }
                         const data = {
                                 heading: req.body.heading,
                                 title: req.body.title,
                                 image: image,
                                 description: req.body.description,
+                                descriptionArray: descriptionArray,
                                 type: "BOTTOM",
                         };
                         const Banner = await banner.create(data);
