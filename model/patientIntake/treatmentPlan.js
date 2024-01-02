@@ -7,56 +7,164 @@ const treatmentPlanSchema = new mongoose.Schema({
         care: {
                 physicalServices: { type: Boolean, default: false },
                 behavioralServices: { type: Boolean, default: false },
-                medicationServices: {
-                        administration: { type: Boolean, default: false },
-                        selfAdministration: { type: Boolean, default: false },
-                },
+
+        },
+        medicationServices: {
+                administration: { type: Boolean, default: false },
+                selfAdministration: { type: Boolean, default: false },
         },
         presentingProblems: [String],
-        diagnoses: String,
         mentalStatus: {
-                oriented: { type: Boolean, default: false },
-                disoriented: { type: Boolean, default: false },
-                unstable: { type: Boolean, default: false },
-                other: String,
+                type: String,
+                enum: ['oriented', 'disoriented', 'unstable', 'other']
         },
-        moodLevel: String,
+        moodLevel: {
+                type: String,
+                enum: ['Normal', 'Elevated', 'Depressed', 'Anxious', 'other']
+        },
         adls: {
-                independent: { type: Boolean, default: false },
-                personalCareLevel: String,
+                type: String,
+                enum: ['independent', 'personalCareLevel']
         },
         behavioralHealthServices: {
-                receivesServices: { type: Boolean, default: false },
-                prescribedMedication: { type: Boolean, default: false },
-                followsHouseRules: { type: Boolean, default: false },
+                type: String,
+                enum: ['receivesServices', 'prescribedMedication', 'followsHouseRules']
         },
-        primaryCareProvider: String,
-        psychiatricProvider: String,
-        residentGoals: String,
-        allergies: String,
-        triggers: String,
-        strengths: [String],
-        limitations: String, // Consider removing this section
-        barriers: [String],
+        primaryCareProvider: {
+                type: String,
+        },
+        psychiatricProvider: {
+                type: String,
+        },
+        allergies: {
+                type: String,
+        },
+        triggers: {
+                type: String,
+        },
+        strengths: [{
+                type: String,
+        }],
+        barriers: [{
+                type: String,
+        }],
         riskAssessment: {
-                behavioralSymptoms: [String],
-                physicalSymptoms: [String],
-                cognitiveSymptoms: [String],
-                psychosocialSymptoms: [String],
+                behavioralSymptoms: [{
+                        type: String,
+                }],
+                physicalSymptoms: [{
+                        type: String,
+                }],
+                cognitiveSymptoms: [{
+                        type: String,
+                }],
+                psychosocialSymptoms: [{
+                        type: String,
+                }],
         },
-        interventions: [String],
+        interventions: [{
+                type: String,
+        }],
         counselingFrequency: {
-                group: String,
-                individual: String,
-                individualTherapy: Boolean,
-                residentDeclinesIndividualTherapy: Boolean,
-                familyCounseling: Boolean,
-                aa: Boolean,
-                na: Boolean,
-                artMeetingStaffing: String,
+                group: {
+                        select: {
+                                type: Boolean,
+                                default: false
+                        },
+                        chosse: {
+                                type: String
+                        }
+                },
+                individual: {
+                        type: Boolean,
+                        default: false
+                },
+                individualTherapy: {
+                        type: Boolean,
+                        default: false
+                },
+                residentDeclinesIndividualTherapy: {
+                        type: Boolean,
+                        default: false
+                },
+                familyCounseling: {
+                        type: Boolean,
+                        default: false
+                },
+                aa: {
+                        type: Boolean,
+                        default: false
+                },
+                na: {
+                        type: Boolean,
+                        default: false
+                },
+                monthlyArtMeetingStaffing: {
+                        type: Boolean,
+                        default: false
+                },
+                weeklyArtMeetingStaffing: {
+                        type: Boolean,
+                        default: false
+                }
         },
-        goalsForChanges: String,
         treatmentGoals: [{
+                option1: {
+                        type: String,
+                        enum: ['maintainSobriety', 'implementCopingSkills', 'learnRelapsePreventionSkills', 'developForSobriety', 'maintainAbstinence', 'completeStep', 'reportCravingToStaff', 'knowTriggers', 'knowConsequences', 'participateClinicalTeam', 'involveFamily', 'attendSelfHelpGroup', 'identifyPositiveFriends', 'refrainFromDrugSeekingBehaviors',]
+                },
+                option2: {
+                        type: String,
+                        enum: ['learnCopingSkills', 'manageTime', 'openBankAccount', 'communicateAssertively', 'identifyTriggers', 'scheduleTransportation', 'manageBudget', 'attendScheduledAppointments', 'developStressCopingSkills', 'learnToMakeBed', 'obtainDriversLicense', 'recognizeHealthyUnhealthyBoundaries']
+                },
+                option3: {
+                        type: String,
+                        enum: ['createResume',
+                                'contactAgencies',
+                                'learnMockInterview',]
+                },
+                option4: {
+                        type: String,
+                        enum: ['showerEveryOtherDay',
+                                'prepareBasicMeal',
+                                'brushTeethEveryOtherDay',
+                                'completeLaundryIndependently',
+                                'developLaundrySkills',
+                        ]
+                },
+                option5: {
+                        type: String,
+                        enum: ['createSafetyPlan',
+                                'contractForSafety',
+                                'noElopementFor30Days',
+                                'avoidTouchingHotItems',
+                                'beAwareOfSurroundings',
+                                'identifyDangers',
+                        ]
+                },
+                option6: {
+                        type: String,
+                        enum: ['takeAllPrescribedMedications',
+                                'learnMedicationNames',
+                                'selfAdministerMedications',
+                                'takeMedicationsTimely',
+                                'learnOrderingRefills',
+                        ]
+                },
+                option7: {
+                        type: String,
+                        enum: ['utilizeCopingSkills',
+                                'utilizeEMSAppropriately',
+                                'verbalizeUnderstanding',
+                                'reduceMaladaptiveBehaviors',
+                        ]
+                },
+                option8: {
+                        type: String,
+                        enum: ['attendCourtAppointments',
+                                'attendProbationParoleAppointments',
+                        ]
+                },
                 name: String,
                 admissionMeasure: String,
                 previousMeasure: String,
@@ -72,7 +180,11 @@ const treatmentPlanSchema = new mongoose.Schema({
         religiousPreference: String,
         nutritionAndWellnessPlanning: String,
         recommendationToExtendResidentialTreatment: String,
+        personalFinances: {
+                type: Boolean, default: false
+        },
         dischargePlanning: String,
+        additionalComment: String,
         recommendationsForFurtherPrograms: [String],
         afterCareAndTransitionPlanning: [String],
         clinicalSummary: String,
