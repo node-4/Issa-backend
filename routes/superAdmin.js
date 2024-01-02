@@ -58,7 +58,7 @@ module.exports = (app) => {
         app.get("/api/v1/Ebook/getIdEbook/:id", auth.getIdEbook);
         app.put("/api/v1/Ebook/updateEbook/:id", [authJwt.verifyToken], upload.single('image'), auth.updateEbook);
         app.delete("/api/v1/Ebook/deleteEbook/:id", [authJwt.verifyToken], auth.deleteEbook);
-        app.post('/api/v1/DemoRequest/createDemoRequest',  auth.createDemoRequest);
+        app.post('/api/v1/DemoRequest/createDemoRequest', auth.createDemoRequest);
         app.get('/api/v1/DemoRequest/getDemoRequest', authJwt.verifyToken, auth.getDemoRequest);
         app.put('/api/v1/DemoRequest/demoRequestClose/:id', authJwt.verifyToken, auth.demoRequestClose);
         app.get('/api/v1/DemoRequest/getIdDemoRequest/:id', authJwt.verifyToken, auth.getIdDemoRequest);
@@ -68,10 +68,10 @@ module.exports = (app) => {
         app.put("/api/v1/Pricing/addFaqInPricingFAQ", authJwt.verifyToken, auth.addFaqInPricingFAQ);
         app.delete("/api/v1/Pricing/deleteFaqsInPricingFAQ/:faqsId", authJwt.verifyToken, auth.deleteDescriptionArrayInBlog);
         app.post('/api/v1/Pricing/createPricing', authJwt.verifyToken, auth.createPricing);
-        app.get('/api/v1/Pricing/getPricing', authJwt.verifyToken, auth.getPricing);
-        app.get('/api/v1/Pricing/getIdPricing/:id', authJwt.verifyToken, auth.getIdPricing);
+        app.get('/api/v1/Pricing/getPricing', auth.getPricing);
+        app.get('/api/v1/Pricing/getIdPricing/:id', auth.getIdPricing);
         app.delete('/api/v1/Pricing/deletePricing/:id', authJwt.verifyToken, auth.deletePricing);
-        app.post('/api/v1/Pricing/calculatePricing', authJwt.verifyToken, auth.calculatePricing);
+        app.post('/api/v1/Pricing/calculatePricing', auth.calculatePricing);
         app.post("/api/v1/OasisNotesSupport/addOasisNotesSupport", [authJwt.verifyToken], auth.createOasisNotesSupport);
         app.get("/api/v1/OasisNotesSupport/getOasisNotesSupport", auth.getOasisNotesSupport);
         app.get("/api/v1/OasisNotesSupport/getIdOasisNotesSupport/:id", auth.getIdOasisNotesSupport);
