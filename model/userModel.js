@@ -67,6 +67,24 @@ const userSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false,
         },
+        initialAssessment: {
+                type: Boolean,
+        },
+        nursingAssessment: {
+                type: Boolean,
+        },
+        treatmentPlan: {
+                type: Boolean,
+        },
+        faceSheet: {
+                type: Boolean,
+        },
+        safetyPlan: {
+                type: Boolean,
+        },
+        residentIntakes: {
+                type: Boolean,
+        },
         permissionAdmin: {
                 type: Boolean,
                 default: false,

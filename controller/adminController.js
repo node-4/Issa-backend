@@ -98,6 +98,9 @@ exports.createUser = async (req, res) => {
                                 }
                                 return age;
                         }
+                        if (req.file) {
+                                req.body.profilePic = req.file.path
+                        }
                         let user2 = await User.find({ userType: req.body.userType, adminId: user._id }).count();
                         if (req.body.userType == "Patient") {
                                 req.body.Id = `P${user2 + 1}`
