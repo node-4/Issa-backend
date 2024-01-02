@@ -87,23 +87,18 @@ const userSchema = new mongoose.Schema({
         },
         permissionAdmin: {
                 type: Boolean,
-                default: false,
         },
         permissionEmployee: {
                 type: Boolean,
-                default: false,
         },
         permissionPatient: {
                 type: Boolean,
-                default: false,
         },
         permissionPsychiatricProvider: {
                 type: Boolean,
-                default: false,
         },
         permissionClaimSubmission: {
                 type: Boolean,
-                default: false,
         },
         gender: {
                 type: String,
