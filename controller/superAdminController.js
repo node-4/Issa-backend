@@ -33,7 +33,9 @@ const pricing = require("../model/website/pricing");
 const oasisNotesSupport = require("../model/website/oasisNotesSupport");
 const ourFeatures = require("../model/website/ourFeatures");
 const banner = require("../model/website/banner");
-
+const trustedClient = require("../model/website/trustedClient");
+const aboutUs = require("../model/website/aboutUs");
+const whyChoosePharm = require("../model/website/whyChoosePharm");
 exports.registration = async (req, res) => {
         const { mobileNumber, email } = req.body;
         try {
@@ -1705,5 +1707,351 @@ exports.deleteBanner = async (req, res) => {
         } catch (err) {
                 console.log(err.message);
                 return res.status(500).send({ msg: "internal server error", error: err.message, });
+        }
+};
+exports.createTrustedClient = async (req, res) => {
+        try {
+                let image;
+                if (req.file.path) {
+                        image = req.file.path
+                }
+                const data = {
+                        title: req.body.title,
+                        image: image,
+                        description: req.body.description,
+                };
+                const TrustedClient = await trustedClient.create(data);
+                return res.status(200).json({ message: "TrustedClient add successfully.", status: 200, data: TrustedClient });
+        } catch (error) {
+                return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
+        }
+};
+exports.updateTrustedClient = async (req, res) => {
+        try {
+                const findData = await trustedClient.findById(req.params.id);
+                if (!findData) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                let image;
+                if (req.file.path) {
+                        image = req.file.path
+                }
+                const data = {
+                        title: req.body.title || findData.title,
+                        image: image || findData.image,
+                        description: req.body.description || findData.description,
+                };
+                const TrustedClient = await trustedClient.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true })
+                return res.status(200).json({ message: "TrustedClient update successfully.", status: 200, data: TrustedClient });
+        } catch (error) {
+                return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
+        }
+};
+exports.getTrustedClient = async (req, res) => {
+        try {
+                const data = await trustedClient.find({})
+                if (data.length === 0) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "trustedClient data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
+exports.getIdTrustedClient = async (req, res) => {
+        try {
+                const data = await trustedClient.findById(req.params.id)
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "TrustedClient data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+}
+exports.deleteTrustedClient = async (req, res) => {
+        try {
+                const data = await trustedClient.findById(req.params.id)
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                const data1 = await trustedClient.findByIdAndDelete(req.params.id);
+                if (data1) {
+                        return res.status(200).send({ msg: "deleted", data: data1 });
+                }
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message, });
+        }
+};
+exports.createAboutUs = async (req, res) => {
+        try {
+                const findData = await aboutUs.findOne({})
+                if (findData) {
+                        let image;
+                        if (req.file.path) {
+                                image = req.file.path
+                        }
+                        const data = {
+                                title: req.body.title || findData.title,
+                                image: image || findData.image,
+                                description: req.body.description || findData.description,
+                        };
+                        const AboutUs = await aboutUs.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true })
+                        return res.status(200).json({ message: "AboutUs update successfully.", status: 200, data: AboutUs });
+                } else {
+                        let image;
+                        if (req.file.path) {
+                                image = req.file.path
+                        }
+                        const data = {
+                                title: req.body.title,
+                                image: image,
+                                description: req.body.description,
+                        };
+                        const AboutUs = await aboutUs.create(data);
+                        return res.status(200).json({ message: "AboutUs add successfully.", status: 200, data: AboutUs });
+                }
+        } catch (error) {
+                return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
+        }
+};
+exports.getAboutUs = async (req, res) => {
+        try {
+                const data = await aboutUs.findOne()
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "aboutUs data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
+exports.getIdAboutUs = async (req, res) => {
+        try {
+                const data = await aboutUs.findById(req.params.id)
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "AboutUs data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+}
+exports.deleteAboutUs = async (req, res) => {
+        try {
+                const data = await aboutUs.findById(req.params.id)
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                const data1 = await aboutUs.findByIdAndDelete(req.params.id);
+                if (data1) {
+                        return res.status(200).send({ msg: "deleted", data: data1 });
+                }
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message, });
+        }
+};
+exports.addInfoInAboutUs = async (req, res) => {
+        try {
+                const { name } = req.body;
+                const findBanner = await aboutUs.findOne({});
+                if (findBanner) {
+                        let image;
+                        if (req.file.path) {
+                                image = req.file.path
+                        }
+                        let data = {
+                                name: name,
+                                image: image
+                        }
+                        const newCategory = await aboutUs.findByIdAndUpdate({ _id: findBanner._id }, { $push: { info: data } }, { new: true });
+                        return res.status(200).json({ status: 200, message: 'InfoInAboutUs update successfully', data: newCategory });
+                } else {
+                        return res.status(200).json({ status: 200, message: 'AboutUs not found.', data: newCategory });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).json({ error: 'Failed to create faq' });
+        }
+};
+exports.deleteInfoInAboutUs = async (req, res) => {
+        try {
+                const findCart = await aboutUs.findOne({});
+                if (findCart) {
+                        for (let i = 0; i < findCart.info.length; i++) {
+                                if (findCart.info.length > 1) {
+                                        if (((findCart.info[i]._id).toString() == req.params.infoId) == true) {
+                                                let updateCart = await aboutUs.findByIdAndUpdate({ _id: findCart._id, 'info._id': req.params.infoId }, {
+                                                        $pull: {
+                                                                'info':
+                                                                {
+                                                                        _id: req.params.infoId,
+                                                                        name: findCart.info[i].name,
+                                                                        image: findCart.info[i].image,
+                                                                }
+                                                        }
+                                                }, { new: true })
+                                                if (updateCart) {
+                                                        return res.status(200).send({ message: "Info delete from aboutUs.", data: updateCart, });
+                                                }
+                                        }
+                                } else {
+                                        return res.status(200).send({ status: 200, message: "No Data Found ", data: [] });
+                                }
+                        }
+                } else {
+                        return res.status(200).send({ status: 200, message: "No Data Found ", cart: [] });
+                }
+        } catch (error) {
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.addCateInAboutUs = async (req, res) => {
+        try {
+                const { name } = req.body;
+                const findBanner = await aboutUs.findOne({});
+                if (findBanner) {
+                        let image;
+                        if (req.file.path) {
+                                image = req.file.path
+                        }
+                        let data = {
+                                name: name,
+                                image: image
+                        }
+                        const newCategory = await aboutUs.findByIdAndUpdate({ _id: findBanner._id }, { $push: { cate: data } }, { new: true });
+                        return res.status(200).json({ status: 200, message: 'CateInAboutUs update successfully', data: newCategory });
+                } else {
+                        return res.status(200).json({ status: 200, message: 'AboutUs not found.', data: newCategory });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).json({ error: 'Failed to create faq' });
+        }
+};
+exports.deleteCateInAboutUs = async (req, res) => {
+        try {
+                const findCart = await aboutUs.findOne({});
+                if (findCart) {
+                        for (let i = 0; i < findCart.cate.length; i++) {
+                                if (findCart.cate.length > 1) {
+                                        if (((findCart.cate[i]._id).toString() == req.params.cateId) == true) {
+                                                let updateCart = await aboutUs.findByIdAndUpdate({ _id: findCart._id, 'cate._id': req.params.cateId }, {
+                                                        $pull: {
+                                                                'cate':
+                                                                {
+                                                                        _id: req.params.cateId,
+                                                                        name: findCart.cate[i].name,
+                                                                        image: findCart.cate[i].image,
+                                                                }
+                                                        }
+                                                }, { new: true })
+                                                if (updateCart) {
+                                                        return res.status(200).send({ message: "Cate delete from aboutUs.", data: updateCart, });
+                                                }
+                                        }
+                                } else {
+                                        return res.status(200).send({ status: 200, message: "No Data Found ", data: [] });
+                                }
+                        }
+                } else {
+                        return res.status(200).send({ status: 200, message: "No Data Found ", cart: [] });
+                }
+        } catch (error) {
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.createWhyChoosePharm = async (req, res) => {
+        try {
+                const findData = await whyChoosePharm.findOne({})
+                if (findData) {
+                        const data = {
+                                title: req.body.title || findData.title,
+                                dataArray: req.body.dataArray || findData.dataArray,
+                                description: req.body.description || findData.description,
+                        };
+                        const WhyChoosePharm = await whyChoosePharm.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true })
+                        return res.status(200).json({ message: "WhyChoosePharm update successfully.", status: 200, data: WhyChoosePharm });
+                } else {
+                        const data = {
+                                title: req.body.title,
+                                dataArray: req.body.dataArray,
+                                description: req.body.description,
+                        };
+                        const WhyChoosePharm = await whyChoosePharm.create(data);
+                        return res.status(200).json({ message: "WhyChoosePharm add successfully.", status: 200, data: WhyChoosePharm });
+                }
+        } catch (error) {
+                return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
+        }
+};
+exports.getWhyChoosePharm = async (req, res) => {
+        try {
+                const data = await whyChoosePharm.findOne()
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "whyChoosePharm data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
+exports.getIdWhyChoosePharm = async (req, res) => {
+        try {
+                const data = await whyChoosePharm.findById(req.params.id)
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "WhyChoosePharm data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+}
+exports.deleteWhyChoosePharm = async (req, res) => {
+        try {
+                const data = await whyChoosePharm.findById(req.params.id)
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                const data1 = await whyChoosePharm.findByIdAndDelete(req.params.id);
+                if (data1) {
+                        return res.status(200).send({ msg: "deleted", data: data1 });
+                }
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message, });
+        }
+};
+exports.deleteDataArrayInWhyChoosePharm = async (req, res) => {
+        try {
+                const findCart = await whyChoosePharm.findOne({});
+                if (findCart) {
+                        for (let i = 0; i < findCart.dataArray.length; i++) {
+                                if (findCart.dataArray.length > 1) {
+                                        if (((findCart.dataArray[i]._id).toString() == req.params.dataArrayId) == true) {
+                                                let updateCart = await whyChoosePharm.findByIdAndUpdate({ _id: findCart._id, 'dataArray._id': req.params.dataArrayId }, {
+                                                        $pull: {
+                                                                'dataArray':
+                                                                {
+                                                                        _id: req.params.dataArrayId,
+                                                                        name: findCart.dataArray[i].name,
+                                                                }
+                                                        }
+                                                }, { new: true })
+                                                if (updateCart) {
+                                                        return res.status(200).send({ message: "Data from dataArray delete from whyChoosePharm.", data: updateCart, });
+                                                }
+                                        }
+                                } else {
+                                        return res.status(200).send({ status: 200, message: "No Data Found ", data: [] });
+                                }
+                        }
+                } else {
+                        return res.status(200).send({ status: 200, message: "No Data Found ", cart: [] });
+                }
+        } catch (error) {
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };

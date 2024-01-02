@@ -66,7 +66,7 @@ module.exports = (app) => {
         app.post("/api/v1/Pricing/PricingFAQ/create", [authJwt.verifyToken], auth.createPricingFAQ);
         app.get('/api/v1/Pricing/getPricingFAQ', auth.getPricingFAQ);
         app.put("/api/v1/Pricing/addFaqInPricingFAQ", authJwt.verifyToken, auth.addFaqInPricingFAQ);
-        app.delete("/api/v1/Pricing/deleteFaqsInPricingFAQ/:faqsId", authJwt.verifyToken, auth.deleteDescriptionArrayInBlog);
+        app.delete("/api/v1/Pricing/deleteFaqsInPricingFAQ/:faqsId", authJwt.verifyToken, auth.deleteFaqsInPricingFAQ);
         app.post('/api/v1/Pricing/createPricing', authJwt.verifyToken, auth.createPricing);
         app.get('/api/v1/Pricing/getPricing', auth.getPricing);
         app.get('/api/v1/Pricing/getIdPricing/:id', auth.getIdPricing);
@@ -89,4 +89,22 @@ module.exports = (app) => {
         app.get("/api/v1/Banner/getBottomBanner", auth.getBottomBanner);
         app.get("/api/v1/Banner/getIdBanner/:id", auth.getIdBanner);
         app.delete("/api/v1/Banner/deleteBanner/:id", [authJwt.verifyToken], auth.deleteBanner);
+        app.post("/api/v1/TrustedClient/addTrustedClient", [authJwt.verifyToken], upload.single('image'), auth.createTrustedClient);
+        app.get("/api/v1/TrustedClient/getTrustedClient", auth.getTrustedClient);
+        app.get("/api/v1/TrustedClient/getIdTrustedClient/:id", auth.getIdTrustedClient);
+        app.put("/api/v1/TrustedClient/updateTrustedClient/:id", [authJwt.verifyToken], upload.single('image'), auth.updateTrustedClient);
+        app.delete("/api/v1/TrustedClient/deleteTrustedClient/:id", [authJwt.verifyToken], auth.deleteTrustedClient);
+        app.post("/api/v1/AboutUs/addAboutUs", [authJwt.verifyToken], upload.single('image'), auth.createAboutUs);
+        app.get("/api/v1/AboutUs/getAboutUs", auth.getAboutUs);
+        app.get("/api/v1/AboutUs/getIdAboutUs/:id", auth.getIdAboutUs);
+        app.delete("/api/v1/AboutUs/deleteAboutUs/:id", [authJwt.verifyToken], auth.deleteAboutUs);
+        app.put("/api/v1/AboutUs/addInfoInAboutUs", authJwt.verifyToken, upload.single('image'), auth.addInfoInAboutUs);
+        app.delete("/api/v1/AboutUs/deleteInfoInAboutUs/:infoId", authJwt.verifyToken, auth.deleteInfoInAboutUs);
+        app.put("/api/v1/AboutUs/addCateInAboutUs", authJwt.verifyToken, upload.single('image'), auth.addCateInAboutUs);
+        app.delete("/api/v1/AboutUs/deleteCateInAboutUs/:cateId", authJwt.verifyToken, auth.deleteCateInAboutUs);
+        app.post("/api/v1/WhyChoosePharm/addWhyChoosePharm", [authJwt.verifyToken], auth.createWhyChoosePharm);
+        app.get("/api/v1/WhyChoosePharm/getWhyChoosePharm", auth.getWhyChoosePharm);
+        app.get("/api/v1/WhyChoosePharm/getIdWhyChoosePharm/:id", auth.getIdWhyChoosePharm);
+        app.delete("/api/v1/WhyChoosePharm/deleteWhyChoosePharm/:id", [authJwt.verifyToken], auth.deleteWhyChoosePharm);
+        app.delete("/api/v1/WhyChoosePharm/deleteDataArrayInWhyChoosePharm/:dataArrayId", authJwt.verifyToken, auth.deleteDataArrayInWhyChoosePharm);
 }
