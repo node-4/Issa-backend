@@ -1009,9 +1009,14 @@ exports.createBlog = async (req, res) => {
                 if (req.file.path) {
                         image = req.file.path
                 }
+                const data = await blogCategory.findById(req.body.blogCategoryId)
+                if (!data) {
+                        return res.status(400).send({ msg: "blogCategory not found" });
+                }
                 const data1 = {
                         title: req.body.title,
                         description: req.body.description,
+                        blogCategoryId: req.body.blogCategoryId,
                         image: image,
                         type: "blog",
                 };
@@ -1027,22 +1032,43 @@ exports.updateBlog = async (req, res) => {
                 if (!findData) {
                         return res.status(400).send({ msg: "not found" });
                 }
-                let image;
+                let image, blogCategoryId;
                 if (req.file.path) {
                         image = req.file.path;
                 } else {
                         image = findData.image;
                 }
+                if (req.body.blogCategoryId != (null || undefined)) {
+                        const data = await blogCategory.findById(req.body.blogCategoryId)
+                        if (!data) {
+                                return res.status(400).send({ msg: "blogCategory not found" });
+                        }
+                        blogCategoryId = req.body.blogCategoryId
+                } else {
+                        blogCategoryId = findData.blogCategoryId
+                }
                 const data = {
                         title: req.body.title || findData.title,
                         description: req.body.description || findData.description,
                         type: findData.type,
+                        blogCategoryId: blogCategoryId,
                         image: image,
                 };
                 const BlogCategory = await blog.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true })
                 return res.status(200).json({ message: "Blog update successfully.", status: 200, data: BlogCategory });
         } catch (error) {
                 return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
+        }
+};
+exports.getBlog = async (req, res) => {
+        try {
+                const data = await blog.find({ blogCategoryId: req.params.blogCategoryId, type: "blog" })
+                if (data.length ==0) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "Blog notes data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }
 };
 exports.addDescriptionArrayInBlog = async (req, res) => {

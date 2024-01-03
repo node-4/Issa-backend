@@ -50,6 +50,7 @@ module.exports = (app) => {
         app.get("/api/v1/Blog/getIdBlog/:id", auth.getIdBlog);
         app.delete("/api/v1/Blog/deleteBlog/:id", [authJwt.verifyToken], auth.deleteBlog);
         app.post("/api/v1/Blog/createBlog", [authJwt.verifyToken], upload.single('image'), auth.createBlog);
+        app.get("/api/v1/Blog/getBlog/:blogCategoryId", auth.getBlog);
         app.put("/api/v1/Blog/updateBlog/:id", [authJwt.verifyToken], upload.single('image'), auth.updateBlog);
         app.put("/api/v1/superAdmin/addDescriptionArrayInBlog/:id", authJwt.verifyToken, auth.addDescriptionArrayInBlog);
         app.delete("/api/v1/superAdmin/deleteDescriptionArrayInBlog/:id/:descriptionArrayId", authJwt.verifyToken, auth.deleteDescriptionArrayInBlog);
