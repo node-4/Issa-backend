@@ -408,7 +408,7 @@ exports.getAdmitDetails = async (req, res) => {
                                 { dateOfDischarge: { $lte: req.query.toDateOfDischarge } },
                         ];
                 }
-                const users = await admitDetail.find(filters);
+                const users = await admitDetail.find(filters).populate('patientId');
                 if (users.length === 0) {
                         return res.status(404).send({ status: 404, message: "No Admit detail found matching the criteria", data: {} });
                 } else {
