@@ -234,72 +234,187 @@ exports.getResidentSafetyPlan = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
-// exports.createTreatmentPlan = async (req, res) => {
-//         try {
-//                 const user = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
-//                 if (!user) {
-//                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
-//                 }
-//                 const user1 = await User.findOne({ _id: req.body.patientId, adminId: user.adminId, userType: "Patient" });
-//                 if (!user1) {
-//                         return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
-//                 }
-//                 let findPatientTracking = await treatmentPlan.findOne({ employeeId: user._id, adminId: user.adminId, patientId: user1._id });
-//                 if (findPatientTracking) {
-//                         let obj = {
-//                                 employeeId: user._id,
-//                                 adminId: user.adminId,
-//                                 patientId: user1._id,
-//                                 residentName: user1.firstName,
-//                                 dateOfBirth: user1.dateOfBirth,
-//                                 warningSigns: req.body.warningSigns || findPatientTracking.warningSigns,
-//                                 internalCopingStrategies: req.body.internalCopingStrategies || findPatientTracking.internalCopingStrategies,
-//                                 distractionsPeople: req.body.distractionsPeople || findPatientTracking.distractionsPeople,
-//                                 distractionsPlace: req.body.distractionsPlace || findPatientTracking.distractionsPlace,
-//                                 distractionsPlane: req.body.distractionsPlane || findPatientTracking.distractionsPlane,
-//                                 helpContactsPeople: req.body.helpContactsPeople || findPatientTracking.helpContactsPeople,
-//                                 professionals: req.body.professionals || findPatientTracking.professionals,
-//                                 suicidePrevention: req.body.suicidePrevention || findPatientTracking.suicidePrevention,
-//                                 localEmergencyHelp: req.body.localEmergencyHelp || findPatientTracking.localEmergencyHelp,
-//                                 environmentSafetyMedications: req.body.environmentSafetyMedications || findPatientTracking.environmentSafetyMedications,
-//                                 environmentSafetyFirearmsAllowed: req.body.environmentSafetyFirearmsAllowed || findPatientTracking.environmentSafetyFirearmsAllowed,
-//                                 environmentSafetyDrugsOrAlcoholAllowed: req.body.environmentSafetyDrugsOrAlcoholAllowed || findPatientTracking.environmentSafetyDrugsOrAlcoholAllowed,
-//                                 environmentSafetyLongStringsOrRopeAllowed: req.body.environmentSafetyLongStringsOrRopeAllowed || findPatientTracking.environmentSafetyLongStringsOrRopeAllowed,
-//                                 signature: req.body.signature || findPatientTracking.signature,
-//                         };
-//                         let newEmployee = await treatmentPlan.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: obj }, { new: true });
-//                         if (newEmployee) {
-//                                 return res.status(200).send({ status: 200, message: "Treatment plan add successfully.", data: newEmployee });
-//                         }
-//                 } else {
-//                         let obj = {
-//                                 employeeId: user._id,
-//                                 adminId: user.adminId,
-//                                 patientId: user1._id,
-//                                 residentName: user1.firstName,
-//                                 dateOfBirth: user1.dateOfBirth,
-//                                 warningSigns: req.body.warningSigns,
-//                                 internalCopingStrategies: req.body.internalCopingStrategies,
-//                                 distractionsPeople: req.body.distractionsPeople,
-//                                 distractionsPlace: req.body.distractionsPlace,
-//                                 distractionsPlane: req.body.distractionsPlane,
-//                                 helpContactsPeople: req.body.helpContactsPeople,
-//                                 professionals: req.body.professionals,
-//                                 suicidePrevention: req.body.suicidePrevention,
-//                                 localEmergencyHelp: req.body.localEmergencyHelp,
-//                                 environmentSafetyMedications: req.body.environmentSafetyMedications,
-//                                 environmentSafetyFirearmsAllowed: req.body.environmentSafetyFirearmsAllowed,
-//                                 environmentSafetyDrugsOrAlcoholAllowed: req.body.environmentSafetyDrugsOrAlcoholAllowed,
-//                                 environmentSafetyLongStringsOrRopeAllowed: req.body.environmentSafetyLongStringsOrRopeAllowed,
-//                                 signature: req.body.signature
-//                         }
-//                         let newEmployee = await treatmentPlan.create(obj);
-//                         if (newEmployee) {
-//                                 return res.status(200).send({ status: 200, message: "Treatment plan add successfully.", data: newEmployee });
-//                         }
-//                 }
-//         } catch (error) {
-//                 console.error(error);
-//                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
-//         }
-// };
+exports.createTreatmentPlan = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await User.findOne({ _id: req.body.patientId, adminId: user.adminId, userType: "Patient" });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                let findPatientTracking = await treatmentPlan.findOne({ employeeId: user._id, adminId: user.adminId, patientId: user1._id });
+                if (findPatientTracking) {
+                        let obj = {
+                                employeeId: user._id,
+                                adminId: user.adminId,
+                                patientId: user1._id,
+                                residentName: user1.firstName,
+                                dateOfBirth: user1.dateOfBirth,
+                                date: req.body.date || findPatientTracking.date,
+                                admitDate: req.body.admitDate || findPatientTracking.admitDate,
+                                care: {
+                                        physicalServices: req.body.physicalServices || findPatientTracking.care.physicalServices,
+                                        behavioralServices: req.body.behavioralServices || findPatientTracking.care.behavioralServices,
+                                },
+                                medicationServices: {
+                                        administration: req.body.administration || findPatientTracking.medicationServices.administration,
+                                        selfAdministration: req.body.selfAdministration || findPatientTracking.medicationServices.selfAdministration,
+                                },
+                                presentingProblems: req.body.presentingProblems || findPatientTracking.presentingProblems,
+                                mentalStatus: req.body.mentalStatus || findPatientTracking.mentalStatus,
+                                moodLevel: req.body.moodLevel || findPatientTracking.moodLevel,
+                                adls: req.body.adls || findPatientTracking.adls,
+                                behavioralHealthServices: req.body.behavioralHealthServices || findPatientTracking.behavioralHealthServices,
+                                primaryCareProvider: req.body.primaryCareProvider || findPatientTracking.primaryCareProvider,
+                                psychiatricProvider: req.body.psychiatricProvider || findPatientTracking.psychiatricProvider,
+                                allergies: req.body.allergies || findPatientTracking.presentingProblems,
+                                triggers: req.body.triggers || findPatientTracking.presentingProblems,
+                                strengths: req.body.strengths || findPatientTracking.presentingProblems,
+                                barriers: req.body.barriers || findPatientTracking.presentingProblems,
+                                riskAssessment: {
+                                        behavioralSymptoms: req.body.behavioralSymptoms || findPatientTracking.riskAssessment.behavioralSymptoms,
+                                        physicalSymptoms: req.body.physicalSymptoms || findPatientTracking.riskAssessment.physicalSymptoms,
+                                        cognitiveSymptoms: req.body.cognitiveSymptoms || findPatientTracking.riskAssessment.cognitiveSymptoms,
+                                        psychosocialSymptoms: req.body.psychosocialSymptoms || findPatientTracking.riskAssessment.psychosocialSymptoms,
+                                },
+                                interventions: req.body.interventions || findPatientTracking.interventions,
+                                counselingFrequency: {
+                                        group: {
+                                                select: req.body.select || findPatientTracking.counselingFrequency.group.select,
+                                                chosse: req.body.chosse || findPatientTracking.counselingFrequency.group.chosse,
+                                        },
+                                        individual: req.body.individual || findPatientTracking.counselingFrequency.individual,
+                                        individualTherapy: req.body.individualTherapy || findPatientTracking.counselingFrequency.individualTherapy,
+                                        residentDeclinesIndividualTherapy: req.body.residentDeclinesIndividualTherapy || findPatientTracking.counselingFrequency.residentDeclinesIndividualTherapy,
+                                        familyCounseling: req.body.familyCounseling || findPatientTracking.counselingFrequency.familyCounseling,
+                                        aa: req.body.aa || findPatientTracking.counselingFrequency.aa,
+                                        na: req.body.na || findPatientTracking.counselingFrequency.na,
+                                        monthlyArtMeetingStaffing: req.body.monthlyArtMeetingStaffing || findPatientTracking.counselingFrequency.monthlyArtMeetingStaffing,
+                                        weeklyArtMeetingStaffing: req.body.weeklyArtMeetingStaffing || findPatientTracking.counselingFrequency.weeklyArtMeetingStaffing,
+                                },
+                                treatmentGoals: [{
+                                        option1: req.body.option1 || findPatientTracking.treatmentGoals.option1,
+                                        option2: req.body.option2 || findPatientTracking.treatmentGoals.option2,
+                                        option3: req.body.option3 || findPatientTracking.treatmentGoals.option3,
+                                        option4: req.body.option4 || findPatientTracking.treatmentGoals.option4,
+                                        option5: req.body.option5 || findPatientTracking.treatmentGoals.option5,
+                                        option6: req.body.option6 || findPatientTracking.treatmentGoals.option6,
+                                        option7: req.body.option7 || findPatientTracking.treatmentGoals.option7,
+                                        option8: req.body.option8 || findPatientTracking.treatmentGoals.option8,
+                                        name: req.body.name || findPatientTracking.treatmentGoals.name,
+                                        admissionMeasure: req.body.admissionMeasure || findPatientTracking.treatmentGoals.admissionMeasure,
+                                        previousMeasure: req.body.previousMeasure || findPatientTracking.treatmentGoals.previousMeasure,
+                                        currentMeasure: req.body.currentMeasure || findPatientTracking.treatmentGoals.currentMeasure,
+                                        estimatedDateOfCompletion: req.body.estimatedDateOfCompletion || findPatientTracking.treatmentGoals.estimatedDateOfCompletion,
+                                        comments: req.body.comments || findPatientTracking.treatmentGoals.comments,
+                                }],
+                                residentParticipation: req.body.residentParticipation || findPatientTracking.residentParticipation,
+                                residentAttitude: req.body.residentAttitude || findPatientTracking.residentAttitude,
+                                residentProgress: req.body.residentProgress || findPatientTracking.residentProgress,
+                                supportSystem: req.body.supportSystem || findPatientTracking.supportSystem,
+                                currentMedications: req.body.currentMedications || findPatientTracking.currentMedications,
+                                religiousPreference: req.body.religiousPreference || findPatientTracking.religiousPreference,
+                                nutritionAndWellnessPlanning: req.body.nutritionAndWellnessPlanning || findPatientTracking.nutritionAndWellnessPlanning,
+                                recommendationToExtendResidentialTreatment: req.body.recommendationToExtendResidentialTreatment || findPatientTracking.recommendationToExtendResidentialTreatment,
+                                personalFinances: req.body.personalFinances || findPatientTracking.personalFinances,
+                                dischargePlanning: req.body.dischargePlanning || findPatientTracking.dischargePlanning,
+                                additionalComment: req.body.additionalComment || findPatientTracking.additionalComment,
+                                recommendationsForFurtherPrograms: req.body.recommendationsForFurtherPrograms || findPatientTracking.recommendationsForFurtherPrograms,
+                                afterCareAndTransitionPlanning: req.body.afterCareAndTransitionPlanning || findPatientTracking.afterCareAndTransitionPlanning,
+                                clinicalSummary: req.body.clinicalSummary || findPatientTracking.clinicalSummary,
+                                treatmentPlanReviewDate: req.body.treatmentPlanReviewDate || findPatientTracking.treatmentPlanReviewDate,
+                                dischargePlanDate: req.body.dischargePlanDate || findPatientTracking.dischargePlanDate,
+                                individualsParticipatingInServicePlan: {
+                                        resident: req.body.resident || findPatientTracking.individualsParticipatingInServicePlan.resident,
+                                        guardian: req.body.guardian || findPatientTracking.individualsParticipatingInServicePlan.guardian,
+                                        staff: req.body.staff || findPatientTracking.individualsParticipatingInServicePlan.staff,
+                                        bhp: req.body.bhp || findPatientTracking.individualsParticipatingInServicePlan.bhp,
+                                },
+                                residentAgreement: {
+                                        isReason: req.body.isReason || findPatientTracking.residentAgreement.isReason,
+                                        refusalReason: req.body.refusalReason || findPatientTracking.residentAgreement.refusalReason,
+                                },
+                                signaturesResident: {
+                                        name: req.body.name || findPatientTracking.signaturesResident.name,
+                                        credentials: req.body.credentials || findPatientTracking.signaturesResident.credentials,
+                                        signature: req.body.signature || findPatientTracking.signaturesResident.signature,
+                                        date: req.body.date || findPatientTracking.signaturesResident.date,
+                                },
+                                signaturesFacilityRep: {
+                                        name: req.body.name || findPatientTracking.signaturesFacilityRep.name,
+                                        credentials: req.body.credentials || findPatientTracking.signaturesFacilityRep.credentials,
+                                        signature: req.body.signature || findPatientTracking.signaturesFacilityRep.signature,
+                                        date: req.body.date || findPatientTracking.signaturesFacilityRep.date,
+                                },
+                                signaturesBhp: {
+                                        name: req.body.name || findPatientTracking.signaturesBhp.name,
+                                        credentials: req.body.credentials || findPatientTracking.signaturesBhp.credentials,
+                                        signature: req.body.signature || findPatientTracking.signaturesBhp.signature,
+                                        date: req.body.date || findPatientTracking.signaturesBhp.date,
+                                },
+                        };
+
+                        let newEmployee = await treatmentPlan.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: obj }, { new: true });
+                        if (newEmployee) {
+                                return res.status(200).send({ status: 200, message: "Treatment plan add successfully.", data: newEmployee });
+                        }
+                } else {
+                        let obj = {
+                                employeeId: user._id,
+                                adminId: user.adminId,
+                                patientId: user1._id,
+                                residentName: user1.firstName,
+                                dateOfBirth: user1.dateOfBirth,
+                                date: req.body.date,
+                                admitDate: req.body.admitDate,
+                                care: req.body.care,
+                                medicationServices: req.body.medicationServices,
+                                presentingProblems: req.body.presentingProblems,
+                                mentalStatus: req.body.mentalStatus,
+                                moodLevel: req.body.mentalStatus,
+                                adls: req.body.adls,
+                                behavioralHealthServices: req.body.behavioralHealthServices,
+                                primaryCareProvider: req.body.primaryCareProvider,
+                                psychiatricProvider: req.body.psychiatricProvider,
+                                allergies: req.body.allergies,
+                                triggers: req.body.triggers,
+                                strengths: req.body.strengths,
+                                barriers: req.body.barriers,
+                                riskAssessment: req.body.riskAssessment,
+                                interventions: req.body.interventions,
+                                counselingFrequency: req.body.counselingFrequency,
+                                treatmentGoals: req.body.treatmentGoals,
+                                residentParticipation: req.body.residentParticipation,
+                                residentAttitude: req.body.residentAttitude,
+                                residentProgress: req.body.residentProgress,
+                                supportSystem: req.body.supportSystem,
+                                currentMedications: req.body.currentMedications,
+                                religiousPreference: req.body.religiousPreference,
+                                nutritionAndWellnessPlanning: req.body.nutritionAndWellnessPlanning,
+                                recommendationToExtendResidentialTreatment: req.body.recommendationToExtendResidentialTreatment,
+                                personalFinances: req.body.personalFinances,
+                                dischargePlanning: req.body.dischargePlanning,
+                                additionalComment: req.body.additionalComment,
+                                recommendationsForFurtherPrograms: req.body.recommendationsForFurtherPrograms,
+                                afterCareAndTransitionPlanning: req.body.afterCareAndTransitionPlanning,
+                                clinicalSummary: req.body.clinicalSummary,
+                                treatmentPlanReviewDate: req.body.treatmentPlanReviewDate,
+                                dischargePlanDate: req.body.dischargePlanDate,
+                                individualsParticipatingInServicePlan: req.body.individualsParticipatingInServicePlan,
+                                residentAgreement: req.body.residentAgreement,
+                                signaturesResident: req.body.signaturesResident,
+                                signaturesFacilityRep: req.body.signaturesFacilityRep,
+                                signaturesBhp: req.body.signaturesBhp,
+                        }
+                        let newEmployee = await treatmentPlan.create(obj);
+                        if (newEmployee) {
+                                return res.status(200).send({ status: 200, message: "Treatment plan add successfully.", data: newEmployee });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};

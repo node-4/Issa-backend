@@ -19,7 +19,7 @@ const treatmentPlanSchema = new mongoose.Schema({
         date: {
                 type: Date,
         },
-        dob: {
+        dateOfBirth: {
                 type: Date,
         },
         admitDate: {
@@ -255,8 +255,10 @@ const treatmentPlanSchema = new mongoose.Schema({
                 },
         },
         residentAgreement: {
-                yes: Boolean,
-                no: Boolean,
+                isReason: {
+                        type: String,
+                        enum: ['yes', 'no'],
+                },
                 refusalReason: {
                         type: String,
                 },

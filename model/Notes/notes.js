@@ -448,6 +448,13 @@ const addressSchema = new mongoose.Schema({
                 type: String,
         },
         AdhesiveStripBandages: {
+                name: {
+                        type: String,
+                        default: 'AdhesiveStripBandages',
+                },
+                item: {
+                        type: Number,
+                },
                 jan: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
@@ -498,6 +505,13 @@ const addressSchema = new mongoose.Schema({
                 }
         },
         AdhesiveTap: {
+                name: {
+                        type: String,
+                        default: 'AdhesiveTap'
+                },
+                item: {
+                        type: Number,
+                },
                 jan: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
@@ -548,6 +562,13 @@ const addressSchema = new mongoose.Schema({
                 }
         },
         CPRMouthGuardShield: {
+                name: {
+                        type: String,
+                        default: 'CPRMouthGuardShield'
+                },
+                item: {
+                        type: Number,
+                },
                 jan: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
@@ -598,6 +619,13 @@ const addressSchema = new mongoose.Schema({
                 }
         },
         DisposableLatexGloves: {
+                name: {
+                        type: String,
+                        default: 'DisposableLatexGloves'
+                },
+                item: {
+                        type: Number,
+                },
                 jan: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
@@ -648,6 +676,13 @@ const addressSchema = new mongoose.Schema({
                 }
         },
         NonStickSterilePads: {
+                name: {
+                        type: String,
+                        default: 'NonStickSterilePads'
+                },
+                item: {
+                        type: Number,
+                },
                 jan: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
@@ -698,6 +733,13 @@ const addressSchema = new mongoose.Schema({
                 }
         },
         RollerGauze: {
+                name: {
+                        type: String,
+                        default: 'RollerGauze'
+                },
+                item: {
+                        type: Number,
+                },
                 jan: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
@@ -748,6 +790,13 @@ const addressSchema = new mongoose.Schema({
                 }
         },
         Scissors: {
+                name: {
+                        type: String,
+                        default: 'Scissors'
+                },
+                item: {
+                        type: Number,
+                },
                 jan: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
@@ -798,6 +847,13 @@ const addressSchema = new mongoose.Schema({
                 }
         },
         SterileGuazeSquares: {
+                name: {
+                        type: String,
+                        default: 'SterileGuazeSquares'
+                },
+                item: {
+                        type: Number,
+                },
                 jan: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
@@ -848,6 +904,13 @@ const addressSchema = new mongoose.Schema({
                 }
         },
         TriangularBandages: {
+                name: {
+                        type: String,
+                        default: 'TriangularBandages'
+                },
+                item: {
+                        type: Number,
+                },
                 jan: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
@@ -898,6 +961,13 @@ const addressSchema = new mongoose.Schema({
                 }
         },
         Tweezers: {
+                name: {
+                        type: String,
+                        default: 'Tweezers'
+                },
+                item: {
+                        type: Number,
+                },
                 jan: {
                         type: String,
                         enum: ["Present", "Absent", "None"]

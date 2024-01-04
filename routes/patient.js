@@ -10,4 +10,5 @@ module.exports = (app) => {
         app.get('/api/v1/Patient/getAllPatientMedication', authJwt.verifyToken, auth.getAllPatientMedication);
         app.post('/api/v1/Patient/createResidentSafetyPlan', authJwt.verifyToken, auth.createResidentSafetyPlan);
         app.get('/api/v1/Patient/getResidentSafetyPlan/:patientId', authJwt.verifyToken, auth.getResidentSafetyPlan);
+        app.post('/api/v1/Patient/createTreatmentPlan', authJwt.verifyToken, auth.createResidentSafetyPlan);
 }
