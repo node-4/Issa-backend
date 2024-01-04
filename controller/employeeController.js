@@ -149,6 +149,19 @@ exports.updateProfile = async (req, res) => {
                 } else {
                         req.body.profilePic = user.profilePic
                 }
+                if (req.body.dateOfBirth) {
+                        const age = calculateAge(req.body.dateOfBirth);
+                        req.body.age = age;
+                }
+                function calculateAge(dateOfBirth) {
+                        const dob = new Date(dateOfBirth);
+                        const currentDate = new Date();
+                        let age = currentDate.getFullYear() - dob.getFullYear();
+                        if (currentDate.getMonth() < dob.getMonth() || (currentDate.getMonth() === dob.getMonth() && currentDate.getDate() < dob.getDate())) {
+                                age--;
+                        }
+                        return age;
+                }
                 let obj = {
                         fullName: req.body.fullName || user.fullName,
                         email: req.body.email || user.email,
@@ -157,6 +170,8 @@ exports.updateProfile = async (req, res) => {
                         address: req.body.address || user.address,
                         proffession: req.body.proffession || user.proffession,
                         profilePic: req.body.profilePic,
+                        dateOfBirth: req.body.dateOfBirth,
+                        age: req.body.age
                 }
                 let update = await User.findOneAndUpdate({ _id: req.user }, { $set: obj }, { new: true });
                 if (update) {
@@ -4794,7 +4809,7 @@ exports.createLrc1031A = async (req, res) => {
                                         nonAppealableOffenses: req.body.nonAppealableOffenses || findEmployee.nonAppealableOffenses,
                                         appealable5YearsAfterConviction: req.body.appealable5YearsAfterConviction || findEmployee.appealable5YearsAfterConviction,
                                         appealableOffensesn: req.body.appealableOffensesn || findEmployee.appealableOffensesn,
-                                    };                                    
+                                };
                                 let update = await lrc1031A.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
                                 if (update) {
                                         return res.status(200).send({ status: 200, message: "Lrc1031A add successfully.", data: update })
