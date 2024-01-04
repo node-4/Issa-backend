@@ -25,6 +25,7 @@ const patientTracking = require('../model/Tracking/patientTracking');
 const medicationEmployee = require('../model/Medication/employeeMedication/medicationEmployee');
 const patientMedication = require('../model/Medication/patientMedication/patientMedication');
 const residentSafetyPlan = require('../model/patientIntake/residentSafetyPlan');
+const treatmentPlan = require('../model/patientIntake/treatmentPlan');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -233,3 +234,72 @@ exports.getResidentSafetyPlan = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+// exports.createTreatmentPlan = async (req, res) => {
+//         try {
+//                 const user = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
+//                 if (!user) {
+//                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+//                 }
+//                 const user1 = await User.findOne({ _id: req.body.patientId, adminId: user.adminId, userType: "Patient" });
+//                 if (!user1) {
+//                         return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+//                 }
+//                 let findPatientTracking = await treatmentPlan.findOne({ employeeId: user._id, adminId: user.adminId, patientId: user1._id });
+//                 if (findPatientTracking) {
+//                         let obj = {
+//                                 employeeId: user._id,
+//                                 adminId: user.adminId,
+//                                 patientId: user1._id,
+//                                 residentName: user1.firstName,
+//                                 dateOfBirth: user1.dateOfBirth,
+//                                 warningSigns: req.body.warningSigns || findPatientTracking.warningSigns,
+//                                 internalCopingStrategies: req.body.internalCopingStrategies || findPatientTracking.internalCopingStrategies,
+//                                 distractionsPeople: req.body.distractionsPeople || findPatientTracking.distractionsPeople,
+//                                 distractionsPlace: req.body.distractionsPlace || findPatientTracking.distractionsPlace,
+//                                 distractionsPlane: req.body.distractionsPlane || findPatientTracking.distractionsPlane,
+//                                 helpContactsPeople: req.body.helpContactsPeople || findPatientTracking.helpContactsPeople,
+//                                 professionals: req.body.professionals || findPatientTracking.professionals,
+//                                 suicidePrevention: req.body.suicidePrevention || findPatientTracking.suicidePrevention,
+//                                 localEmergencyHelp: req.body.localEmergencyHelp || findPatientTracking.localEmergencyHelp,
+//                                 environmentSafetyMedications: req.body.environmentSafetyMedications || findPatientTracking.environmentSafetyMedications,
+//                                 environmentSafetyFirearmsAllowed: req.body.environmentSafetyFirearmsAllowed || findPatientTracking.environmentSafetyFirearmsAllowed,
+//                                 environmentSafetyDrugsOrAlcoholAllowed: req.body.environmentSafetyDrugsOrAlcoholAllowed || findPatientTracking.environmentSafetyDrugsOrAlcoholAllowed,
+//                                 environmentSafetyLongStringsOrRopeAllowed: req.body.environmentSafetyLongStringsOrRopeAllowed || findPatientTracking.environmentSafetyLongStringsOrRopeAllowed,
+//                                 signature: req.body.signature || findPatientTracking.signature,
+//                         };
+//                         let newEmployee = await treatmentPlan.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: obj }, { new: true });
+//                         if (newEmployee) {
+//                                 return res.status(200).send({ status: 200, message: "Treatment plan add successfully.", data: newEmployee });
+//                         }
+//                 } else {
+//                         let obj = {
+//                                 employeeId: user._id,
+//                                 adminId: user.adminId,
+//                                 patientId: user1._id,
+//                                 residentName: user1.firstName,
+//                                 dateOfBirth: user1.dateOfBirth,
+//                                 warningSigns: req.body.warningSigns,
+//                                 internalCopingStrategies: req.body.internalCopingStrategies,
+//                                 distractionsPeople: req.body.distractionsPeople,
+//                                 distractionsPlace: req.body.distractionsPlace,
+//                                 distractionsPlane: req.body.distractionsPlane,
+//                                 helpContactsPeople: req.body.helpContactsPeople,
+//                                 professionals: req.body.professionals,
+//                                 suicidePrevention: req.body.suicidePrevention,
+//                                 localEmergencyHelp: req.body.localEmergencyHelp,
+//                                 environmentSafetyMedications: req.body.environmentSafetyMedications,
+//                                 environmentSafetyFirearmsAllowed: req.body.environmentSafetyFirearmsAllowed,
+//                                 environmentSafetyDrugsOrAlcoholAllowed: req.body.environmentSafetyDrugsOrAlcoholAllowed,
+//                                 environmentSafetyLongStringsOrRopeAllowed: req.body.environmentSafetyLongStringsOrRopeAllowed,
+//                                 signature: req.body.signature
+//                         }
+//                         let newEmployee = await treatmentPlan.create(obj);
+//                         if (newEmployee) {
+//                                 return res.status(200).send({ status: 200, message: "Treatment plan add successfully.", data: newEmployee });
+//                         }
+//                 }
+//         } catch (error) {
+//                 console.error(error);
+//                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
+//         }
+// };

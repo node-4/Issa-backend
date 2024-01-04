@@ -1,19 +1,41 @@
 const mongoose = require('mongoose');
+const schema = mongoose.Schema;
 const treatmentPlanSchema = new mongoose.Schema({
-        residentName: String,
-        date: Date,
-        dob: Date,
-        admitDate: Date,
+        employeeId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
+        patientId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
+        adminId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
+        residentName: {
+                type: String,
+        },
+        date: {
+                type: Date,
+        },
+        dob: {
+                type: Date,
+        },
+        admitDate: {
+                type: Date,
+        },
         care: {
                 physicalServices: { type: Boolean, default: false },
                 behavioralServices: { type: Boolean, default: false },
-
         },
         medicationServices: {
                 administration: { type: Boolean, default: false },
                 selfAdministration: { type: Boolean, default: false },
         },
-        presentingProblems: [String],
+        presentingProblems: [{
+                type: String
+        }],
         mentalStatus: {
                 type: String,
                 enum: ['oriented', 'disoriented', 'unstable', 'other']
@@ -172,53 +194,111 @@ const treatmentPlanSchema = new mongoose.Schema({
                 estimatedDateOfCompletion: Date,
                 comments: String,
         }],
-        residentParticipation: String,
-        residentAttitude: String,
-        residentProgress: String,
+        residentParticipation: {
+                type: String,
+        },
+        residentAttitude: {
+                type: String,
+        },
+        residentProgress: {
+                type: String,
+        },
         supportSystem: [String],
-        currentMedications: String,
-        religiousPreference: String,
-        nutritionAndWellnessPlanning: String,
-        recommendationToExtendResidentialTreatment: String,
+        currentMedications: {
+                type: String,
+        },
+        religiousPreference: {
+                type: String,
+        },
+        nutritionAndWellnessPlanning: {
+                type: String,
+        },
+        recommendationToExtendResidentialTreatment: {
+                type: String,
+        },
         personalFinances: {
                 type: Boolean, default: false
         },
-        dischargePlanning: String,
-        additionalComment: String,
-        recommendationsForFurtherPrograms: [String],
-        afterCareAndTransitionPlanning: [String],
-        clinicalSummary: String,
-        treatmentPlanReviewDate: Date,
-        dischargePlanDate: Date,
+        dischargePlanning: {
+                type: String,
+        },
+        additionalComment: {
+                type: String,
+        },
+        recommendationsForFurtherPrograms: [{
+                type: String
+        }],
+        afterCareAndTransitionPlanning: [{
+                type: String
+        }],
+        clinicalSummary: {
+                type: String,
+        },
+        treatmentPlanReviewDate: {
+                type: Date,
+        },
+        dischargePlanDate: {
+                type: Date,
+        },
         individualsParticipatingInServicePlan: {
-                resident: String,
-                guardian: String,
-                staff: String,
-                bhp: String,
+                resident: {
+                        type: String,
+                },
+                guardian: {
+                        type: String,
+                },
+                staff: {
+                        type: String,
+                },
+                bhp: {
+                        type: String,
+                },
         },
         residentAgreement: {
                 yes: Boolean,
                 no: Boolean,
-                refusalReason: String,
+                refusalReason: {
+                        type: String,
+                },
         },
-        signatures: {
-                resident: {
-                        name: String,
-                        credentials: String,
-                        signature: String,
-                        date: Date,
+        signaturesResident: {
+                name: {
+                        type: String,
                 },
-                facilityRep: {
-                        name: String,
-                        credentials: String,
-                        signature: String,
-                        date: Date,
+                credentials: {
+                        type: String,
                 },
-                bhp: {
-                        name: String,
-                        credentials: String,
-                        signature: String,
-                        date: Date,
+                signature: {
+                        type: String,
+                },
+                date: {
+                        type: Date,
+                },
+        },
+        signaturesFacilityRep: {
+                name: {
+                        type: String,
+                },
+                credentials: {
+                        type: String,
+                },
+                signature: {
+                        type: String,
+                },
+                date: Date,
+        },
+        signaturesBhp: {
+                name: {
+                        type: String,
+                },
+                credentials: {
+                        type: String,
+                },
+                signature: {
+                        type: String,
+                },
+                date: {
+                        type: Date,
                 },
         },
 });

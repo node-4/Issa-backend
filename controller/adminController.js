@@ -614,7 +614,7 @@ exports.addFirstAidChecklist = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
-                const checklist = await firstAidChecklist.create(req.body);
+                const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Checklist added successfully.", data: checklist });
                 }
@@ -630,7 +630,7 @@ exports.addFireEquipementMonitoring = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
-                const checklist = await fireEquipementMonitoring.create(req.body);
+                const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Fire equipement monitoring added successfully.", data: checklist });
                 }
@@ -646,7 +646,7 @@ exports.addEvacuationAndFireDrill = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
-                const checklist = await evacuationAndFireDrill.create(req.body);
+                const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Evacuation And Fire Drill added successfully.", data: checklist });
                 }
@@ -662,7 +662,7 @@ exports.addDisasterDrill = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
-                const checklist = await disasterDrill.create(req.body);
+                const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Disaster drill added successfully.", data: checklist });
                 }
@@ -678,7 +678,7 @@ exports.addWeeklyVehicleInspectionChecklist = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
-                const checklist = await WeeklyVehicleInspectionChecklist.create(req.body);
+                const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Weekly Vehicle Inspection Checklist added successfully.", data: checklist });
                 }
@@ -694,7 +694,7 @@ exports.addClinicalOversight = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
-                const checklist = await ClinicalOversight.create(req.body);
+                const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Clinical Over sight added successfully.", data: checklist });
                 }
@@ -710,7 +710,7 @@ exports.addMonthlyVehicleInspection = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
-                const checklist = await MonthlyVehicleInspection.create(req.body);
+                const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Monthly Vehicle Inspection added successfully.", data: checklist });
                 }
@@ -726,7 +726,7 @@ exports.addVanEmergencyInformationForm = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
-                const checklist = await vanEmergencyInformationForm.create(req.body);
+                const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Van Emergency InformationForm added successfully.", data: checklist });
                 }
@@ -742,7 +742,7 @@ exports.addQualityManagement = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
-                const checklist = await qualityManagement.create(req.body);
+                const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Quality Management added successfully.", data: checklist });
                 }
@@ -758,7 +758,7 @@ exports.addInfectiousData = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
-                const checklist = await infectiousData.create(req.body);
+                const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Infectious Data added successfully.", data: checklist });
                 }
@@ -836,7 +836,7 @@ exports.addIncidentReport = async (req, res) => {
                         reportCompletedBy: req.body.reportCompletedBy,
                         partType: "A",
                 };
-                const checklist = await incidentReport.create(obj);
+                const checklist = await notes.create(obj);
                 if (checklist) {
                         let obj1 = {
                                 residentsInvolved: residentsInvolved,
@@ -867,7 +867,7 @@ exports.addDisasterPlanReview = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
-                const checklist = await disasterPlanReview.create(req.body);
+                const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Disaster Plan Review added successfully.", data: checklist });
                 }
