@@ -986,7 +986,8 @@ exports.getIdBlog = async (req, res) => {
                 if (!data) {
                         return res.status(400).send({ msg: "not found" });
                 }
-                return res.status(200).json({ status: 200, message: "blog data found.", data: data });
+                const BlogCategory = await blog.findByIdAndUpdate({ _id: data._id }, { $set: { view: data.view + 1 } }, { new: true })
+                return res.status(200).json({ status: 200, message: "blog data found.", data: BlogCategory });
         } catch (err) {
                 return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }
@@ -1062,8 +1063,26 @@ exports.updateBlog = async (req, res) => {
 };
 exports.getBlog = async (req, res) => {
         try {
-                const data = await blog.find({ blogCategoryId: req.params.blogCategoryId, type: "blog" })
-                if (data.length ==0) {
+                if (req.query.blogCategoryId != (null || undefined)) {
+                        const data = await blog.find({ blogCategoryId: req.query.blogCategoryId, type: "blog" })
+                        if (data.length == 0) {
+                                return res.status(400).send({ msg: "not found" });
+                        }
+                        return res.status(200).json({ status: 200, message: "Blog notes data found.", data: data });
+                }
+                const data = await blog.find({ type: "blog" })
+                if (data.length == 0) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "Blog notes data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
+exports.getBlogPopular = async (req, res) => {
+        try {
+                let data = await blog.find({ type: "blog" }).sort({ view: -1 })
+                if (data.length == 0) {
                         return res.status(400).send({ msg: "not found" });
                 }
                 return res.status(200).json({ status: 200, message: "Blog notes data found.", data: data });

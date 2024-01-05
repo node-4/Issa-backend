@@ -29,5 +29,9 @@ const blogSchema = mongoose.Schema({
                 type: String,
                 enum: ["Notes", "Main", "blog"]
         },
+        view: {
+                type: Number,
+                default: 0
+        }
 }, { timestamps: true })
 module.exports = mongoose.model('blog', blogSchema)
