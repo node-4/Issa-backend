@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
+        patients: [{
+                type: schema.Types.ObjectId,
+                ref: "User",
+        }],
         fullName: {
                 type: String
         },

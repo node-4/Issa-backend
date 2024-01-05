@@ -1132,15 +1132,41 @@ exports.assignPatientToEmployee = async (req, res) => {
                         if (!user3) {
                                 return res.status(404).send({ status: 404, message: "Employee not found", data: {} });
                         } else {
-                                let update = await User.findOneAndUpdate({ _id: user2._id }, { $set: { employeeId: user3._id } }, { new: true });
-                                if (update) {
-                                        return res.status(200).send({ status: 200, message: "Patient assigned to employee get successfully.", data: update })
+                                if (!user3.patients.includes(req.body.patientId)) {
+                                        user3.patients.push(req.body.patientId);
+                                        await user3.save();
+                                        return res.status(200).send({ status: 200, message: "Patient assigned to employee get successfully.", data: user3 })
+                                } else {
+                                        return res.status(200).json({ status: 200, message: "Patient is already assigned to employees" });
                                 }
                         }
                 }
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.unAssignPatientToEmployee = async (req, res, next) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Admin" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user2 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!user2) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                } else {
+                        const user3 = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
+                        if (!user3) {
+                                return res.status(404).send({ status: 404, message: "Employee not found", data: {} });
+                        } else {
+                                user3.patients.pull(req.body.patientId);
+                                await wishlist.save();
+                                return res.status(200).json({ status: 200, message: "Removed  assigned Patient" });
+                        }
+                }
+        } catch (error) {
+                return res.status(500).send({ status: 500, message: "Server error", data: {} });
         }
 };
 exports.addMedicationEmployee = async (req, res) => {

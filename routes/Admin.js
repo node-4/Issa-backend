@@ -50,6 +50,7 @@ module.exports = (app) => {
         app.get('/api/v1/admin/getAllPatientTracking', authJwt.verifyToken, auth.getAllPatientTracking);
         app.get('/api/v1/admin/getPatientVitalsByPatientId/:patientId', authJwt.verifyToken, auth.getPatientVitalsByPatientId);
         app.post('/api/v1/admin/assignPatientToEmployee', authJwt.verifyToken, auth.assignPatientToEmployee);
+        app.post('/api/v1/admin/unAssignPatientToEmployee', authJwt.verifyToken, auth.unAssignPatientToEmployee);
         app.post('/api/v1/admin/addMedicationEmployee', authJwt.verifyToken, auth.addMedicationEmployee);
         app.get('/api/v1/admin/getMedicationEmployeeById/:id', auth.getMedicationEmployeeById);
         app.put('/api/v1/admin/updateMedicationEmployee/:id', authJwt.verifyToken, auth.updateMedicationEmployee);
