@@ -1397,7 +1397,7 @@ exports.getAllPatientMedication = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
-                const filteredTasks = await patientMedication.find({ adminId: user._id }).sort({ createdAt: -1 })
+                const filteredTasks = await patientMedication.find({ adminId: user._id }).sort({ createdAt: -1 }).populate('patientId')
                 if (filteredTasks.length === 0) {
                         return res.status(404).send({ status: 404, message: "No PatientMedication found.", data: {} });
                 } else {
