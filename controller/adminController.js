@@ -983,14 +983,14 @@ exports.getAllTimeOffRequestForAdmin = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
                 if (req.query.requestType != (null || undefined)) {
-                        let findEmployee = await timeOffRequest.find({ adminId: user._id, requestType: req.query.requestType });
+                        let findEmployee = await timeOffRequest.find({ adminId: user._id, requestType: req.query.requestType }).populate('employeeId');
                         if (findEmployee.length == 0) {
                                 return res.status(404).send({ status: 404, message: "Time Off Request not found.", data: {} });
                         } else {
                                 return res.status(200).send({ status: 200, message: "Time Off Request found.", data: findEmployee });
                         }
                 } else {
-                        let findEmployee = await timeOffRequest.find({ adminId: user._id });
+                        let findEmployee = await timeOffRequest.find({ adminId: user._id }).populate('employeeId');
                         if (findEmployee.length == 0) {
                                 return res.status(404).send({ status: 404, message: "Time Off Request not found.", data: {} });
                         } else {
