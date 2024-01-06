@@ -166,8 +166,7 @@ const addressSchema = new mongoose.Schema({
                 type: String,
         },
         date: {
-                type: Date,
-                required: true,
+                type: Date
         },
         shiftTime: {
                 type: String,
@@ -1030,12 +1029,10 @@ const addressSchema = new mongoose.Schema({
                 ref: "user",
         },
         dateOfIncident: {
-                type: Date,
-                required: true,
+                type: Date
         },
         timeOfIncident: {
-                type: String,
-                required: true,
+                type: String
         },
         employeesInvolved: [{
                 type: schema.Types.ObjectId,
@@ -1050,183 +1047,138 @@ const addressSchema = new mongoose.Schema({
         },
         incidentsAltercationVerbal: {
                 type: Boolean,
-                default: false
         },
         incidentsPropertyLoss: {
                 type: Boolean,
-                default: false
         },
         incidentsWeapon: {
                 type: Boolean,
-                default: false
         },
         incidentsRuleViolation: {
                 type: Boolean,
-                default: false
         },
         incidentsAltercationPhysical: {
                 type: Boolean,
-                default: false
         },
         incidentsPropertyDamage: {
                 type: Boolean,
-                default: false
         },
         incidentsContraband: {
                 type: Boolean,
-                default: false
         },
         incidentsSeizure: {
                 type: Boolean,
-                default: false
         },
         incidentsViolentThreatSelf: {
                 type: Boolean,
-                default: false
         },
         incidentsVehicularAccident: {
                 type: Boolean,
-                default: false
         },
         incidentsAlcoholDrugUse: {
                 type: Boolean,
-                default: false
         },
         incidentsMedicationErrors: {
                 type: Boolean,
-                default: false
         },
         incidentsViolentThreatOthers: {
                 type: Boolean,
-                default: false
         },
         incidentsMedicalEmergency911: {
                 type: Boolean,
-                default: false
         },
         incidentsEquipmentUtilityFailure: {
                 type: Boolean,
-                default: false
         },
         incidentsAWOL: {
                 type: Boolean,
-                default: false
         },
         incidentsViolentActionSelf: {
                 type: Boolean,
-                default: false
         },
         incidentsEmployeeInjury: {
                 type: Boolean,
-                default: false
         },
         incidentsBiohazardousMaterial: {
                 type: Boolean,
-                default: false
         },
         incidentsPsychiatricEmergency: {
                 type: Boolean,
-                default: false
         },
         incidentsViolentActionOthers: {
                 type: Boolean,
-                default: false
         },
         incidentsClientConsumerInjury: {
                 type: Boolean,
-                default: false
         },
         incidentsAMA: {
                 type: Boolean,
-                default: false
         },
         incidentsAbuseNeglect: {
                 type: Boolean,
-                default: false
         },
         incidentsTrespassing: {
                 type: Boolean,
-                default: false
         },
         incidentsProceduralBreak: {
                 type: Boolean,
-                default: false
         },
         incidentsSlipFall: {
                 type: Boolean,
-                default: false
         },
         incidentsCutAbrasion: {
                 type: Boolean,
-                default: false
         },
         incidentspharmacyError: {
                 type: Boolean,
-                default: false
         },
         eventDetails: {
-                type: String,
-                required: true,
+                type: String
         },
         medicationErrorsMissedDose: {
                 type: Boolean,
-                default: false
         },
         medicationErrorsRefusedMedication: {
                 type: Boolean,
-                default: false
         },
         medicationErrorsWrongClient: {
                 type: Boolean,
-                default: false
         },
         medicationErrorsWrongTime: {
                 type: Boolean,
-                default: false
         },
         medicationErrorsWrongMed: {
                 type: Boolean,
-                default: false
         },
         actionsTakenSenttoERHospital: {
                 type: Boolean,
-                default: false
         },
         actionsTakenFirstAid: {
                 type: Boolean,
-                default: false
         },
         actionsTakenNoMedicalCareRequired: {
                 type: Boolean,
-                default: false
         },
         CareRefused: {
                 type: Boolean,
-                default: false
         },
         actionsTakenFireDepartmentCalled: {
                 type: Boolean,
-                default: false
         },
         actionsTakenPoliceCalled: {
                 type: Boolean,
-                default: false
         },
         actionsTakenReferredtoAdministratorRiskManagement: {
                 type: Boolean,
-                default: false
         },
         actionsTakenMaintenanceCalledWorkOrderCompleted: {
                 type: Boolean,
-                default: false
         },
         actionsTakenOther: {
                 type: Boolean,
-                default: false
         },
         abuseNeglectInvolved: {
                 type: Boolean,
-                default: false
         },
         abuseNeglectInvolvedifYes: {
                 type: String,
@@ -1234,19 +1186,15 @@ const addressSchema = new mongoose.Schema({
         },
         notificationsFamily: {
                 type: Boolean,
-                default: false
         },
         notificationsGuardian: {
                 type: Boolean,
-                default: false
         },
         notificationsCaseManager: {
                 type: Boolean,
-                default: false
         },
         notificationsOther: {
                 type: Boolean,
-                default: false
         },
         notificationIfOther: {
                 type: String,
@@ -1283,11 +1231,9 @@ const addressSchema = new mongoose.Schema({
         data: [{
                 employeeName: {
                         type: String,
-                        required: true,
                 },
                 dateOfDataCollection: {
                         type: Date,
-                        required: true,
                 },
                 typeOfDataCollection: {
                         type: String,
@@ -1297,7 +1243,6 @@ const addressSchema = new mongoose.Schema({
                 },
                 dataCollectedBy: {
                         type: String,
-                        required: true,
                 },
         }],
         adminId: {
@@ -1305,12 +1250,10 @@ const addressSchema = new mongoose.Schema({
                 ref: "user",
         },
         date: {
-                type: String, // Assuming mm/yy format
-                required: true,
+                type: String, // Assuming mm/yy forma
         },
         vehicle: {
-                type: String,
-                required: true,
+                type: String
         },
         dateOfLastService: {
                 type: Date,
@@ -1434,8 +1377,7 @@ const addressSchema = new mongoose.Schema({
                 type: String,
         },
         inspectorSignature: {
-                type: String,
-                required: true,
+                type: String
         },
         inspectorDate: {
                 type: Date,
@@ -1506,8 +1448,7 @@ const addressSchema = new mongoose.Schema({
                 ref: "user",
         },
         residentName: {
-                type: String,
-                required: true,
+                type: String
         },
         dateOfBirth: {
                 type: Date,
