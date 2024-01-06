@@ -3935,7 +3935,7 @@ exports.createPersonalInformation = async (req, res) => {
                                         businessEmail: req.body.businessEmail || findEmployee.businessEmail,
                                         personalEmail: req.body.personalEmail || findEmployee.personalEmail,
                                         emergencyContactName: req.body.emergencyContactName || findEmployee.emergencyContact.name,
-                                        emergencyContactRelationship: req.body.emergencyContactRelationship || findEmployee.emergencyContact.relationship,
+                                        emergencyContactRelationship: req.body.emergencyContactRelationship || findEmployee.emergencyContactRelationship,
                                         emergencyContactNumber: req.body.emergencyContactNumber || findEmployee.emergencyContact.phone,
                                         savedSigned: req.body.savedSigned || findEmployee.savedSigned,
                                 };

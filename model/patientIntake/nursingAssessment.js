@@ -1,20 +1,30 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 const nursingAssessmentSchema = new mongoose.Schema({
+        employeeId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
+        patientId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
+        adminId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
         todayDate: { type: Date, },
         admissionDate: { type: Date, },
         residentFullName: { type: String, },
         dateOfBirth: { type: Date, },
         age: { type: Number, },
-        sex: { type: String, enum: ['F', 'M'], },
+        sex: { type: String, enum: ["Male", "Female", "Other"], },
         admissionDiagnoses: { type: String },
         codeStatus: { type: String, enum: ['Full Code', 'DNR'], },
         lastTBScreeningDate: { type: Date },
         tbScreeningResults: { type: String, enum: ['Negative', 'Positive', 'Pending'] },
-        careProvided: {
-                physicalServices: { type: Boolean, default: false },
-                behavioralHealthServices: { type: Boolean, default: false },
-        },
+        careProvidedPhysicalServices: { type: Boolean, default: false },
+        careProvidedBehavioralHealthServices: { type: Boolean, default: false },
         vitalsBloodPressure: { type: String },
         vitalsPulse: { type: String },
         vitalsRespiratoryRate: { type: String },
@@ -58,11 +68,19 @@ const nursingAssessmentSchema = new mongoose.Schema({
         nutritionFluidRestrictions: { type: Boolean },
         skinCheck: { type: String },
         residentDeniesSkinConcerns: { type: Boolean },
+        front: { type: Boolean },
+        back: { type: Boolean },
+        sideLeft: { type: Boolean, default: false },
+        sideRight: { type: Boolean, default: false },
+        legFront: { type: Boolean, default: false },
+        legBack: { type: Boolean, default: false },
+        legLeft: { type: Boolean, default: false },
+        legRight: { type: Boolean, default: false },
         bhtName: { type: String },
         bhtSignature: { type: String },
         rnName: { type: String },
         rnSignature: { type: String },
 });
 
-const NursingAssessment = mongoose.model('NursingAssessment', nursingAssessmentSchema);
+const NursingAssessment = mongoose.model('nursingAssessment', nursingAssessmentSchema);
 module.exports = NursingAssessment
