@@ -1028,8 +1028,8 @@ exports.getAllEmployeePerformanceReviewForAdmin = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let findEmployee = await employeePerformanceReview.findOne({ adminId: user._id });
-                if (!findEmployee) {
+                let findEmployee = await employeePerformanceReview.find({ adminId: user._id }).populate('employeeId');
+                if (findEmployee.length == 0) {
                         return res.status(404).send({ status: 404, message: "Employee performance review not found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "Employee performance review found.", data: findEmployee });
