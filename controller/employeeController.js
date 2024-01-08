@@ -831,6 +831,7 @@ exports.addStaffSchedule = async (req, res) => {
                         let savedSigned = `${user.firstName} ${user.lastName}`;
                         let obj = {
                                 employeeId: findEmployee._id,
+                                adminId: user._id,
                                 year: findStaffSchedule.year,
                                 month: findStaffSchedule.month,
                                 schedule: scheduleWithDays || findStaffSchedule.schedule,
@@ -893,11 +894,20 @@ exports.getStaffScheduleByEmployeeId = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let findEmployee = await staffSchedule.findOne({ employeeId: req.params.employeeId });
-                if (!findEmployee) {
-                        return res.status(404).send({ status: 404, message: "Staff schedule  not found.", data: {} });
+                if (req.query.employeeId != (null || undefined)) {
+                        let findEmployee = await staffSchedule.findOne({ employeeId: req.query.employeeId });
+                        if (!findEmployee) {
+                                return res.status(404).send({ status: 404, message: "Staff schedule  not found.", data: {} });
+                        } else {
+                                return res.status(200).send({ status: 200, message: "Staff schedule  found.", data: findEmployee });
+                        }
                 } else {
-                        return res.status(200).send({ status: 200, message: "Staff schedule  found.", data: findEmployee });
+                        let findEmployee = await staffSchedule.find({ adminId: user._id });
+                        if (findEmployee.length == 0) {
+                                return res.status(404).send({ status: 404, message: "Staff schedule  not found.", data: {} });
+                        } else {
+                                return res.status(200).send({ status: 200, message: "Staff schedule  found.", data: findEmployee });
+                        }
                 }
         } catch (error) {
                 console.error(error);
@@ -5327,7 +5337,7 @@ exports.createResidentIntake = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message });
         }
 };
-exports.getResidentIntake= async (req, res) => {
+exports.getResidentIntake = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.params.patientId, userType: "Patient" });
                 if (!user) {
