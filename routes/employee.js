@@ -182,12 +182,12 @@ module.exports = (app) => {
         app.post('/api/v1/employee/createLrc1031A', authJwt.verifyToken, auth.createLrc1031A);
         app.get('/api/v1/employee/getLrc1031A', authJwt.verifyToken, auth.getLrc1031A);
         app.delete('/api/v1/employee/deleteLrc1031A', authJwt.verifyToken, auth.deleteLrc1031A);
-        app.post('/api/v1/Patient/createResidentSafetyPlan', authJwt.verifyToken, auth.createResidentSafetyPlan);
-        app.get('/api/v1/Patient/getResidentSafetyPlan/:patientId', authJwt.verifyToken, auth.getResidentSafetyPlan);
-        app.post('/api/v1/Patient/createTreatmentPlan', authJwt.verifyToken, auth.createTreatmentPlan);
-        app.get('/api/v1/Patient/getTreatmentPlan/:patientId', authJwt.verifyToken, auth.getTreatmentPlan);
-        app.post('/api/v1/Patient/createNursingAssessment', authJwt.verifyToken, auth.createNursingAssessment);
-        app.get('/api/v1/Patient/getNursingAssessment/:patientId', authJwt.verifyToken, auth.getNursingAssessment);
-        app.post('/api/v1/Patient/createResidentIntake', authJwt.verifyToken, auth.createResidentIntake);
-        app.get('/api/v1/Patient/ResidentIntake/:patientId', authJwt.verifyToken, auth.getResidentIntake);
+        app.post('/api/v1/employee/createResidentSafetyPlan', authJwt.verifyToken, auth.createResidentSafetyPlan);
+        app.get('/api/v1/employee/getResidentSafetyPlan/:patientId', authJwt.verifyToken, auth.getResidentSafetyPlan);
+        app.post('/api/v1/employee/createTreatmentPlan', authJwt.verifyToken, auth.createTreatmentPlan);
+        app.get('/api/v1/employee/getTreatmentPlan/:patientId', authJwt.verifyToken, auth.getTreatmentPlan);
+        app.post('/api/v1/employee/createNursingAssessment', authJwt.verifyToken, auth.createNursingAssessment);
+        app.get('/api/v1/employee/getNursingAssessment/:patientId', authJwt.verifyToken, auth.getNursingAssessment);
+        app.post('/api/v1/employee/createResidentIntake', authJwt.verifyToken, auth.createResidentIntake);
+        app.get('/api/v1/employee/ResidentIntake/:patientId', authJwt.verifyToken, auth.getResidentIntake);
 }
