@@ -152,19 +152,14 @@ exports.getAllPatientMedication = async (req, res) => {
 };
 exports.createResidentSafetyPlan = async (req, res) => {
         try {
-                const user = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
-                if (!user) {
-                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
-                }
-                const user1 = await User.findOne({ _id: req.body.patientId, adminId: user.adminId, userType: "Patient" });
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                 }
-                let findPatientTracking = await residentSafetyPlan.findOne({ employeeId: user._id, adminId: user.adminId, patientId: user1._id });
+                let findPatientTracking = await residentSafetyPlan.findOne({ adminId: user1.adminId, patientId: user1._id });
                 if (findPatientTracking) {
                         let obj = {
-                                employeeId: user._id,
-                                adminId: user.adminId,
+                                adminId: user1.adminId,
                                 patientId: user1._id,
                                 residentName: user1.firstName,
                                 dateOfBirth: user1.dateOfBirth,
@@ -189,8 +184,7 @@ exports.createResidentSafetyPlan = async (req, res) => {
                         }
                 } else {
                         let obj = {
-                                employeeId: user._id,
-                                adminId: user.adminId,
+                                adminId: user1.adminId,
                                 patientId: user1._id,
                                 residentName: user1.firstName,
                                 dateOfBirth: user1.dateOfBirth,
@@ -238,19 +232,14 @@ exports.getResidentSafetyPlan = async (req, res) => {
 };
 exports.createTreatmentPlan = async (req, res) => {
         try {
-                const user = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
-                if (!user) {
-                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
-                }
-                const user1 = await User.findOne({ _id: req.body.patientId, adminId: user.adminId, userType: "Patient" });
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                 }
-                let findPatientTracking = await treatmentPlan.findOne({ employeeId: user._id, adminId: user.adminId, patientId: user1._id });
+                let findPatientTracking = await treatmentPlan.findOne({ adminId: user1.adminId, patientId: user1._id });
                 if (findPatientTracking) {
                         let obj = {
-                                employeeId: user._id,
-                                adminId: user.adminId,
+                                adminId: user1.adminId,
                                 patientId: user1._id,
                                 residentName: user1.firstName,
                                 dateOfBirth: user1.dateOfBirth,
@@ -302,8 +291,7 @@ exports.createTreatmentPlan = async (req, res) => {
                         }
                 } else {
                         let obj = {
-                                employeeId: user._id,
-                                adminId: user.adminId,
+                                adminId: user1.adminId,
                                 patientId: user1._id,
                                 residentName: user1.firstName,
                                 dateOfBirth: user1.dateOfBirth,
@@ -377,17 +365,12 @@ exports.getTreatmentPlan = async (req, res) => {
 };
 exports.createNursingAssessment = async (req, res) => {
         try {
-                const user = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
-                if (!user) {
-                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
-                }
                 const user1 = await User.findOne({ _id: req.body.patientId, adminId: user.adminId, userType: "Patient" });
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                 }
                 let obj = {
-                        employeeId: user._id,
-                        adminId: user.adminId,
+                        adminId: user1.adminId,
                         patientId: user1._id,
                         residentFullName: user1.firstName,
                         dateOfBirth: user1.dateOfBirth,
@@ -486,17 +469,12 @@ exports.getNursingAssessment = async (req, res) => {
 };
 exports.createResidentIntake = async (req, res) => {
         try {
-                const user = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
-                if (!user) {
-                        return res.status(404).send({ status: 404, message: "User not found or not registered", data: {} });
-                }
-                const patient = await User.findOne({ _id: req.body.patientId, adminId: user.adminId, userType: "Patient" });
+                const patient = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
                 if (!patient) {
                         return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                 }
                 const consentFormData = {
-                        employeeId: user._id,
-                        adminId: user.adminId,
+                        adminId: patient.adminId,
                         patientId: patient._id,
                         companyName: req.body.companyName,
                         residentName: req.body.residentName,
@@ -624,7 +602,7 @@ exports.createResidentIntake = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message });
         }
 };
-exports.getResidentIntake= async (req, res) => {
+exports.getResidentIntake = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.params.patientId, userType: "Patient" });
                 if (!user) {
