@@ -72,6 +72,50 @@ exports.getProfile = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+exports.updateProfile = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Admin" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                if (req.file) {
+                        req.body.profilePic = req.file.path
+                } else {
+                        req.body.profilePic = user.profilePic
+                }
+                if (req.body.dateOfBirth) {
+                        const age = calculateAge(req.body.dateOfBirth);
+                        req.body.age = age;
+                }
+                function calculateAge(dateOfBirth) {
+                        const dob = new Date(dateOfBirth);
+                        const currentDate = new Date();
+                        let age = currentDate.getFullYear() - dob.getFullYear();
+                        if (currentDate.getMonth() < dob.getMonth() || (currentDate.getMonth() === dob.getMonth() && currentDate.getDate() < dob.getDate())) {
+                                age--;
+                        }
+                        return age;
+                }
+                let obj = {
+                        fullName: req.body.fullName || user.fullName,
+                        email: req.body.email || user.email,
+                        mobileNumber: req.body.mobileNumber || user.mobileNumber,
+                        gender: req.body.gender || user.gender,
+                        address: req.body.address || user.address,
+                        proffession: req.body.proffession || user.proffession,
+                        profilePic: req.body.profilePic,
+                        dateOfBirth: req.body.dateOfBirth,
+                        age: req.body.age
+                }
+                let update = await User.findOneAndUpdate({ _id: req.user }, { $set: obj }, { new: true });
+                if (update) {
+                        return res.status(200).send({ status: 200, message: "Profile get successfully.", data: update })
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
 exports.createUser = async (req, res) => {
         try {
                 const { mobileNumber, email } = req.body;

@@ -4,6 +4,7 @@ const { upload, FranchiseUpload, productUpload } = require('../middleware/imageu
 module.exports = (app) => {
         app.post('/api/v1/admin/signin', auth.signin);
         app.get('/api/v1/admin/getProfile', authJwt.verifyToken, auth.getProfile);
+        app.put('/api/v1/admin/updateProfile', authJwt.verifyToken, upload.single('image'), auth.updateProfile);
         app.post('/api/v1/admin/createUser', authJwt.verifyToken, upload.single('file'), auth.createUser);
         app.get('/api/v1/admin/getUser', authJwt.verifyToken, auth.getUser);
         app.get('/api/v1/admin/getUserById/:id', authJwt.verifyToken, auth.getUserById);
