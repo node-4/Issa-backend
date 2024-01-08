@@ -951,7 +951,7 @@ exports.addBhrfTherapyTopic = async (req, res) => {
                                 notesSummary: req.body.notesSummary || findData.notesSummary,
                                 planRecommendation: req.body.planRecommendation || findData.planRecommendation,
                                 addBy: "admin",
-                                adminId: findData.adminId
+                                adminId: req.user._id
                         }
                         let update = await bhrfTherapyTopic.findOneAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
                         if (update) {
@@ -991,7 +991,8 @@ exports.getBhrfTherapyTopicById = async (req, res) => {
 };
 exports.getAllBhrfTherapyTopic = async (req, res) => {
         try {
-                const filteredTasks = await bhrfTherapyTopic.find({ $or: [{ adminId: req.user._id }], addBy: "superAdmin" }).sort({ createdAt: -1 });
+                console.log(req.user);
+                const filteredTasks = await bhrfTherapyTopic.find({ $or: [{ adminId: req.user._id }, { addBy: "superAdmin" }], }).sort({ createdAt: -1 });
                 if (filteredTasks.length === 0) {
                         return res.status(404).send({ status: 404, message: "No bhrfTherapy Topic found.", data: {} });
                 } else {
