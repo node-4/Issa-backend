@@ -105,21 +105,32 @@ exports.getProfile = async (req, res) => {
 };
 exports.getPatient = async (req, res) => {
         try {
-                const findEmployee = await User.findOne({ _id: req.user, userType: "Employee" })
+                const findEmployee = await User.findOne({ _id: req.user, userType: "Employee" });
                 if (!findEmployee) {
-                        return res.status(403).send({ status: 403, message: "Unauthorized access", data: {} });
+                        return res.status(403).json({ status: 403, message: "Unauthorized access", data: {} });
                 }
-                const findEmployee1 = await User.find({ userType: "Patient", employeesId: { $in: [findEmployee._id.toString()] } });
-                if (findEmployee1.length == 0) {
-                        return res.status(404).send({ status: 404, message: "No Patient found matching the criteria", data: {} });
+                const page = parseInt(req.query.page) || 1;
+                const limit = parseInt(req.query.limit) || 10;
+                const skip = (page - 1) * limit;
+                const searchQuery = req.query.search || '';
+                const query = { userType: "Patient", employeesId: { $in: [findEmployee._id.toString()] }, };
+                if (searchQuery) {
+                        query.$or = [
+                                { name: { $regex: new RegExp(searchQuery, 'i') } },
+                        ];
+                }
+                const findPatients = await User.find(query).skip(skip).limit(limit);
+                if (findPatients.length === 0) {
+                        return res.status(404).json({ status: 404, message: "No patients found matching the criteria", data: {} });
                 } else {
-                        return res.status(200).send({ status: 200, message: "Patient fetched successfully.", data: findEmployee1 });
+                        return res.status(200).json({ status: 200, message: "Patients fetched successfully.", data: findPatients, page: page, limit: limit, });
                 }
         } catch (error) {
                 console.error(error);
-                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+                return res.status(500).json({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+
 exports.getPatientById = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
