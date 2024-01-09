@@ -130,7 +130,6 @@ exports.getPatient = async (req, res) => {
                 return res.status(500).json({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
-
 exports.getPatientById = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -3843,7 +3842,7 @@ exports.createAppointment = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found! Not registered.", data: {} });
                 }
-                const user1 = await User.findOne({ _id: req.body.patientId, employeeId: user._id, adminId: user.adminId, userType: "Patient", });
+                const user1 = await User.findOne({ _id: req.body.patientId, employeesId: { $in: [user._id.toString()] }, adminId: user.adminId, userType: "Patient", });
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                 }
