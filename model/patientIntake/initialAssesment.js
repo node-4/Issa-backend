@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
-
+const schema = mongoose.Schema;
 const assessmentSchema = new mongoose.Schema({
+        patientId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
+        adminId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
         // SECTION I
         companyName: { type: String, required: true },
         residentName: { type: String, required: true },
@@ -53,28 +61,6 @@ const assessmentSchema = new mongoose.Schema({
                 signature: { type: String },
                 date: { type: Date },
         },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         // SECTION II - Current and Past Medical/Psychiatric Conditions
         medicalConditions: [{
                 condition: { type: String },
@@ -82,28 +68,44 @@ const assessmentSchema = new mongoose.Schema({
                 no: { type: Boolean },
                 comments: { type: String },
         }],
-
-        // Mental Health Treatment History
+        SignificantFamilyMedicalPsychiatricHistory: {
+                type: String
+        },
         mentalHealthTreatmentHistory: [{
                 typeOfService: { type: String },
                 where: { type: String },
                 dates: { type: String },
                 diagnosisReason: { type: String },
         }],
-
-        // Substance Abuse History
-        substanceAbuseHistory: {
-                history: { type: Boolean },
-                denies: { type: Boolean },
-                types: [{ type: String }],
+        substanceAbuseHistory: { type: Boolean },
+        substanceAbuseDenies: { type: Boolean },
+        substanceAbuseHistoryData: [{
+                types: { type: String },
                 ageOfFirstUse: { type: String },
                 lastUse: { type: String },
                 frequency: { type: String },
                 lengthOfSobriety: { type: String },
-                withdrawalSymptoms: [{ type: String }],
+        }],
+        ActiveWithdrawalSymptoms: {
+                noneReportedOrObserved: { type: Boolean },
+                Agitation: { type: Boolean },
+                Nausea: { type: Boolean },
+                Vomiting: { type: Boolean },
+                Headache: { type: Boolean },
+                TactileDisturbances: { type: Boolean },
+                Anxiety: { type: Boolean },
+                Tremors: { type: Boolean },
+                VisualDisturbances: { type: Boolean },
+                AuditoryDisturbances: { type: Boolean },
+                Sweats: { type: Boolean },
+                Paranoia: { type: Boolean },
+                GooseBumps: { type: Boolean },
+                Runningnose: { type: Boolean },
+                BonePain: { type: Boolean },
+                Tearing: { type: Boolean },
+                Seizures: { type: Boolean },
+                LossofMuscleCoordination: { type: Boolean },
         },
-
-        // Mental Status Exam/Behavioral Observations
         mentalStatusExam: {
                 apparentAge: {
                         consistent: { type: Boolean },
@@ -178,7 +180,6 @@ const assessmentSchema = new mongoose.Schema({
                         Normal: { type: Boolean },
                         Slow: { type: Boolean },
                         Fast: { type: Boolean },
-
                 },
                 Quantity: {
                         Normal: { type: Boolean },
@@ -263,7 +264,6 @@ const assessmentSchema = new mongoose.Schema({
                         Good: { type: Boolean },
                         Fair: { type: Boolean },
                         Poor: { type: Boolean },
-
                 },
                 Memory: {
                         Good: { type: Boolean },
@@ -274,126 +274,223 @@ const assessmentSchema = new mongoose.Schema({
                         Intact: { type: Boolean },
                         Other: { type: String },
                 },
-
-
-
-
-
-
         },
-
-
-
-
-
-
-                significantSocialDevelopmentalHistory: { type: String },
-
-                // Safety and Risk Assessment
-                currentThoughtsOfHarmingSelf: { type: Boolean },
-                suicidalIdeation: {
-                        ideation: { type: String },
-                        increasingIn: {
-                                urgency: { type: Boolean },
-                                severity: { type: Boolean },
-                        },
+        significantSocialDevelopmentalHistory: { type: String },
+        personalInformation: {
+                highestEducation: { type: String },
+                specialEducation: { type: Boolean },
+                currentStudent: { type: Boolean },
+                currentStudentLocation: { type: String },
+        },
+        employmentHistory: {
+                currentlyEmployed: { type: Boolean },
+                employmentLocation: { type: String },
+                fullTime: { type: Boolean }
+        },
+        workHistory: { type: String },
+        militaryHistory: {
+                militaryService: { type: Boolean },
+                activeDuty: { type: Boolean }
+        },
+        legalHistory: {
+                arrestedForDUI: { type: Boolean },
+                arrestedForAssault: { type: Boolean },
+                arrestedForBadChecks: { type: Boolean },
+                arrestedForShoplifting: { type: Boolean },
+                arrestedForAttemptedMurder: { type: Boolean },
+                arrestedForDrug: { type: Boolean },
+                arrestedForAlcohol: { type: Boolean },
+                arrestedForDisorderlyConduct: { type: Boolean },
+                arrestedForIdentityTheft: { type: Boolean },
+                arrestedForSexOffense: { type: Boolean },
+                arrestedForOther: { type: String },
+                probationParole: { type: Boolean },
+                custody: { type: Boolean },
+                pendingLitigation: { type: Boolean },
+                sentencingDates: { type: Boolean },
+                needsLegalAid: { type: Boolean },
+                incarcerated: { type: Boolean }
+        },
+        independentLivingSkills: {
+                bathingShowering: {
+                        good: { type: Boolean },
+                        fair: { type: Boolean },
+                        needAssist: { type: Boolean },
+                        comments: { type: String },
                 },
-                currentThoughtsOfHarmingOthers: { type: Boolean },
-                riskFactors: {
-                        currentSuicidalIdeation: { type: Boolean },
-                        priorSuicideAttempt: { type: Boolean },
-                        accessToMeans: { type: Boolean },
-                        substanceAbuse: { type: Boolean },
-                        otherSelfAbusingBehavior: { type: Boolean },
-                        recentLossesLackOfSupport: { type: Boolean },
-                        behaviorCues: { type: String },
-                        symptomsOfPsychosis: { type: String },
-                        familyHistoryOfSuicide: { type: Boolean },
-                        terminalPhysicalIllness: { type: Boolean },
-                        currentStressors: { type: String },
-                        chronicPain: { type: Boolean },
+                groomingHygiene: {
+                        good: { type: Boolean },
+                        fair: { type: Boolean },
+                        needAssist: { type: Boolean },
+                        comments: { type: String },
                 },
-                protectiveFactors: {
-                        supportsAvailable: { type: Boolean },
-                        spiritualReligiousSupport: { type: Boolean },
-                        religiousCulturalProhibitions: { type: Boolean },
-                        fearOfConsequences: { type: Boolean },
-                        ableToBeEngagedInIntervention: { type: Boolean },
-                        willingToCommitToKeepingSelfSafe: { type: Boolean },
+                mobility: {
+                        good: { type: Boolean },
+                        fair: { type: Boolean },
+                        needAssist: { type: Boolean },
+                        comments: { type: String },
                 },
-                riskLevel: { type: String, enum: ['No Risk', 'Low Risk', 'Moderate Risk', 'High Risk'] },
-
-                // Diagnoses
-                psychiatricDiagnoses: [{
-                        icdCode: { type: String },
-                        description: { type: String },
-                        primary: { type: Boolean },
-                        secondary: { type: Boolean },
-                        tertiary: { type: Boolean },
-                        additional: { type: Boolean },
-                }],
-                medicalDiagnoses: [{
-                        icdCode: { type: String },
-                        description: { type: String },
-                        primary: { type: Boolean },
-                        secondary: { type: Boolean },
-                        tertiary: { type: Boolean },
-                        additional: { type: Boolean },
-                }],
-                additionalDiagnoses: [{ type: String }],
-
-                // Psychosocial or Environmental Stressors
-                psychosocialStressors: {
-                        primarySupportGroup: { type: Boolean },
-                        maritalProblems: { type: Boolean },
-                        accessToHealthCareServices: { type: Boolean },
-                        educationalProblems: { type: Boolean },
-                        housingProblems: { type: Boolean },
-                        familyProblems: { type: Boolean },
-                        occupationalProblems: { type: Boolean },
-                        interactionWithLegalSystem: { type: Boolean },
-                        substanceUseInHome: { type: Boolean },
-                        sexualProblems: { type: Boolean },
-                        otherStressors: { type: String },
+                housework: {
+                        good: { type: Boolean },
+                        fair: { type: Boolean },
+                        needAssist: { type: Boolean },
+                        comments: { type: String },
                 },
-
-                // Significant Recent Losses
-                significantRecentLosses: {
-                        no: { type: Boolean },
-                        yes: { type: Boolean },
-                        typeOfLoss: {
-                                death: { type: Boolean },
-                                job: { type: Boolean },
-                                childRemovedFromHouse: { type: Boolean },
-                                injury: { type: Boolean },
-                                divorceSeparation: { type: Boolean },
-                                violentActsAgainstPersonFamily: { type: Boolean },
-                                medicalSurgical: { type: Boolean },
-                                accidentInjury: { type: Boolean },
-                                other: { type: Boolean },
-                        },
+                shopping: {
+                        good: { type: Boolean },
+                        fair: { type: Boolean },
+                        needAssist: { type: Boolean },
+                        comments: { type: String },
                 },
-
-                // Additional Notes
-                additionalNotes: { type: String },
-
-                // Staff Information
-                staffInformation: {
-                        staffName: { type: String },
-                        staffTitle: { type: String },
-                        staffSignature: { type: String },
-                        staffDate: { type: Date, default: Date.now },
+                managingMoneyBudget: {
+                        good: { type: Boolean },
+                        fair: { type: Boolean },
+                        needAssist: { type: Boolean },
+                        comments: { type: String },
                 },
-
-                // BHP Information
-                bhpInformation: {
-                        bhpName: { type: String },
-                        bhpCredentials: { type: String },
-                        bhpSignature: { type: String },
-                        bhpDate: { type: Date, default: Date.now },
+                takingMedications: {
+                        good: { type: Boolean },
+                        fair: { type: Boolean },
+                        needAssist: { type: Boolean },
+                        comments: { type: String },
                 },
-        });
-
+                preparingFood: {
+                        good: { type: Boolean },
+                        fair: { type: Boolean },
+                        needAssist: { type: Boolean },
+                        comments: { type: String },
+                },
+                eating: {
+                        good: { type: Boolean },
+                        fair: { type: Boolean },
+                        needAssist: { type: Boolean },
+                        comments: { type: String },
+                },
+                toileting: {
+                        good: { type: Boolean },
+                        fair: { type: Boolean },
+                        needAssist: { type: Boolean },
+                        comments: { type: String },
+                },
+                other: {
+                        good: { type: Boolean },
+                        fair: { type: Boolean },
+                        needAssist: { type: Boolean },
+                        comments: { type: String },
+                }
+        },
+        triggers: { type: String },
+        fallRiskData: {
+                fallRisk: { type: Boolean },
+                fallRiskExplanation: { type: String },
+        },
+        hobbiesLeisureActivities: { type: String },
+        medicalEquipment: {
+                wheelchair: { type: Boolean },
+                oxygenTank: { type: Boolean },
+                cpapMachine: { type: Boolean },
+                showerChair: { type: Boolean },
+                other: { type: String },
+        },
+        specialPrecautions: {
+                seizure: { type: Boolean },
+                elopementAwol: { type: Boolean },
+                physicalAggression: { type: Boolean },
+                withdrawal: { type: Boolean },
+                inappropriateSexualBehaviors: { type: Boolean },
+                substanceUse: { type: Boolean },
+                noSpecialPrecautions: { type: Boolean }
+        },
+        currentThoughtsOfHarmingSelf: { type: Boolean },
+        suicidalIdeation: {
+                ideation: { type: String },
+                increasingIn: {
+                        urgency: { type: Boolean },
+                        severity: { type: Boolean },
+                },
+        },
+        currentThoughtsOfHarmingOthers: { type: Boolean },
+        riskFactors: {
+                currentSuicidalIdeation: { type: Boolean },
+                priorSuicideAttempt: { type: Boolean },
+                accessToMeans: { type: Boolean },
+                substanceAbuse: { type: Boolean },
+                otherSelfAbusingBehavior: { type: Boolean },
+                recentLossesLackOfSupport: { type: Boolean },
+                behaviorCues: { type: String },
+                symptomsOfPsychosis: { type: String },
+                familyHistoryOfSuicide: { type: Boolean },
+                terminalPhysicalIllness: { type: Boolean },
+                currentStressors: { type: String },
+                chronicPain: { type: Boolean },
+        },
+        protectiveFactors: {
+                supportsAvailable: { type: Boolean },
+                spiritualReligiousSupport: { type: Boolean },
+                religiousCulturalProhibitions: { type: Boolean },
+                fearOfConsequences: { type: Boolean },
+                ableToBeEngagedInIntervention: { type: Boolean },
+                willingToCommitToKeepingSelfSafe: { type: Boolean },
+        },
+        riskLevel: { type: String, enum: ['No Risk', 'Low Risk', 'Moderate Risk', 'High Risk'] },
+        psychiatricDiagnoses: [{
+                icdCode: { type: String },
+                description: { type: String },
+                primary: { type: Boolean },
+                secondary: { type: Boolean },
+                tertiary: { type: Boolean },
+                additional: { type: Boolean },
+        }],
+        medicalDiagnoses: [{
+                icdCode: { type: String },
+                description: { type: String },
+                primary: { type: Boolean },
+                secondary: { type: Boolean },
+                tertiary: { type: Boolean },
+                additional: { type: Boolean },
+        }],
+        additionalDiagnoses: [{ type: String }],
+        psychosocialStressors: {
+                primarySupportGroup: { type: Boolean },
+                maritalProblems: { type: Boolean },
+                accessToHealthCareServices: { type: Boolean },
+                educationalProblems: { type: Boolean },
+                housingProblems: { type: Boolean },
+                familyProblems: { type: Boolean },
+                occupationalProblems: { type: Boolean },
+                interactionWithLegalSystem: { type: Boolean },
+                substanceUseInHome: { type: Boolean },
+                sexualProblems: { type: Boolean },
+                otherStressors: { type: String },
+        },
+        significantRecentLosses: {
+                no: { type: Boolean },
+                yes: { type: Boolean },
+                typeOfLoss: {
+                        death: { type: Boolean },
+                        job: { type: Boolean },
+                        childRemovedFromHouse: { type: Boolean },
+                        injury: { type: Boolean },
+                        divorceSeparation: { type: Boolean },
+                        violentActsAgainstPersonFamily: { type: Boolean },
+                        medicalSurgical: { type: Boolean },
+                        accidentInjury: { type: Boolean },
+                        other: { type: Boolean },
+                },
+        },
+        additionalNotes: { type: String },
+        staffInformation: {
+                staffName: { type: String },
+                staffTitle: { type: String },
+                staffSignature: { type: String },
+                staffDate: { type: Date, default: Date.now },
+        },
+        bhpInformation: {
+                bhpName: { type: String },
+                bhpCredentials: { type: String },
+                bhpSignature: { type: String },
+                bhpDate: { type: Date, default: Date.now },
+        },
+});
 const Assessment = mongoose.model('initialAssesment', assessmentSchema);
-
 module.exports = Assessment;
