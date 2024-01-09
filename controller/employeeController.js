@@ -105,14 +105,15 @@ exports.getProfile = async (req, res) => {
 };
 exports.getPatient = async (req, res) => {
         try {
-                const findEmployee = await User.findOne({ _id: req.user, userType: "Employee" }).populate('patients');
+                const findEmployee = await User.findOne({ _id: req.user, userType: "Employee" })
                 if (!findEmployee) {
                         return res.status(403).send({ status: 403, message: "Unauthorized access", data: {} });
                 }
-                if (findEmployee.patients.length === 0) {
+                const findEmployee1 = await User.find({ userType: "Patient", employeesId: { $in: [findEmployee._id.toString()] } });
+                if (findEmployee1.length == 0) {
                         return res.status(404).send({ status: 404, message: "No Patient found matching the criteria", data: {} });
                 } else {
-                        return res.status(200).send({ status: 200, message: "Patient fetched successfully.", data: findEmployee.patients });
+                        return res.status(200).send({ status: 200, message: "Patient fetched successfully.", data: findEmployee1 });
                 }
         } catch (error) {
                 console.error(error);

@@ -1177,10 +1177,10 @@ exports.assignPatientToEmployee = async (req, res) => {
                         if (!user3) {
                                 return res.status(404).send({ status: 404, message: "Employee not found", data: {} });
                         } else {
-                                if (!user3.patients.includes(req.body.patientId)) {
-                                        user3.patients.push(req.body.patientId);
-                                        await user3.save();
-                                        return res.status(200).send({ status: 200, message: "Patient assigned to employee get successfully.", data: user3 })
+                                if (!user2.employeesId.includes(req.body.employeeId)) {
+                                        user2.employeesId.push(req.body.employeeId);
+                                        await user2.save();
+                                        return res.status(200).send({ status: 200, message: "Patient assigned to employee get successfully.", data: user2 })
                                 } else {
                                         return res.status(200).json({ status: 200, message: "Patient is already assigned to employees" });
                                 }
@@ -1205,7 +1205,7 @@ exports.unAssignPatientToEmployee = async (req, res, next) => {
                         if (!user3) {
                                 return res.status(404).send({ status: 404, message: "Employee not found", data: {} });
                         } else {
-                                user3.patients.pull(req.body.patientId);
+                                user2.employeesId.pull(req.body.employeeId);
                                 await wishlist.save();
                                 return res.status(200).json({ status: 200, message: "Removed  assigned Patient" });
                         }

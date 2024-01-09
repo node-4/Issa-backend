@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
-        patients: [{
+        employeesId: [{
                 type: schema.Types.ObjectId,
                 ref: "User",
         }],
