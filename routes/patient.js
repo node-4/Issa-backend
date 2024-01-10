@@ -6,6 +6,8 @@ module.exports = (app) => {
         app.get('/api/v1/Patient/getProfile', authJwt.verifyToken, auth.getProfile);
         app.put('/api/v1/Patient/updateProfile', authJwt.verifyToken, upload.single('image'), auth.updateProfile);
         app.post('/api/v1/Patient/createAppointment', authJwt.verifyToken, auth.createAppointment);
+        app.get('/api/v1/Patient/getAllUpcomingAppointments', authJwt.verifyToken, auth.getAllUpcomingAppointments);
+        app.get('/api/v1/Patient/getAllPastAppointments', authJwt.verifyToken, auth.getAllPastAppointments);
         app.get('/api/v1/Patient/getAllPatientTracking', authJwt.verifyToken, auth.getAllPatientTracking);
         app.get('/api/v1/Patient/getAllPatientMedication', authJwt.verifyToken, auth.getAllPatientMedication);
         app.post('/api/v1/Patient/createResidentSafetyPlan', auth.createResidentSafetyPlan);
@@ -16,4 +18,6 @@ module.exports = (app) => {
         app.get('/api/v1/Patient/getNursingAssessment/:patientId', authJwt.verifyToken, auth.getNursingAssessment);
         app.post('/api/v1/Patient/createResidentIntake', authJwt.verifyToken, auth.createResidentIntake);
         app.get('/api/v1/Patient/ResidentIntake/:patientId', authJwt.verifyToken, auth.getResidentIntake);
+        app.post('/api/v1/Patient/createInitialAssessment', authJwt.verifyToken, auth.createInitialAssessment);
+        app.get('/api/v1/Patient/InitialAssessment/:patientId', authJwt.verifyToken, auth.getInitialAssessment);
 }

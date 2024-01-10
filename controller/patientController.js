@@ -28,6 +28,7 @@ const residentSafetyPlan = require('../model/patientIntake/residentSafetyPlan');
 const treatmentPlan = require('../model/patientIntake/treatmentPlan');
 const nursingAssessment = require('../model/patientIntake/nursingAssessment');
 const residentIntake = require('../model/patientIntake/residentIntake');
+const initialAssessment = require('../model/patientIntake/initialAssessment');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -117,6 +118,42 @@ exports.createAppointment = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 }
+exports.getAllUpcomingAppointments = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const currentDate = new Date();
+                const upcomingAppointments = await appointment.find({ patientId: user._id, date: { $gte: currentDate }, }).sort({ date: 1 });
+                if (upcomingAppointments.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No appointment found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Appointment found successfully.", data: upcomingAppointments });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getAllPastAppointments = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const currentDate = new Date();
+                const upcomingAppointments = await appointment.find({ patientId: user._id, date: { $lt: currentDate }, }).sort({ date: 1 });
+                if (upcomingAppointments.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No appointment found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Appointment found successfully.", data: upcomingAppointments });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
 exports.getAllPatientTracking = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user, userType: "Patient" });
@@ -613,6 +650,512 @@ exports.getResidentIntake = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "No residentIntake found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "ResidentIntake found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.createInitialAssessment = async (req, res) => {
+        try {
+                const patient = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!patient) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                const consentFormData = {
+                        adminId: patient.adminId,
+                        patientId: patient._id,
+                        dob: req.body.dateOfBirth,
+                        companyName: req.body.companyName,
+                        residentName: req.body.residentName,
+                        sex: req.body.sex,
+                        dateOfAssessment: req.body.dateOfAssessment,
+                        ahcccsNumber: req.body.ahcccsNumber,
+                        preferredLanguage: req.body.preferredLanguage,
+                        ethnicity: req.body.ethnicity,
+                        admissionStatus: req.body.admissionStatus,
+                        programLocation: req.body.programLocation,
+                        guardianship: req.body.guardianship,
+                        powerOfAttorneyStatus: req.body.powerOfAttorneyStatus,
+                        todayDate: req.body.todayDate,
+                        guardianshipPoaPubFidName: req.body.guardianshipPoaPubFidName,
+                        approvedBy: req.body.approvedBy,
+                        reasonForAdmission: req.body.reasonForAdmission,
+                        residentGoals: req.body.residentGoals,
+                        residentStrengths: req.body.residentStrengths,
+                        residentLimitations: req.body.residentLimitations,
+                        currentBehavioralIssues: req.body.currentBehavioralIssues,
+                        behavioralInterventions: req.body.behavioralInterventions,
+                        dischargePlan: req.body.dischargePlan,
+                        estimateDateOfDischarge: req.body.estimateDateOfDischarge,
+                        agreementWithPlan: req.body.agreementWithPlan,
+                        residentGuardianAgreement: {
+                                name: req.body.residentGuardianName,
+                                signature: req.body.residentGuardianSignature,
+                                date: req.body.residentGuardianDate,
+                        },
+                        staffAgreement: {
+                                name: req.body.staffName,
+                                signature: req.body.staffSignature,
+                                date: req.body.staffDate,
+                        },
+                        bhpAgreement: {
+                                name: req.body.bhpName,
+                                signature: req.body.bhpSignature,
+                                date: req.body.bhpDate,
+                        },
+                        other: {
+                                name: req.body.otherName,
+                                relationship: req.body.otherRelationship,
+                                signature: req.body.otherSignature,
+                                date: req.body.otherDate,
+                        },
+                        medicalConditions: [{
+                                condition: req.body.medicalCondition,
+                                yes: req.body.medicalConditionYes,
+                                no: req.body.medicalConditionNo,
+                                comments: req.body.medicalConditionComments,
+                        }],
+                        SignificantFamilyMedicalPsychiatricHistory: req.body.SignificantFamilyMedicalPsychiatricHistory,
+                        mentalHealthTreatmentHistory: [{
+                                typeOfService: req.body.mentalHealthServiceType,
+                                where: req.body.mentalHealthServiceWhere,
+                                dates: req.body.mentalHealthServiceDates,
+                                diagnosisReason: req.body.mentalHealthDiagnosisReason,
+                        }],
+                        substanceAbuseHistory: req.body.substanceAbuseHistory,
+                        substanceAbuseDenies: req.body.substanceAbuseDenies,
+                        substanceAbuseHistoryData: [{
+                                types: req.body.substanceAbuseType,
+                                ageOfFirstUse: req.body.substanceAbuseAgeOfFirstUse,
+                                lastUse: req.body.substanceAbuseLastUse,
+                                frequency: req.body.substanceAbuseFrequency,
+                                lengthOfSobriety: req.body.substanceAbuseLengthOfSobriety,
+                        }],
+                        ActiveWithdrawalSymptoms: {
+                                noneReportedOrObserved: req.body.activeWithdrawalNoneReportedOrObserved,
+                                Agitation: req.body.activeWithdrawalAgitation,
+                                Nausea: req.body.activeWithdrawalNausea,
+                                Vomiting: req.body.activeWithdrawalVomiting,
+                                Headache: req.body.activeWithdrawalHeadache,
+                                TactileDisturbances: req.body.activeWithdrawalTactileDisturbances,
+                                Anxiety: req.body.activeWithdrawalAnxiety,
+                                Tremors: req.body.activeWithdrawalTremors,
+                                VisualDisturbances: req.body.activeWithdrawalVisualDisturbances,
+                                AuditoryDisturbances: req.body.activeWithdrawalAuditoryDisturbances,
+                                Sweats: req.body.activeWithdrawalSweats,
+                                Paranoia: req.body.activeWithdrawalParanoia,
+                                GooseBumps: req.body.activeWithdrawalGooseBumps,
+                                Runningnose: req.body.activeWithdrawalRunningnose,
+                                BonePain: req.body.activeWithdrawalBonePain,
+                                Tearing: req.body.activeWithdrawalTearing,
+                                Seizures: req.body.activeWithdrawalSeizures,
+                                LossofMuscleCoordination: req.body.activeWithdrawalLossofMuscleCoordination,
+                        },
+                        mentalStatusExam: {
+                                apparentAge: {
+                                        consistent: req.body.apparentAgeConsistent,
+                                        younger: req.body.apparentAgeYounger,
+                                        older: req.body.apparentAgeOlder,
+                                },
+                                height: {
+                                        average: req.body.heightAverage,
+                                        short: req.body.heightShort,
+                                        tall: req.body.heightTall,
+                                },
+                                weight: {
+                                        average: req.body.weightAverage,
+                                        obese: req.body.weightObese,
+                                        overweight: req.body.weightOverweight,
+                                        thin: req.body.weightThin,
+                                        emaciated: req.body.weightEmaciated,
+                                },
+                                attire: {
+                                        Casual: req.body.attireCasual,
+                                        Neat: req.body.attireNeat,
+                                        Tattered: req.body.attireTattered,
+                                        Dirty: req.body.attireDirty,
+                                },
+                                grooming: {
+                                        wellGroomed: req.body.groomingWellGroomed,
+                                        adequate: req.body.groomingAdequate,
+                                        unkempt: req.body.groomingUnkempt,
+                                        disheveled: req.body.groomingDisheveled,
+                                },
+                                Mood: {
+                                        Euthymic: req.body.moodEuthymic,
+                                        Irritable: req.body.moodIrritable,
+                                        Elevated: req.body.moodElevated,
+                                        Depressed: req.body.moodDepressed,
+                                        Anxious: req.body.moodAnxious,
+                                },
+                                Affect: {
+                                        normalRange: req.body.affectNormalRange,
+                                        Depressed: req.body.affectDepressed,
+                                        Labile: req.body.affectLabile,
+                                        Constricted: req.body.affectConstricted,
+                                        Other: req.body.affectOther,
+                                },
+                                EyeContact: {
+                                        Appropriate: req.body.eyeContactAppropriate,
+                                        Minimal: req.body.eyeContactMinimal,
+                                        Poor: req.body.eyeContactPoor,
+                                        Adequate: req.body.eyeContactAdequate,
+                                },
+                                Cooperation: {
+                                        Appropriate: req.body.cooperationAppropriate,
+                                        Hostile: req.body.cooperationHostile,
+                                        Evasive: req.body.cooperationEvasive,
+                                        Defensive: req.body.cooperationDefensive,
+                                        Indifferent: req.body.cooperationIndifferent,
+                                },
+                                Articulation: {
+                                        Normal: req.body.articulationNormal,
+                                        Unintelligible: req.body.articulationUnintelligible,
+                                        Mumbled: req.body.articulationMumbled,
+                                        Slurred: req.body.articulationSlurred,
+                                        Stuttered: req.body.articulationStuttered,
+                                },
+                                Tone: {
+                                        Normal: req.body.toneNormal,
+                                        Soft: req.body.toneSoft,
+                                        Loud: req.body.toneLoud,
+                                        Pressured: req.body.tonePressured,
+                                },
+                                Rate: {
+                                        Normal: req.body.rateNormal,
+                                        Slow: req.body.rateSlow,
+                                        Fast: req.body.rateFast,
+                                },
+                                Quantity: {
+                                        Normal: req.body.quantityNormal,
+                                        Verbose: req.body.quantityVerbose,
+                                        Mutism: req.body.quantityMutism,
+                                },
+                                responseLatency: {
+                                        Normal: req.body.responseLatencyNormal,
+                                        Delayed: req.body.responseLatencyDelayed,
+                                        Shortened: req.body.responseLatencyShortened,
+                                },
+                                thoughtContent: {
+                                        Unremarkable: req.body.thoughtContentUnremarkable,
+                                        Suspicious: req.body.thoughtContentSuspicious,
+                                        Negative: req.body.thoughtContentNegative,
+                                        Concrete: req.body.thoughtContentConcrete,
+                                },
+                                thoughtProcesses: {
+                                        logicalCoherent: req.body.thoughtProcessesLogicalCoherent,
+                                        Tangential: req.body.thoughtProcessesTangential,
+                                        Circumstantial: req.body.thoughtProcessesCircumstantial,
+                                        Vague: req.body.thoughtProcessesVague,
+                                },
+                                Delusions: {
+                                        No: req.body.delusionsNo,
+                                        YesPersecutory: req.body.delusionsYesPersecutory,
+                                        YesSomatic: req.body.delusionsYesSomatic,
+                                        YesGrandiose: req.body.delusionsYesGrandiose,
+                                        YesOther: {
+                                                type: req.body.delusionsYesOtherType,
+                                        },
+                                },
+                                Hallucinations: {
+                                        Unremarkable: req.body.hallucinationsUnremarkable,
+                                        VisualHallucinations: req.body.hallucinationsVisualHallucinations,
+                                        AuditoryHallucinations: req.body.hallucinationsAuditoryHallucinations,
+                                        TactileHallucinations: req.body.hallucinationsTactileHallucinations,
+                                        YesOther: req.body.YesOther,
+                                },
+                                Gait: {
+                                        Normal: req.body.gaitNormal,
+                                        Staggering: req.body.gaitStaggering,
+                                        Shuffling: req.body.gaitShuffling,
+                                        Slow: req.body.gaitSlow,
+                                        Awkward: req.body.gaitAwkward,
+                                },
+                                Posture: {
+                                        Normal: req.body.postureNormal,
+                                        Relaxed: req.body.postureRelaxed,
+                                        Rigid: req.body.postureRigid,
+                                        Tense: req.body.postureTense,
+                                        Slouched: req.body.postureSlouched,
+                                },
+                                PsychomotorActivity: {
+                                        Withinnormallimits: req.body.psychomotorActivityWithinNormalLimits,
+                                        Calm: req.body.psychomotorActivityCalm,
+                                        Hyperactive: req.body.psychomotorActivityHyperactive,
+                                        Agitated: req.body.psychomotorActivityAgitated,
+                                        Hypoactive: req.body.psychomotorActivityHypoactive,
+                                },
+                                Mannerisms: {
+                                        None: req.body.mannerismsNone,
+                                        Tics: req.body.mannerismsTics,
+                                        Tremors: req.body.mannerismsTremors,
+                                        Rocking: req.body.mannerismsRocking,
+                                        Picking: req.body.mannerismsPicking,
+                                },
+                                orientation: {
+                                        person: req.body.orientationPerson,
+                                        place: req.body.orientationPlace,
+                                        time: req.body.orientationTime,
+                                        circumstances: req.body.orientationCircumstances,
+                                },
+                                Judgment: {
+                                        Good: req.body.judgmentGood,
+                                        Fair: req.body.judgmentFair,
+                                        Poor: req.body.judgmentPoor,
+                                },
+                                Insight: {
+                                        Good: req.body.insightGood,
+                                        Fair: req.body.insightFair,
+                                        Poor: req.body.insightPoor,
+                                },
+                                Memory: {
+                                        Good: req.body.memoryGood,
+                                        Fair: req.body.memoryFair,
+                                        Poor: req.body.memoryPoor,
+                                },
+                                AbilityToConcentration: {
+                                        Intact: req.body.abilityToConcentrationIntact,
+                                        Other: req.body.abilityToConcentrationOther,
+                                },
+                        },
+                        significantSocialDevelopmentalHistory: req.body.significantSocialDevelopmentalHistory,
+                        personalInformation: {
+                                highestEducation: req.body.highestEducation,
+                                specialEducation: req.body.specialEducation,
+                                currentStudent: req.body.currentStudent,
+                                currentStudentLocation: req.body.currentStudentLocation,
+                        },
+                        employmentHistory: {
+                                currentlyEmployed: req.body.currentlyEmployed,
+                                employmentLocation: req.body.employmentLocation,
+                                fullTime: req.body.fullTime,
+                        },
+                        workHistory: req.body.workHistory,
+                        militaryHistory: {
+                                militaryService: req.body.militaryService,
+                                activeDuty: req.body.activeDuty,
+                        },
+                        legalHistory: {
+                                arrestedForDUI: req.body.arrestedForDUI,
+                                arrestedForAssault: req.body.arrestedForAssault,
+                                arrestedForBadChecks: req.body.arrestedForBadChecks,
+                                arrestedForShoplifting: req.body.arrestedForShoplifting,
+                                arrestedForAttemptedMurder: req.body.arrestedForAttemptedMurder,
+                                arrestedForDrug: req.body.arrestedForDrug,
+                                arrestedForAlcohol: req.body.arrestedForAlcohol,
+                                arrestedForDisorderlyConduct: req.body.arrestedForDisorderlyConduct,
+                                arrestedForIdentityTheft: req.body.arrestedForIdentityTheft,
+                                arrestedForSexOffense: req.body.arrestedForSexOffense,
+                                arrestedForOther: req.body.arrestedForOther,
+                                probationParole: req.body.probationParole,
+                                custody: req.body.custody,
+                                pendingLitigation: req.body.pendingLitigation,
+                                sentencingDates: req.body.sentencingDates,
+                                needsLegalAid: req.body.needsLegalAid,
+                                incarcerated: req.body.incarcerated,
+                        },
+                        independentLivingSkills: {
+                                bathingShowering: {
+                                        good: req.body.bathingShoweringGood,
+                                        fair: req.body.bathingShoweringFair,
+                                        needAssist: req.body.bathingShoweringNeedAssist,
+                                        comments: req.body.bathingShoweringComments,
+                                },
+                                groomingHygiene: {
+                                        good: req.body.groomingHygieneGood,
+                                        fair: req.body.groomingHygieneFair,
+                                        needAssist: req.body.groomingHygieneNeedAssist,
+                                        comments: req.body.groomingHygieneComments,
+                                },
+                                mobility: {
+                                        good: req.body.mobilityGood,
+                                        fair: req.body.mobilityFair,
+                                        needAssist: req.body.mobilityNeedAssist,
+                                        comments: req.body.mobilityComments,
+                                },
+                                housework: {
+                                        good: req.body.houseworkGood,
+                                        fair: req.body.houseworkFair,
+                                        needAssist: req.body.houseworkNeedAssist,
+                                        comments: req.body.houseworkComments,
+                                },
+                                shopping: {
+                                        good: req.body.shoppingGood,
+                                        fair: req.body.shoppingFair,
+                                        needAssist: req.body.shoppingNeedAssist,
+                                        comments: req.body.shoppingComments,
+                                },
+                                managingMoneyBudget: {
+                                        good: req.body.managingMoneyBudgetGood,
+                                        fair: req.body.managingMoneyBudgetFair,
+                                        needAssist: req.body.managingMoneyBudgetNeedAssist,
+                                        comments: req.body.managingMoneyBudgetComments,
+                                },
+                                takingMedications: {
+                                        good: req.body.takingMedicationsGood,
+                                        fair: req.body.takingMedicationsFair,
+                                        needAssist: req.body.takingMedicationsNeedAssist,
+                                        comments: req.body.takingMedicationsComments,
+                                },
+                                preparingFood: {
+                                        good: req.body.preparingFoodGood,
+                                        fair: req.body.preparingFoodFair,
+                                        needAssist: req.body.preparingFoodNeedAssist,
+                                        comments: req.body.preparingFoodComments,
+                                },
+                                eating: {
+                                        good: req.body.eatingGood,
+                                        fair: req.body.eatingFair,
+                                        needAssist: req.body.eatingNeedAssist,
+                                        comments: req.body.eatingComments,
+                                },
+                                toileting: {
+                                        good: req.body.toiletingGood,
+                                        fair: req.body.toiletingFair,
+                                        needAssist: req.body.toiletingNeedAssist,
+                                        comments: req.body.toiletingComments,
+                                },
+                                other: {
+                                        good: req.body.otherGood,
+                                        fair: req.body.otherFair,
+                                        needAssist: req.body.otherNeedAssist,
+                                        comments: req.body.otherComments,
+                                },
+                        },
+                        triggers: req.body.triggers,
+                        fallRiskData: {
+                                fallRisk: req.body.fallRisk,
+                                fallRiskExplanation: req.body.fallRiskExplanation,
+                        },
+                        hobbiesLeisureActivities: req.body.hobbiesLeisureActivities,
+                        medicalEquipment: {
+                                wheelchair: req.body.medicalEquipmentWheelchair,
+                                oxygenTank: req.body.medicalEquipmentOxygenTank,
+                                cpapMachine: req.body.medicalEquipmentCpapMachine,
+                                showerChair: req.body.medicalEquipmentShowerChair,
+                                other: req.body.medicalEquipmentOther,
+                        },
+                        specialPrecautions: {
+                                seizure: req.body.seizure,
+                                elopementAwol: req.body.elopementAwol,
+                                physicalAggression: req.body.physicalAggression,
+                                withdrawal: req.body.withdrawal,
+                                inappropriateSexualBehaviors: req.body.inappropriateSexualBehaviors,
+                                substanceUse: req.body.substanceUse,
+                                noSpecialPrecautions: req.body.noSpecialPrecautions,
+                        },
+                        currentThoughtsOfHarmingSelf: req.body.currentThoughtsOfHarmingSelf,
+                        suicidalIdeation: {
+                                ideation: req.body.suicidalIdeation,
+                                increasingIn: {
+                                        urgency: req.body.suicidalIdeationUrgency,
+                                        severity: req.body.suicidalIdeationSeverity,
+                                },
+                        },
+                        currentThoughtsOfHarmingOthers: req.body.currentThoughtsOfHarmingOthers,
+                        riskFactors: {
+                                currentSuicidalIdeation: req.body.currentSuicidalIdeation,
+                                priorSuicideAttempt: req.body.priorSuicideAttempt,
+                                accessToMeans: req.body.accessToMeans,
+                                substanceAbuse: req.body.substanceAbuse,
+                                otherSelfAbusingBehavior: req.body.otherSelfAbusingBehavior,
+                                recentLossesLackOfSupport: req.body.recentLossesLackOfSupport,
+                                behaviorCues: req.body.behaviorCues,
+                                symptomsOfPsychosis: req.body.symptomsOfPsychosis,
+                                familyHistoryOfSuicide: req.body.familyHistoryOfSuicide,
+                                terminalPhysicalIllness: req.body.terminalPhysicalIllness,
+                                currentStressors: req.body.currentStressors,
+                                chronicPain: req.body.chronicPain,
+                        },
+                        protectiveFactors: {
+                                supportsAvailable: req.body.supportsAvailable,
+                                spiritualReligiousSupport: req.body.spiritualReligiousSupport,
+                                religiousCulturalProhibitions: req.body.religiousCulturalProhibitions,
+                                fearOfConsequences: req.body.fearOfConsequences,
+                                ableToBeEngagedInIntervention: req.body.ableToBeEngagedInIntervention,
+                                willingToCommitToKeepingSelfSafe: req.body.willingToCommitToKeepingSelfSafe,
+                        },
+                        riskLevel: req.body.riskLevel,
+                        psychiatricDiagnoses: [{
+                                icdCode: req.body.icdCode,
+                                description: req.body.description,
+                                primary: req.body.primary,
+                                secondary: req.body.secondary,
+                                tertiary: req.body.tertiary,
+                                additional: req.body.additional,
+                        }],
+                        medicalDiagnoses: [{
+                                icdCode: req.body.icdCode,
+                                description: req.body.description,
+                                primary: req.body.primary,
+                                secondary: req.body.secondary,
+                                tertiary: req.body.tertiary,
+                                additional: req.body.additional,
+                        }],
+                        additionalDiagnoses: req.body.additionalDiagnoses,
+                        psychosocialStressors: {
+                                primarySupportGroup: req.body.primarySupportGroup,
+                                maritalProblems: req.body.maritalProblems,
+                                accessToHealthCareServices: req.body.accessToHealthCareServices,
+                                educationalProblems: req.body.educationalProblems,
+                                housingProblems: req.body.housingProblems,
+                                familyProblems: req.body.familyProblems,
+                                occupationalProblems: req.body.occupationalProblems,
+                                interactionWithLegalSystem: req.body.interactionWithLegalSystem,
+                                substanceUseInHome: req.body.substanceUseInHome,
+                                sexualProblems: req.body.sexualProblems,
+                                otherStressors: req.body.otherStressors,
+                        },
+                        significantRecentLosses: {
+                                no: req.body.no,
+                                yes: req.body.yes,
+                                typeOfLoss: {
+                                        death: req.body.typeOfLoss.death,
+                                        job: req.body.typeOfLoss.job,
+                                        childRemovedFromHouse: req.body.typeOfLoss.childRemovedFromHouse,
+                                        injury: req.body.typeOfLoss.injury,
+                                        divorceSeparation: req.body.typeOfLoss.divorceSeparation,
+                                        violentActsAgainstPersonFamily: req.body.typeOfLoss.violentActsAgainstPersonFamily,
+                                        medicalSurgical: req.body.typeOfLoss.medicalSurgical,
+                                        accidentInjury: req.body.typeOfLoss.accidentInjury,
+                                        other: req.body.typeOfLoss.other,
+                                },
+                        },
+                        additionalNotes: req.body.additionalNotes,
+                        staffInformation: {
+                                staffName: req.body.staffName,
+                                staffTitle: req.body.staffTitle,
+                                staffSignature: req.body.staffSignature,
+                                staffDate: req.body.staffDate || Date.now(),
+                        },
+                        bhpInformation: {
+                                bhpName: req.body.bhpName,
+                                bhpCredentials: req.body.bhpCredentials,
+                                bhpSignature: req.body.bhpSignature,
+                                bhpDate: req.body.bhpDate || Date.now(),
+                        },
+                };
+                const newConsentForm = await initialAssessment.create(consentFormData);
+                if (newConsentForm) {
+                        return res.status(200).send({ status: 200, message: "Initial assessment added successfully.", data: newConsentForm });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message });
+        }
+};
+exports.getInitialAssessment = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.params.patientId, userType: "Patient" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await initialAssessment.findOne({ patientId: user._id });
+                if (!filteredTasks) {
+                        return res.status(404).send({ status: 404, message: "No initialAssessment found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Initial assessment found successfully.", data: filteredTasks });
                 }
         } catch (error) {
                 console.error(error);

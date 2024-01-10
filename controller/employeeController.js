@@ -37,9 +37,11 @@ const TherapySession = require('../model/GroupNotes/theropyNotes/therapyNotes');
 const timeOffRequest = require('../model/timeOffRequest/timeOffrequest');
 const employeePerformanceReview = require('../model/EmployeePerformanceReview/employeePerformanceReview');
 const patientTracking = require('../model/Tracking/patientTracking');
+const employeeTracking = require('../model/Tracking/employeeTracking');
 const patientVitals = require('../model/patientVitals/patientVitals');
 const PrnMedicationLog = require('../model/Medication/employeeMedication/PrnMedicationLog');
 const informedConsentForMedication = require('../model/Medication/employeeMedication/informedConsentForMedication');
+const mars = require('../model/Medication/employeeMedication/mars');
 const medicationOpioidCount = require('../model/Medication/employeeMedication/medicationOpioidCount');
 const medicationReconciliation = require('../model/Medication/employeeMedication/medicationReconciliation');
 const ADLTrackingForm = require('../model/patientChart/ADLTrackingForm');
@@ -5359,6 +5361,231 @@ exports.getResidentIntake = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "No residentIntake found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "ResidentIntake found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.createEmployeeTracking = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found or not registered", data: {} });
+                }
+                const existingEmployee = await EmployeeTracking.findOne({ employeeId: user._id });
+                if (!existingEmployee) {
+                        req.body.employeeId = user._id;
+                        req.body.employeeSignature = req.body.employeeSignature;
+                        req.body.adminId = user.adminId;
+                        if (req.files['CPRFirstAid']) {
+                                req.body.CPRFirstAid = req.files['CPRFirstAid'][0].path;
+                                req.body.CPRFirstAidExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['TBTestChestXray']) {
+                                req.body.TBTestChestXray = req.files['TBTestChestXray'][0].path;
+                                req.body.TBTestChestXrayExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['TBtestQuestionnaire']) {
+                                req.body.TBtestQuestionnaire = req.files['TBtestQuestionnaire'][0].path;
+                                req.body.TBtestQuestionnaireExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['FingerprintClearanceCard']) {
+                                req.body.FingerprintClearanceCard = req.files['FingerprintClearanceCard'][0].path;
+                                req.body.FingerprintClearanceCardExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['InfectiousControlTraining']) {
+                                req.body.InfectiousControlTraining = req.files['InfectiousControlTraining'][0].path;
+                                req.body.InfectiousControlTrainingExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['TBAnnualEducation']) {
+                                req.body.TBAnnualEducation = req.files['TBAnnualEducation'][0].path;
+                                req.body.TBAnnualEducationExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['FallPreventionandFallRecovery']) {
+                                req.body.FallPreventionandFallRecovery = req.files['FallPreventionandFallRecovery'][0].path;
+                                req.body.FallPreventionandFallRecoveryExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['APSSearch']) {
+                                req.body.APSSearch = req.files['APSSearch'][0].path;
+                                req.body.APSSearchExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['CPIPreventionandControl']) {
+                                req.body.CPIPreventionandControl = req.files['CPIPreventionandControl'][0].path;
+                                req.body.CPIPreventionandControlExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['Annualabuseandneglecttraining']) {
+                                req.body.Annualabuseandneglecttraining = req.files['Annualabuseandneglecttraining'][0].path;
+                                req.body.AnnualabuseandneglecttrainingExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['vacationPersonalTimeUsed']) {
+                                req.body.vacationPersonalTimeUsed = req.files['vacationPersonalTimeUsed'][0].path;
+                                req.body.vacationPersonalTimeUsedExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        const newConsentForm = await EmployeeTracking.create(req.body);
+                        if (newConsentForm) {
+                                return res.status(200).send({ status: 200, message: "Employee Tracking added successfully.", data: newConsentForm });
+                        }
+                } else {
+                        existingEmployee.employeeSignature = req.body.employeeSignature;
+                        existingEmployee.adminId = user.adminId;
+                        if (req.files['CPRFirstAid']) {
+                                existingEmployee.CPRFirstAid = req.files['CPRFirstAid'][0].path;
+                                existingEmployee.CPRFirstAidExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['TBTestChestXray']) {
+                                existingEmployee.TBTestChestXray = req.files['TBTestChestXray'][0].path;
+                                existingEmployee.TBTestChestXrayExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['TBtestQuestionnaire']) {
+                                existingEmployee.TBtestQuestionnaire = req.files['TBtestQuestionnaire'][0].path;
+                                existingEmployee.TBtestQuestionnaireExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['FingerprintClearanceCard']) {
+                                existingEmployee.FingerprintClearanceCard = req.files['FingerprintClearanceCard'][0].path;
+                                existingEmployee.FingerprintClearanceCardExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['InfectiousControlTraining']) {
+                                existingEmployee.InfectiousControlTraining = req.files['InfectiousControlTraining'][0].path;
+                                existingEmployee.InfectiousControlTrainingExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['TBAnnualEducation']) {
+                                existingEmployee.TBAnnualEducation = req.files['TBAnnualEducation'][0].path;
+                                existingEmployee.TBAnnualEducationExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['FallPreventionandFallRecovery']) {
+                                existingEmployee.FallPreventionandFallRecovery = req.files['FallPreventionandFallRecovery'][0].path;
+                                existingEmployee.FallPreventionandFallRecoveryExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['APSSearch']) {
+                                existingEmployee.APSSearch = req.files['APSSearch'][0].path;
+                                existingEmployee.APSSearchExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['CPIPreventionandControl']) {
+                                existingEmployee.CPIPreventionandControl = req.files['CPIPreventionandControl'][0].path;
+                                existingEmployee.CPIPreventionandControlExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['Annualabuseandneglecttraining']) {
+                                existingEmployee.Annualabuseandneglecttraining = req.files['Annualabuseandneglecttraining'][0].path;
+                                existingEmployee.AnnualabuseandneglecttrainingExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        if (req.files['vacationPersonalTimeUsed']) {
+                                existingEmployee.vacationPersonalTimeUsed = req.files['vacationPersonalTimeUsed'][0].path;
+                                existingEmployee.vacationPersonalTimeUsedExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
+                        }
+                        const updatedEmployee = await existingEmployee.save();
+                        return res.status(200).json({ status: 200, message: 'Employee Tracking added successfully.', data: updatedEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).json({ status: 500, error: 'Internal Server Error' });
+        }
+};
+exports.getEmployeeTracking = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.params.employeeId, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await EmployeeTracking.findOne({ employeeId: user._id });
+                if (!filteredTasks) {
+                        return res.status(404).send({ status: 404, message: "No EmployeeTracking found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "EmployeeTracking found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getEmployeeTrackingById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await EmployeeTracking.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Employee tracking not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Employee tracking found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createMars = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found or not registered", data: {} });
+                }
+                const patient = await User.findOne({ _id: req.body.patientId, adminId: user.adminId, userType: "Patient" });
+                if (!patient) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                req.body.adminId = user.adminId;
+                req.body.residentName = patient.firstName;
+                req.body.dateOfBirth = patient.dateOfBirth;
+                let medications = [];
+
+                for (let z = 0; z < req.body.medications.length; z++) {
+                        let findMedicationEmployee = await medicationEmployee.findById({ _id: req.body.medications[z] });
+                        if (findMedicationEmployee) {
+                                let instruction = [], medicationStatus = [];
+                                for (let i = 0; i < findMedicationEmployee.instruction.length; i++) {
+                                        let isSelected = req.body.instruction[z].includes(findMedicationEmployee.instruction[i].instruction);
+                                        let k = {
+                                                instruction: findMedicationEmployee.instruction[i].instruction,
+                                                select: isSelected,
+                                        };
+                                        instruction.push(k);
+                                }
+                                let timeStatus = [];
+                                for (let l = 1; l <= req.body.time; l++) {
+                                        let obs = {
+                                                time: req.body.time[l],
+                                                status: ""
+                                        }
+                                        timeStatus.push(obs)
+                                }
+                                for (let i = 1; i <= 31; i++) {
+                                        let y = {
+                                                date: i.toString(),
+                                                timeStatus: timeStatus
+                                        }
+                                        medicationStatus.push(y);
+                                }
+                                let obj = {
+                                        name: findMedicationEmployee.name,
+                                        instruction: instruction,
+                                        medicationStatus: medicationStatus,
+                                };
+                                medications.push(obj);
+                        }
+                }
+                req.body.medications = medications;
+                const newConsentForm = await mars.create(req.body);
+                if (newConsentForm) {
+                        return res.status(200).send({ status: 200, message: "Mars added successfully.", data: newConsentForm });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).json({ status: 500, error: 'Internal Server Error' });
+        }
+};
+exports.getMars = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.params.patientId, userType: "Patient" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await mars.findOne({ patientId: user._id });
+                if (!filteredTasks) {
+                        return res.status(404).send({ status: 404, message: "No mars found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Mars found successfully.", data: filteredTasks });
                 }
         } catch (error) {
                 console.error(error);

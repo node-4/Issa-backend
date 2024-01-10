@@ -270,7 +270,7 @@ const assessmentSchema = new mongoose.Schema({
                         Fair: { type: Boolean },
                         Poor: { type: Boolean },
                 },
-                Abilitytoconcentration: {
+                AbilityToConcentration: {
                         Intact: { type: Boolean },
                         Other: { type: String },
                 },
@@ -492,5 +492,5 @@ const assessmentSchema = new mongoose.Schema({
                 bhpDate: { type: Date, default: Date.now },
         },
 });
-const Assessment = mongoose.model('initialAssesment', assessmentSchema);
+const Assessment = mongoose.model('initialAssessment', assessmentSchema);
 module.exports = Assessment;

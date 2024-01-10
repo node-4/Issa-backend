@@ -3,40 +3,74 @@ const mongoosePaginate = require("mongoose-paginate");
 const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const schema = mongoose.Schema;
 const addressSchema = new mongoose.Schema({
+        employeeId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
         CPRFirstAid: {
                 type: String,
+        },
+        CPRFirstAidExpireDate: {
+                type: Date,
         },
         TBTestChestXray: {
                 type: String,
         },
+        TBTestChestXrayExpireDate: {
+                type: Date,
+        },
         TBtestQuestionnaire: {
                 type: String,
+        },
+        TBtestQuestionnaireExpireDate: {
+                type: Date,
         },
         FingerprintClearanceCard: {
                 type: String,
         },
+        FingerprintClearanceCardExpireDate: {
+                type: Date,
+        },
         InfectiousControlTraining: {
                 type: String,
+        },
+        InfectiousControlTrainingExpireDate: {
+                type: Date,
         },
         TBAnnualEducation: {
                 type: String,
         },
+        TBAnnualEducationExpireDate: {
+                type: Date,
+        },
         FallPreventionandFallRecovery: {
                 type: String,
+        },
+        FallPreventionandFallRecoveryExpireDate: {
+                type: Date,
         },
         APSSearch: {
                 type: String,
         },
+        APSSearchExpireDate: {
+                type: Date,
+        },
         CPIPreventionandControl: {
                 type: String,
+        },
+        CPIPreventionandControlExpireDate: {
+                type: Date,
         },
         Annualabuseandneglecttraining: {
                 type: String,
         },
+        AnnualabuseandneglecttrainingExpireDate: {
+                type: Date,
+        },
         vacationPersonalTimeUsed: {
                 type: String,
         },
-        expireDate: {
+        vacationPersonalTimeUsedExpireDate: {
                 type: Date,
         },
         employeeSignature: {

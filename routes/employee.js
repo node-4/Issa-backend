@@ -1,6 +1,8 @@
 const auth = require("../controller/employeeController");
 const authJwt = require("../middleware/authJwt");
-const { upload, FranchiseUpload, productUpload } = require('../middleware/imageupload')
+const { upload, FranchiseUpload, productUpload, employeeTrackingUpload } = require('../middleware/imageupload')
+
+
 module.exports = (app) => {
         app.post('/api/v1/employee/signin', auth.signin);
         app.get('/api/v1/employee/getProfile', authJwt.verifyToken, auth.getProfile);
@@ -190,4 +192,9 @@ module.exports = (app) => {
         app.get('/api/v1/employee/getNursingAssessment/:patientId', authJwt.verifyToken, auth.getNursingAssessment);
         app.post('/api/v1/employee/createResidentIntake', authJwt.verifyToken, auth.createResidentIntake);
         app.get('/api/v1/employee/ResidentIntake/:patientId', authJwt.verifyToken, auth.getResidentIntake);
+        app.post('/api/v1/employee/createEmployeeTracking', authJwt.verifyToken, employeeTrackingUpload, auth.createEmployeeTracking);
+        app.get('/api/v1/employee/EmployeeTracking/:employeeId', authJwt.verifyToken, auth.getEmployeeTracking);
+        app.get('/api/v1/employee/EmployeeTrackingById/:id', authJwt.verifyToken, auth.getEmployeeTrackingById);
+        app.post('/api/v1/employee/createMars', authJwt.verifyToken, auth.createMars);
+        app.get('/api/v1/employee/Mars/:patientId', authJwt.verifyToken, auth.getMars);
 }
