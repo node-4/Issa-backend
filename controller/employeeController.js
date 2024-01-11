@@ -866,6 +866,7 @@ exports.addStaffSchedule = async (req, res) => {
                         let savedSigned = `${user.firstName} ${user.lastName}`;
                         let obj = {
                                 employeeId: findEmployee._id,
+                                adminId: user._id,
                                 year: req.body.year,
                                 month: req.body.month,
                                 schedule: scheduleWithDays,
