@@ -286,7 +286,9 @@ exports.createTreatmentPlan = async (req, res) => {
                                 medicationServices: req.body.medicationServices || findPatientTracking.medicationServices,
                                 presentingProblems: req.body.presentingProblems || findPatientTracking.presentingProblems,
                                 mentalStatus: req.body.mentalStatus || findPatientTracking.mentalStatus,
+                                mentalStatusOther: req.body.mentalStatusOther || findPatientTracking.mentalStatusOther,
                                 moodLevel: req.body.moodLevel || findPatientTracking.moodLevel,
+                                moodLevelOther: req.body.moodLevelOther || findPatientTracking.moodLevelOther,
                                 adls: req.body.adls || findPatientTracking.adls,
                                 behavioralHealthServices: req.body.behavioralHealthServices || findPatientTracking.behavioralHealthServices,
                                 primaryCareProvider: req.body.primaryCareProvider || findPatientTracking.primaryCareProvider,
@@ -321,7 +323,6 @@ exports.createTreatmentPlan = async (req, res) => {
                                 signaturesFacilityRep: req.body.signaturesFacilityRep || findPatientTracking.signaturesFacilityRep,
                                 signaturesBhp: req.body.signaturesBhp || findPatientTracking.signaturesBhp,
                         };
-
                         let newEmployee = await treatmentPlan.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: obj }, { new: true });
                         if (newEmployee) {
                                 return res.status(200).send({ status: 200, message: "Treatment plan add successfully.", data: newEmployee });
@@ -338,7 +339,9 @@ exports.createTreatmentPlan = async (req, res) => {
                                 medicationServices: req.body.medicationServices,
                                 presentingProblems: req.body.presentingProblems,
                                 mentalStatus: req.body.mentalStatus,
+                                mentalStatusOther: req.body.mentalStatusOther,
                                 moodLevel: req.body.moodLevel,
+                                moodLevelOther: req.body.moodLevelOther,
                                 adls: req.body.adls,
                                 behavioralHealthServices: req.body.behavioralHealthServices,
                                 primaryCareProvider: req.body.primaryCareProvider,

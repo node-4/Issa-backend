@@ -40,9 +40,15 @@ const treatmentPlanSchema = new mongoose.Schema({
                 type: String,
                 enum: ['oriented', 'disoriented', 'unstable', 'other']
         },
+        mentalStatusOther: {
+                type: String,
+        },
         moodLevel: {
                 type: String,
                 enum: ['Normal', 'Elevated', 'Depressed', 'Anxious', 'other']
+        },
+        moodLevelOther: {
+                type: String,
         },
         adls: {
                 type: String,

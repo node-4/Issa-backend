@@ -1731,7 +1731,15 @@ exports.getAllPatientTracking = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let findEmployee = await patientTracking.findOne({ employeeId: user._id, patientId: req.params.patientId });
+                let filter;
+                if (req.params.patientId != (null || undefined)) {
+                        const user2 = await User.findOne({ _id: req.params.patientId, userType: "Patient", employeesId: { $in: [user._id.toString()] } });
+                        if (!user2) {
+                                return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                        }
+                        filter = { patientId: user2._id };
+                }
+                let findEmployee = await patientTracking.findOne(filter);
                 if (!findEmployee) {
                         return res.status(404).send({ status: 404, message: "Patient tracking not found.", data: {} });
                 } else {
@@ -1953,13 +1961,12 @@ exports.getAllPrnMedicationLog = async (req, res) => {
                 }
                 let filter;
                 if (req.query.patientId != (null || undefined)) {
-                        const user2 = await User.findOne({ _id: req.query.patientId, userType: "Patient" });
+                        const user2 = await User.findOne({ _id: req.query.patientId, userType: "Patient", employeesId: { $in: [user._id.toString()] } });
                         if (!user2) {
                                 return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                         }
-                        filter = { patientId: user2._id, employeeId: user._id };
+                        filter = { patientId: user2._id };
                 }
-                filter = { employeeId: user._id };
                 let findEmployee = await PrnMedicationLog.find(filter);
                 if (!findEmployee) {
                         return res.status(404).send({ status: 404, message: "Prn Medication Log not found.", data: {} });
@@ -2089,13 +2096,12 @@ exports.getAllInformedConsentForMedication = async (req, res) => {
                 }
                 let filter;
                 if (req.query.patientId != (null || undefined)) {
-                        const user2 = await User.findOne({ _id: req.query.patientId, userType: "Patient" });
+                        const user2 = await User.findOne({ _id: req.query.patientId, userType: "Patient", employeesId: { $in: [user._id.toString()] } });
                         if (!user2) {
                                 return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                         }
-                        filter = { patientId: user2._id, employeeId: user._id };
+                        filter = { patientId: user2._id };
                 }
-                filter = { employeeId: user._id };
                 let findEmployee = await informedConsentForMedication.find(filter);
                 if (!findEmployee) {
                         return res.status(404).send({ status: 404, message: "Informed Consent For Medication not found.", data: {} });
@@ -2357,8 +2363,11 @@ exports.getAllMedicationReconciliation = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
                 let filter = {};
-                filter.employeeId = user._id;
                 if (req.query.patientId != (null || undefined)) {
+                        const user2 = await User.findOne({ _id: req.query.patientId, userType: "Patient", employeesId: { $in: [user._id.toString()] } });
+                        if (!user2) {
+                                return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                        }
                         filter.patientId = req.query.patientId;
                 }
                 if (req.query.allergiesAndReactions != (null || undefined)) {
@@ -2556,8 +2565,11 @@ exports.getAllProgressNote = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
                 let filter = {};
-                filter.employeeId = user._id;
                 if (req.query.patientId != (null || undefined)) {
+                        const user2 = await User.findOne({ _id: req.query.patientId, userType: "Patient", employeesId: { $in: [user._id.toString()] } });
+                        if (!user2) {
+                                return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                        }
                         filter.patientId = req.query.patientId;
                 }
                 let findEmployee = await progressNote.find(filter);
@@ -2710,8 +2722,11 @@ exports.getAllDischargeSummary = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
                 let filter = {};
-                filter.employeeId = user._id;
                 if (req.query.patientId != (null || undefined)) {
+                        const user2 = await User.findOne({ _id: req.query.patientId, userType: "Patient", employeesId: { $in: [user._id.toString()] } });
+                        if (!user2) {
+                                return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                        }
                         filter.patientId = req.query.patientId;
                 }
                 let findEmployee = await dischargeSummary.find(filter);
@@ -2866,8 +2881,11 @@ exports.getAllADLTrackingForm = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
                 let filter = {};
-                filter.employeeId = user._id;
                 if (req.query.patientId != (null || undefined)) {
+                        const user2 = await User.findOne({ _id: req.query.patientId, userType: "Patient", employeesId: { $in: [user._id.toString()] } });
+                        if (!user2) {
+                                return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                        }
                         filter.patientId = req.query.patientId;
                 }
                 let findEmployee = await ADLTrackingForm.find(filter);
@@ -2990,8 +3008,11 @@ exports.getAllFinancialTransactionsRecord = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
                 let filter = {};
-                filter.employeeId = user._id;
                 if (req.query.patientId != (null || undefined)) {
+                        const user2 = await User.findOne({ _id: req.query.patientId, userType: "Patient", employeesId: { $in: [user._id.toString()] } });
+                        if (!user2) {
+                                return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                        }
                         filter.patientId = req.query.patientId;
                 }
                 let findEmployee = await financialTransactionsRecord.find(filter);
@@ -3128,8 +3149,11 @@ exports.getAllStaffingNote = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
                 let filter = {};
-                filter.employeeId = user._id;
                 if (req.query.patientId != (null || undefined)) {
+                        const user2 = await User.findOne({ _id: req.query.patientId, userType: "Patient", employeesId: { $in: [user._id.toString()] } });
+                        if (!user2) {
+                                return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                        }
                         filter.patientId = req.query.patientId;
                 }
                 let findEmployee = await staffingNote.find(filter);
@@ -3282,8 +3306,11 @@ exports.getAllAuthorizationForReleaseOfInformation = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
                 let filter = {};
-                filter.employeeId = user._id;
                 if (req.query.patientId != (null || undefined)) {
+                        const user2 = await User.findOne({ _id: req.query.patientId, userType: "Patient", employeesId: { $in: [user._id.toString()] } });
+                        if (!user2) {
+                                return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                        }
                         filter.patientId = req.query.patientId;
                 }
                 let findEmployee = await authorizationForReleaseOfInformation.find(filter);
@@ -3589,8 +3616,7 @@ exports.getAllIncidentReport = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let filter = {};
-                filter.employeeId = user._id;
+                let filter = {employeesInvolved:{ $in: [user._id.toString()]}};
                 if (req.query.partType != (null || undefined)) {
                         filter.partType = req.query.partType;
                 }
