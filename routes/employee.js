@@ -197,4 +197,5 @@ module.exports = (app) => {
         app.get('/api/v1/employee/EmployeeTrackingById/:id', authJwt.verifyToken, auth.getEmployeeTrackingById);
         app.post('/api/v1/employee/createMars', authJwt.verifyToken, auth.createMars);
         app.get('/api/v1/employee/Mars/:patientId', authJwt.verifyToken, auth.getMars);
+        app.put('/api/v1/employee/Mars/:MarsId', authJwt.verifyToken, auth.updateMarsStatus);
 }

@@ -42,6 +42,7 @@ const patientVitals = require('../model/patientVitals/patientVitals');
 const PrnMedicationLog = require('../model/Medication/employeeMedication/PrnMedicationLog');
 const informedConsentForMedication = require('../model/Medication/employeeMedication/informedConsentForMedication');
 const mars = require('../model/Medication/employeeMedication/mars');
+const MarsMedications = require('../model/Medication/employeeMedication/MarsMedications');
 const medicationOpioidCount = require('../model/Medication/employeeMedication/medicationOpioidCount');
 const medicationReconciliation = require('../model/Medication/employeeMedication/medicationReconciliation');
 const ADLTrackingForm = require('../model/patientChart/ADLTrackingForm');
@@ -3616,7 +3617,7 @@ exports.getAllIncidentReport = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let filter = {employeesInvolved:{ $in: [user._id.toString()]}};
+                let filter = { employeesInvolved: { $in: [user._id.toString()] } };
                 if (req.query.partType != (null || undefined)) {
                         filter.partType = req.query.partType;
                 }
@@ -5555,47 +5556,53 @@ exports.createMars = async (req, res) => {
                 req.body.adminId = user.adminId;
                 req.body.residentName = patient.firstName;
                 req.body.dateOfBirth = patient.dateOfBirth;
-                let medications = [];
-
-                for (let z = 0; z < req.body.medications.length; z++) {
-                        let findMedicationEmployee = await medicationEmployee.findById({ _id: req.body.medications[z] });
-                        if (findMedicationEmployee) {
-                                let instruction = [], medicationStatus = [];
-                                for (let i = 0; i < findMedicationEmployee.instruction.length; i++) {
-                                        let isSelected = req.body.instruction[z].includes(findMedicationEmployee.instruction[i].instruction);
-                                        let k = {
-                                                instruction: findMedicationEmployee.instruction[i].instruction,
-                                                select: isSelected,
-                                        };
-                                        instruction.push(k);
-                                }
-                                let timeStatus = [];
-                                for (let l = 1; l <= req.body.time; l++) {
-                                        let obs = {
-                                                time: req.body.time[l],
-                                                status: ""
-                                        }
-                                        timeStatus.push(obs)
-                                }
-                                for (let i = 1; i <= 31; i++) {
-                                        let y = {
-                                                date: i.toString(),
-                                                timeStatus: timeStatus
-                                        }
-                                        medicationStatus.push(y);
-                                }
-                                let obj = {
-                                        name: findMedicationEmployee.name,
-                                        instruction: instruction,
-                                        medicationStatus: medicationStatus,
-                                };
-                                medications.push(obj);
-                        }
-                }
-                req.body.medications = medications;
                 const newConsentForm = await mars.create(req.body);
                 if (newConsentForm) {
-                        return res.status(200).send({ status: 200, message: "Mars added successfully.", data: newConsentForm });
+                        const createMedicationStatusObject = async (requestBody) => {
+                                let timeStatus = [];
+                                let medicationStatus = [];
+                                for (let l = 0; l < requestBody.length; l++) {
+                                        let obs = {
+                                                time: requestBody[l],
+                                                status: ""
+                                        };
+                                        timeStatus.push(obs);
+                                }
+                                for (let i = 1; i <= 31; i++) {
+                                        let dayObj = {
+                                                date: i.toString(),
+                                                timeStatus: [...timeStatus]
+                                        };
+                                        medicationStatus.push(dayObj);
+                                }
+                                return medicationStatus;
+                        }
+                        for (let z = 0; z < req.body.medicationsId.length; z++) {
+                                let findMedicationEmployee = await medicationEmployee.findById({ _id: req.body.medicationsId[z] });
+                                if (findMedicationEmployee) {
+                                        let instruction = [];
+                                        for (let i = 0; i < findMedicationEmployee.instruction.length; i++) {
+                                                let isSelected = req.body.instruction[z].includes(findMedicationEmployee.instruction[i].instruction);
+                                                let k = {
+                                                        instruction: findMedicationEmployee.instruction[i].instruction,
+                                                        select: isSelected,
+                                                };
+                                                instruction.push(k);
+                                        }
+                                        let obj = {
+                                                MarsId: newConsentForm._id,
+                                                name: findMedicationEmployee.name,
+                                                instruction: instruction,
+                                                medicationStatus: await createMedicationStatusObject(req.body.time),
+                                        };
+                                        const newConsentForm2 = await MarsMedications.create(obj);
+                                        if (newConsentForm2) {
+                                                let update = await mars.findByIdAndUpdate({ _id: newConsentForm._id }, { $push: { medications: newConsentForm2._id } }, { new: true })
+                                        }
+                                }
+                        }
+                        let update3 = await mars.findById({ _id: newConsentForm._id })
+                        return res.status(200).send({ status: 200, message: "Mars added successfully.", data: update3 });
                 }
         } catch (error) {
                 console.error(error);
@@ -5614,6 +5621,29 @@ exports.getMars = async (req, res) => {
                 } else {
                         return res.status(200).send({ status: 200, message: "Mars found successfully.", data: filteredTasks });
                 }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.updateMarsStatus = async (req, res) => {
+        try {
+                const marsRecord = await MarsMedications.findOne({ MarsId: req.params.MarsId });
+                if (!marsRecord) {
+                        return res.status(404).send({ status: 404, message: "No mars found.", data: {} });
+                }
+                const { dateToUpdate, timeStatusToUpdate, timeStatusId } = req.body;
+                const dateIndex = marsRecord.medicationStatus.findIndex(date => (date._id).toString() === dateToUpdate);
+                if (dateIndex === -1) {
+                        return res.status(404).send({ status: 404, message: "Date not found.", data: {} });
+                }
+                marsRecord.medicationStatus[dateIndex].timeStatus.forEach(timeStatus => {
+                        if ((timeStatus._id).toString() === timeStatusId) {
+                                timeStatus.status = timeStatusToUpdate;
+                        }
+                });
+                await marsRecord.save();
+                return res.status(200).send({ status: 200, message: "Time status updated successfully.", data: marsRecord });
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
