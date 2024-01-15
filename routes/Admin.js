@@ -71,4 +71,6 @@ module.exports = (app) => {
         app.get('/api/v1/admin/getJobDescriptionById/:id', authJwt.verifyToken, auth.getJobDescriptionById);
         app.get('/api/v1/admin/getAllJobDescription', authJwt.verifyToken, auth.getAllJobDescription);
         app.delete('/api/v1/admin/deleteJobDescription/:id', authJwt.verifyToken, auth.deleteJobDescription);
+        app.post('/api/v1/admin/sendNotification', auth.sendNotification);
+        app.get('/api/v1/admin/allNotification', authJwt.verifyToken, auth.allNotification);
 }

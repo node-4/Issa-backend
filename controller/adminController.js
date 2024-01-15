@@ -32,7 +32,7 @@ const medicationEmployee = require('../model/Medication/employeeMedication/medic
 const patientMedication = require('../model/Medication/patientMedication/patientMedication');
 const offerLetter = require('../model/EmployeeInformation/offerLetter');
 const jobDescription = require('../model/EmployeeInformation/jobDescription');
-
+const notification = require('../model/notification')
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -1675,3 +1675,58 @@ exports.getAllJobDescription = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.allNotification = async (req, res) => {
+        try {
+                const admin = await User.findById({ _id: req.user._id });
+                if (!admin) {
+                        return res.status(404).json({ status: 404, message: "Admin not found" });
+                } else {
+                        let findNotification = await notification.find({ adminId: admin._id, forUser: "Admin" }).populate('adminId employeeId patientId');
+                        if (findNotification.length == 0) {
+                                return res.status(404).json({ status: 404, message: "Notification data not found successfully.", data: {} })
+                        } else {
+                                return res.status(200).json({ status: 200, message: "Notification data found successfully.", data: findNotification })
+                        }
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+}
+exports.sendNotification = async (req, res) => {
+        try {
+                let userData = await User.findById({ _id: req.body._id });
+                if (!userData) {
+                        return res.status(404).json({ status: 404, message: "Employee not found" });
+                } else {
+                        let obj = {
+                                employeeId: userData._id,
+                                adminId: userData.adminId,
+                                title: req.body.title,
+                                body: req.body.body,
+                                date: req.body.date,
+                                image: req.body.image,
+                                time: req.body.time,
+                                forUser: "Admin"
+                        }
+                        let data = await notification.create(obj)
+                        if (data) {
+                                let obj1 = {
+                                        employeeId: userData._id,
+                                        adminId: userData.adminId,
+                                        title: req.body.title,
+                                        body: req.body.body,
+                                        date: req.body.date,
+                                        image: req.body.image,
+                                        time: req.body.time,
+                                        forUser: "Employee"
+                                }
+                                await notification.create(obj1)
+                                return res.status(200).json({ status: 200, message: "Notification send successfully.", data: data });
+                        }
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+}
