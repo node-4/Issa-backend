@@ -20,4 +20,6 @@ module.exports = (app) => {
         app.get('/api/v1/Patient/ResidentIntake/:patientId', authJwt.verifyToken, auth.getResidentIntake);
         app.post('/api/v1/Patient/createInitialAssessment', authJwt.verifyToken, auth.createInitialAssessment);
         app.get('/api/v1/Patient/InitialAssessment/:patientId', authJwt.verifyToken, auth.getInitialAssessment);
+        app.post('/api/v1/Patient/createRefusalMedicalTreatment', authJwt.verifyToken, auth.createRefusalMedicalTreatment);
+        app.get('/api/v1/Patient/getRefusalMedicalTreatment/:patientId', authJwt.verifyToken, auth.getRefusalMedicalTreatment);
 }

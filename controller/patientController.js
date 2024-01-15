@@ -29,6 +29,7 @@ const treatmentPlan = require('../model/patientIntake/treatmentPlan');
 const nursingAssessment = require('../model/patientIntake/nursingAssessment');
 const residentIntake = require('../model/patientIntake/residentIntake');
 const initialAssessment = require('../model/patientIntake/initialAssessment');
+const refusalMedicalTreatment = require('../model/refusalMedicalTreatment');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -1159,6 +1160,39 @@ exports.getInitialAssessment = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "No initialAssessment found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "Initial assessment found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.createRefusalMedicalTreatment = async (req, res) => {
+        try {
+                const patient = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!patient) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                req.body.adminId = patient.adminId;
+                const newConsentForm = await refusalMedicalTreatment.create(req.body);
+                if (newConsentForm) {
+                        return res.status(200).send({ status: 200, message: "Refusal Medical Treatment added successfully.", data: newConsentForm });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message });
+        }
+};
+exports.getRefusalMedicalTreatment = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.params.patientId, userType: "Patient" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await refusalMedicalTreatment.findOne({ patientId: user._id });
+                if (!filteredTasks) {
+                        return res.status(404).send({ status: 404, message: "No Refusal Medical Treatment found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Refusal Medical Treatment found successfully.", data: filteredTasks });
                 }
         } catch (error) {
                 console.error(error);

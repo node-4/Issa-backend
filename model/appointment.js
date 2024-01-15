@@ -18,6 +18,15 @@ const addressSchema = new mongoose.Schema({
         time: {
                 type: String,
         },
+        nextFollowUp: {
+                type: Date,
+        },
+        providerType: {
+                type: String,
+        },
+        refusal: {
+                type: String,
+        },
         patientId: {
                 type: schema.Types.ObjectId,
                 ref: "User",
