@@ -4338,6 +4338,23 @@ exports.updateJobDescription = async (req, res) => {
                                 }
                                 const userCreate = await jobDescription.findByIdAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
                                 return res.status(200).send({ status: 200, message: "jobDescription add successfully ", data: userCreate, });
+                        } else {
+                                let obj = {
+                                        adminId: user.adminId,
+                                        employeeId: user._id,
+                                        jobDescription: req.body.jobDescription,
+                                        positionsSupervised: req.body.positionsSupervised,
+                                        primaryResponsibilities: req.body.primaryResponsibilities,
+                                        coreCompetencies: req.body.coreCompetencies,
+                                        minimumQualifications: req.body.minimumQualifications,
+                                        minimumDescription: req.body.minimumDescription,
+                                        employeeInfoName: req.body.employeeInfoName,
+                                        pleaseNote: req.body.pleaseNote,
+                                        employeeInfoSignature: req.body.employeeInfoSignature,
+                                        employeeInfoDate: req.body.employeeInfoDate
+                                }
+                                const userCreate = await jobDescription.create(obj);
+                                return res.status(200).send({ status: 200, message: "jobDescription add successfully ", data: userCreate, });
                         }
                 }
         } catch (error) {
