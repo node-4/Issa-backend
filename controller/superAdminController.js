@@ -1232,7 +1232,7 @@ exports.createDemoRequest = async (req, res) => {
                         describe: req.body.describe,
                 };
                 const DemoRequest = await demoRequest.create(data);
-                return res.status(200).json({ message: "DemoRequest add successfully.", status: 200, data: DemoRequest });
+                return res.status(200).json({ message: "Thank you for submitting request, our team shortly connect with you.", status: 200, data: DemoRequest });
         } catch (error) {
                 return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
         }
