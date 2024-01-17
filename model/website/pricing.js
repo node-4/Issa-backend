@@ -20,6 +20,9 @@ const blogSchema = mongoose.Schema({
                         type: String,
                 }
         }],
+        details: {
+                type: Array,
+        },
         type: {
                 type: String,
                 enum: ["FAQ", "PRICING"]

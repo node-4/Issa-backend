@@ -109,4 +109,14 @@ module.exports = (app) => {
         app.get("/api/v1/WhyChoosePharm/getIdWhyChoosePharm/:id", auth.getIdWhyChoosePharm);
         app.delete("/api/v1/WhyChoosePharm/deleteWhyChoosePharm/:id", [authJwt.verifyToken], auth.deleteWhyChoosePharm);
         app.delete("/api/v1/WhyChoosePharm/deleteDataArrayInWhyChoosePharm/:dataArrayId", authJwt.verifyToken, auth.deleteDataArrayInWhyChoosePharm);
+        app.post("/api/v1/Partner/addPartner", [authJwt.verifyToken], auth.createPartner);
+        app.get("/api/v1/Partner/getPartner", auth.getPartner);
+        app.get("/api/v1/Partner/getIdPartner/:id", auth.getIdPartner);
+        app.delete("/api/v1/Partner/deletePartner/:id", [authJwt.verifyToken], auth.deletePartner);
+        app.put("/api/v1/Partner/addDataInPartner", authJwt.verifyToken, upload.single('image'), auth.addDataInPartner);
+        app.delete("/api/v1/Partner/deleteDataArrayInPartner/:dataArrayId", authJwt.verifyToken, auth.deleteDataArrayInPartner);
+        app.post("/api/v1/DownloadPage/createDownloadPage", [authJwt.verifyToken], auth.createDownloadPage);
+        app.get("/api/v1/DownloadPage/getDownloadPage", auth.getDownloadPage);
+        app.get("/api/v1/DownloadPage/getIdDownloadPage/:id", auth.getIdDownloadPage);
+        app.delete("/api/v1/DownloadPage/deleteDownloadPage/:id", [authJwt.verifyToken], auth.deleteDownloadPage);
 }

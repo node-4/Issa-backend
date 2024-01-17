@@ -36,6 +36,8 @@ const banner = require("../model/website/banner");
 const trustedClient = require("../model/website/trustedClient");
 const aboutUs = require("../model/website/aboutUs");
 const whyChoosePharm = require("../model/website/whyChoosePharm");
+const partner = require("../model/website/partner");
+const downloadPage = require("../model/website/downloadPage");
 exports.registration = async (req, res) => {
         const { mobileNumber, email } = req.body;
         try {
@@ -1379,13 +1381,14 @@ exports.deleteFaqsInPricingFAQ = async (req, res) => {
 };
 exports.createPricing = async (req, res) => {
         try {
-                const findData = await pricing.findOne({ type: "PRICING", till: req.body.till });
+                const findData = await pricing.findOne({ type: "PRICING" });
                 if (findData) {
                         const data = {
                                 totalUser: req.body.totalUser || findData.totalUser,
                                 perUser: req.body.perUser || findData.perUser,
                                 till: findData.till,
-                                type: findData.type
+                                type: findData.type,
+                                details: req.body.details || findData.details
                         };
                         const Ebook = await pricing.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true })
                         return res.status(200).json({ message: "Ebook update successfully.", status: 200, data: Ebook });
@@ -1394,7 +1397,8 @@ exports.createPricing = async (req, res) => {
                                 totalUser: req.body.totalUser,
                                 perUser: req.body.perUser,
                                 till: req.body.till,
-                                type: "PRICING"
+                                type: "PRICING",
+                                details: req.body.details
                         };
                         const BlogCategory = await pricing.create(data1);
                         return res.status(200).json({ message: "pricing add successfully.", status: 200, data: BlogCategory });
@@ -2105,5 +2109,186 @@ exports.deleteDataArrayInWhyChoosePharm = async (req, res) => {
                 }
         } catch (error) {
                 return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.createPartner = async (req, res) => {
+        try {
+                const findData = await partner.findOne({})
+                if (findData) {
+                        const data = {
+                                title: req.body.title || findData.title,
+                                description: req.body.description || findData.description,
+                        };
+                        const Partner = await partner.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true })
+                        return res.status(200).json({ message: "Partner update successfully.", status: 200, data: Partner });
+                } else {
+                        const data = {
+                                title: req.body.title,
+                                description: req.body.description,
+                        };
+                        const Partner = await partner.create(data);
+                        return res.status(200).json({ message: "Partner add successfully.", status: 200, data: Partner });
+                }
+        } catch (error) {
+                return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
+        }
+};
+exports.getPartner = async (req, res) => {
+        try {
+                const data = await partner.findOne()
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "partner data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
+exports.getIdPartner = async (req, res) => {
+        try {
+                const data = await partner.findById(req.params.id)
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "Partner data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+}
+exports.deletePartner = async (req, res) => {
+        try {
+                const data = await partner.findById(req.params.id)
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                const data1 = await partner.findByIdAndDelete(req.params.id);
+                if (data1) {
+                        return res.status(200).send({ msg: "deleted", data: data1 });
+                }
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message, });
+        }
+};
+exports.addDataInPartner = async (req, res) => {
+        try {
+                const { description } = req.body;
+                const findBanner = await partner.findOne({});
+                if (findBanner) {
+                        let image;
+                        if (req.file.path) {
+                                image = req.file.path
+                        }
+                        let data = {
+                                description: description,
+                                image: image
+                        }
+                        const newCategory = await partner.findByIdAndUpdate({ _id: findBanner._id }, { $push: { dataArray: data } }, { new: true });
+                        return res.status(200).json({ status: 200, message: 'InfoInPartner update successfully', data: newCategory });
+                } else {
+                        return res.status(200).json({ status: 200, message: 'Partner not found.', data: newCategory });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).json({ error: 'Failed to create faq' });
+        }
+};
+exports.deleteDataArrayInPartner = async (req, res) => {
+        try {
+                const findCart = await partner.findOne({});
+                if (findCart) {
+                        for (let i = 0; i < findCart.dataArray.length; i++) {
+                                if (findCart.dataArray.length > 1) {
+                                        if (((findCart.dataArray[i]._id).toString() == req.params.dataArrayId) == true) {
+                                                let updateCart = await partner.findByIdAndUpdate({ _id: findCart._id, 'dataArray._id': req.params.dataArrayId }, {
+                                                        $pull: {
+                                                                'dataArray':
+                                                                {
+                                                                        _id: req.params.dataArrayId,
+                                                                        name: findCart.dataArray[i].name,
+                                                                        image: findCart.dataArray[i].image
+                                                                }
+                                                        }
+                                                }, { new: true })
+                                                if (updateCart) {
+                                                        return res.status(200).send({ message: "Data from dataArray delete from partner.", data: updateCart, });
+                                                }
+                                        }
+                                } else {
+                                        return res.status(200).send({ status: 200, message: "No Data Found ", data: [] });
+                                }
+                        }
+                } else {
+                        return res.status(200).send({ status: 200, message: "No Data Found ", cart: [] });
+                }
+        } catch (error) {
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.createDownloadPage = async (req, res) => {
+        try {
+                const findData = await downloadPage.findOne({})
+                if (findData) {
+                        const data = {
+                                window: req.body.window || findData.window,
+                                mac: req.body.mac || findData.mac,
+                                android: req.body.android || findData.android,
+                                ios: req.body.ios || findData.ios,
+                                specification: req.body.specification || findData.specification,
+                                mobileCapability: req.body.mobileCapability || findData.mobileCapability,
+                        };
+                        const DownloadPage = await downloadPage.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true })
+                        return res.status(200).json({ message: "DownloadPage update successfully.", status: 200, data: DownloadPage });
+                } else {
+                        const data = {
+                                window: req.body.window,
+                                mac: req.body.mac,
+                                android: req.body.android,
+                                ios: req.body.ios,
+                                specification: req.body.specification,
+                                mobileCapability: req.body.mobileCapability,
+                        };
+                        const DownloadPage = await downloadPage.create(data);
+                        return res.status(200).json({ message: "DownloadPage add successfully.", status: 200, data: DownloadPage });
+                }
+        } catch (error) {
+                return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
+        }
+};
+exports.getDownloadPage = async (req, res) => {
+        try {
+                const data = await downloadPage.findOne()
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "downloadPage data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
+exports.getIdDownloadPage = async (req, res) => {
+        try {
+                const data = await downloadPage.findById(req.params.id)
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "DownloadPage data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+}
+exports.deleteDownloadPage = async (req, res) => {
+        try {
+                const data = await downloadPage.findById(req.params.id)
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                const data1 = await downloadPage.findByIdAndDelete(req.params.id);
+                if (data1) {
+                        return res.status(200).send({ msg: "deleted", data: data1 });
+                }
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message, });
         }
 };
