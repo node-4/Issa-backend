@@ -406,7 +406,7 @@ exports.getTreatmentPlan = async (req, res) => {
 };
 exports.createNursingAssessment = async (req, res) => {
         try {
-                const user1 = await User.findOne({ _id: req.body.patientId, adminId: user.adminId, userType: "Patient" });
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                 }

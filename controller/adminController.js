@@ -33,6 +33,8 @@ const patientMedication = require('../model/Medication/patientMedication/patient
 const offerLetter = require('../model/EmployeeInformation/offerLetter');
 const jobDescription = require('../model/EmployeeInformation/jobDescription');
 const notification = require('../model/notification')
+const stripe = require("stripe")('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');
+const stripe1 = require("stripe")('pk_live_51OVyc9JE613RQzRwA6tXmVD8oOGgCkgB2m8fl8N8vkQ18wcrMvAhDCXA9CdmKllvqvqnlGHZ8SrRDlJtk6tf3k9w00wq5liSG5');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
