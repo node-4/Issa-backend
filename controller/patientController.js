@@ -481,7 +481,7 @@ exports.createNursingAssessment = async (req, res) => {
                         rnName: req.body.rnName,
                         rnSignature: req.body.rnSignature,
                 }
-                let newEmployee = await nursingAssesment.create(obj);
+                let newEmployee = await nursingAssessment.create(obj);
                 if (newEmployee) {
                         return res.status(200).send({ status: 200, message: "Nursing assesment add successfully.", data: newEmployee });
                 }
