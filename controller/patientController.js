@@ -24,12 +24,15 @@ const appointment = require('../model/appointment');
 const patientTracking = require('../model/Tracking/patientTracking');
 const medicationEmployee = require('../model/Medication/employeeMedication/medicationEmployee');
 const patientMedication = require('../model/Medication/patientMedication/patientMedication');
-const residentSafetyPlan = require('../model/patientIntake/residentSafetyPlan');
-const treatmentPlan = require('../model/patientIntake/treatmentPlan');
+const faceSheet = require('../model/patientIntake/faceSheet');
+const initialAssessment = require('../model/patientIntake/initialAssessment');
 const nursingAssessment = require('../model/patientIntake/nursingAssessment');
 const residentIntake = require('../model/patientIntake/residentIntake');
-const initialAssessment = require('../model/patientIntake/initialAssessment');
+const residentSafetyPlan = require('../model/patientIntake/residentSafetyPlan');
+const treatmentPlan = require('../model/patientIntake/treatmentPlan');
 const refusalMedicalTreatment = require('../model/refusalMedicalTreatment');
+const mars = require('../model/Medication/employeeMedication/mars');
+const MarsMedications = require('../model/Medication/employeeMedication/MarsMedications');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -59,7 +62,7 @@ exports.signin = async (req, res) => {
 };
 exports.getProfile = async (req, res) => {
         try {
-                const user = await User.findOne({ _id: req.user, userType: "Patient" });
+                const user = await User.findOne({ _id: req.user, userType: "Patient" }).populate({ path: 'employeesId', select: '-password' });
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
@@ -126,7 +129,25 @@ exports.getAllUpcomingAppointments = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 const currentDate = new Date();
-                const upcomingAppointments = await appointment.find({ patientId: user._id, date: { $gte: currentDate }, }).sort({ date: 1 });
+                const upcomingAppointments = await appointment.find({ patientId: user._id, date: { $gt: currentDate }, }).sort({ date: 1 });
+                if (upcomingAppointments.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No appointment found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Appointment found successfully.", data: upcomingAppointments });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getAllTodayAppointments = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const currentDate = new Date();
+                const upcomingAppointments = await appointment.find({ patientId: user._id, date: currentDate, }).sort({ date: 1 });
                 if (upcomingAppointments.length === 0) {
                         return res.status(404).send({ status: 404, message: "No appointment found.", data: {} });
                 } else {
@@ -669,6 +690,8 @@ exports.createInitialAssessment = async (req, res) => {
                 const consentFormData = {
                         adminId: patient.adminId,
                         patientId: patient._id,
+                        assessmentOn: req.body.assessmentOn,
+                        hasNotified: req.body.hasNotified,
                         dob: req.body.dateOfBirth,
                         companyName: req.body.companyName,
                         residentName: req.body.residentName,
@@ -1193,6 +1216,56 @@ exports.getRefusalMedicalTreatment = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "No Refusal Medical Treatment found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "Refusal Medical Treatment found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getOngoingMedications = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.params.patientId, userType: "Patient" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await MarsMedications.findOne({ patientId: user._id })
+                if (!filteredTasks) {
+                        return res.status(404).send({ status: 404, message: "No mars found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Mars found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.createFaceSheet = async (req, res) => {
+        try {
+                const patient = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!patient) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                req.body.adminId = patient.adminId;
+                const newConsentForm = await faceSheet.create(req.body);
+                if (newConsentForm) {
+                        return res.status(200).send({ status: 200, message: "Face sheet added successfully.", data: newConsentForm });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message });
+        }
+};
+exports.getFaceSheet = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.params.patientId, userType: "Patient" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await faceSheet.findOne({ patientId: user._id });
+                if (!filteredTasks) {
+                        return res.status(404).send({ status: 404, message: "No faceSheet found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "FaceSheet found successfully.", data: filteredTasks });
                 }
         } catch (error) {
                 console.error(error);

@@ -33,9 +33,8 @@ const blogSchema = mongoose.Schema({
         perUser: {
                 type: Number,
         },
-        till: {
+        name: {
                 type: String,
-                enum: ["10", "11-100", "101+"]
         },
 }, { timestamps: true })
 

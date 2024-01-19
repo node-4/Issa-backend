@@ -1,9 +1,23 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 const medicationSchema = new mongoose.Schema({
+        adminId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
+        patientId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
         MarsId: {
                 type: schema.Types.ObjectId,
                 ref: "Mars",
+        },
+        month: {
+                type: String,
+        },
+        year: {
+                type: String,
         },
         name: {
                 type: String,

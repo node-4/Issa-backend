@@ -144,6 +144,7 @@ module.exports = (app) => {
         app.get('/api/v1/employee/getAllUploadDocument', authJwt.verifyToken, auth.getAllUploadDocument);
         app.delete('/api/v1/employee/deleteUploadDocument/:id', authJwt.verifyToken, auth.deleteUploadDocument);
         app.post('/api/v1/employee/createAppointment', authJwt.verifyToken, auth.createAppointment);
+        app.get('/api/v1/employee/getAllTodayAppointments', authJwt.verifyToken, auth.getAllTodayAppointments);
         app.get('/api/v1/employee/getAllUpcomingAppointments', authJwt.verifyToken, auth.getAllUpcomingAppointments);
         app.get('/api/v1/employee/getAllPastAppointments', authJwt.verifyToken, auth.getAllPastAppointments);
         app.get('/api/v1/employee/getAllMedicationEmployee', authJwt.verifyToken, auth.getAllMedicationEmployee);

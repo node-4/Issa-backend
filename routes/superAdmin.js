@@ -119,4 +119,11 @@ module.exports = (app) => {
         app.get("/api/v1/DownloadPage/getDownloadPage", auth.getDownloadPage);
         app.get("/api/v1/DownloadPage/getIdDownloadPage/:id", auth.getIdDownloadPage);
         app.delete("/api/v1/DownloadPage/deleteDownloadPage/:id", [authJwt.verifyToken], auth.deleteDownloadPage);
+        app.post("/api/v1/AboutUsOasisNotesSupport/create", [authJwt.verifyToken], auth.createAboutUsOasisNotesSupport);
+        app.get("/api/v1/AboutUsOasisNotesSupport/get", auth.getAboutUsOasisNotesSupport);
+        app.put("/api/v1/AboutUsOasisNotesSupport/edit/:id", auth.editAboutUsOasisNotesSupport);
+        app.get("/api/v1/AboutUsOasisNotesSupport/getId/:id", auth.getIdAboutUsOasisNotesSupport);
+        app.delete("/api/v1/AboutUsOasisNotesSupport/delete/:id", [authJwt.verifyToken], auth.deleteAboutUsOasisNotesSupport);
+        app.put("/api/v1/AboutUsOasisNotesSupport/addData/:id", authJwt.verifyToken, auth.addDataInAboutUsOasisNotesSupport);
+        app.delete("/api/v1/AboutUsOasisNotesSupport/deleteData/:id/:dataArrayId", authJwt.verifyToken, auth.deleteDataArrayInAboutUsOasisNotesSupport);
 }

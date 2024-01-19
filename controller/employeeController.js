@@ -67,6 +67,7 @@ const offerLetter = require('../model/EmployeeInformation/offerLetter');
 const personalInformation = require('../model/EmployeeInformation/personalInformation');
 const referenceCheck = require('../model/EmployeeInformation/referenceCheck');
 const termination = require('../model/EmployeeInformation/termination');
+const notification = require('../model/notification')
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -3913,6 +3914,24 @@ exports.getAllUpcomingAppointments = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.getAllTodayAppointments = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const currentDate = new Date();
+                const upcomingAppointments = await appointment.find({ employeeId: user._id, date: currentDate, }).sort({ date: 1 });
+                if (upcomingAppointments.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No appointment found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Appointment found successfully.", data: upcomingAppointments });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
 exports.getAllPastAppointments = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -5607,6 +5626,10 @@ exports.createMars = async (req, res) => {
                                                 instruction.push(k);
                                         }
                                         let obj = {
+                                                adminId: user.adminId,
+                                                patientId: req.body.patientId,
+                                                month: req.body.month,
+                                                year: req.body.year,
                                                 MarsId: newConsentForm._id,
                                                 name: findMedicationEmployee.name,
                                                 instruction: instruction,
@@ -5619,6 +5642,13 @@ exports.createMars = async (req, res) => {
                                 }
                         }
                         let update3 = await mars.findById({ _id: newConsentForm._id })
+                        let obj1 = {
+                                patientId: req.body.patientId,
+                                title: 'New medication',
+                                body: 'New medication come check now.',
+                                forUser: "Patient"
+                        }
+                        await notification.create(obj1)
                         return res.status(200).send({ status: 200, message: "Mars added successfully.", data: update3 });
                 }
         } catch (error) {
@@ -5632,7 +5662,7 @@ exports.getMars = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
-                const filteredTasks = await mars.findOne({ patientId: user._id });
+                const filteredTasks = await mars.findOne({ patientId: user._id }).populate('medications');
                 if (!filteredTasks) {
                         return res.status(404).send({ status: 404, message: "No mars found.", data: {} });
                 } else {

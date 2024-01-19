@@ -11,6 +11,12 @@ const assessmentSchema = new mongoose.Schema({
         },
         // SECTION I
         companyName: { type: String, required: true },
+        hasNotified: {
+                type: String,
+        },
+        assessmentOn: {
+                type: String,
+        },
         residentName: { type: String, required: true },
         sex: { type: String, enum: ["Male", "Female", "Other"], },
         dob: { type: Date },

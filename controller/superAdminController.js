@@ -38,6 +38,7 @@ const aboutUs = require("../model/website/aboutUs");
 const whyChoosePharm = require("../model/website/whyChoosePharm");
 const partner = require("../model/website/partner");
 const downloadPage = require("../model/website/downloadPage");
+const aboutUsOasisNotesSupport = require("../model/website/aboutUsOasisNotesSupport");
 exports.registration = async (req, res) => {
         const { mobileNumber, email } = req.body;
         try {
@@ -1381,12 +1382,12 @@ exports.deleteFaqsInPricingFAQ = async (req, res) => {
 };
 exports.createPricing = async (req, res) => {
         try {
-                const findData = await pricing.findOne({ type: "PRICING" });
+                const findData = await pricing.findOne({ name: req.body.name, type: "PRICING" });
                 if (findData) {
                         const data = {
                                 totalUser: req.body.totalUser || findData.totalUser,
                                 perUser: req.body.perUser || findData.perUser,
-                                till: findData.till,
+                                name: findData.name,
                                 type: findData.type,
                                 details: req.body.details || findData.details
                         };
@@ -1396,7 +1397,7 @@ exports.createPricing = async (req, res) => {
                         const data1 = {
                                 totalUser: req.body.totalUser,
                                 perUser: req.body.perUser,
-                                till: req.body.till,
+                                name: req.body.name,
                                 type: "PRICING",
                                 details: req.body.details
                         };
@@ -2205,7 +2206,7 @@ exports.deleteDataArrayInPartner = async (req, res) => {
                                                                 'dataArray':
                                                                 {
                                                                         _id: req.params.dataArrayId,
-                                                                        name: findCart.dataArray[i].name,
+                                                                        description: findCart.dataArray[i].description,
                                                                         image: findCart.dataArray[i].image
                                                                 }
                                                         }
@@ -2290,5 +2291,125 @@ exports.deleteDownloadPage = async (req, res) => {
         } catch (err) {
                 console.log(err.message);
                 return res.status(500).send({ msg: "internal server error", error: err.message, });
+        }
+};
+exports.createAboutUsOasisNotesSupport = async (req, res) => {
+        try {
+                const findData = await aboutUsOasisNotesSupport.findOne({ name: req.body.name })
+                if (findData) {
+                        return res.status(200).json({ message: "AboutUsOasisNotesSupport already exit.", status: 409, data: findData });
+                } else {
+                        const data = {
+                                name: req.body.name,
+                        };
+                        const AboutUsOasisNotesSupport = await aboutUsOasisNotesSupport.create(data);
+                        return res.status(200).json({ message: "AboutUsOasisNotesSupport add successfully.", status: 200, data: AboutUsOasisNotesSupport });
+                }
+        } catch (error) {
+                return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
+        }
+};
+exports.editAboutUsOasisNotesSupport = async (req, res) => {
+        try {
+                const findData = await aboutUsOasisNotesSupport.findOne({ _id: req.params.id })
+                if (findData) {
+                        const data = {
+                                name: req.body.name || findData.name,
+                        };
+                        const AboutUsOasisNotesSupport = await aboutUsOasisNotesSupport.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true })
+                        return res.status(200).json({ message: "AboutUsOasisNotesSupport update successfully.", status: 200, data: AboutUsOasisNotesSupport });
+                } else {
+                        return res.status(404).json({ message: "AboutUsOasisNotesSupport not found.", status: 404, data: {} });
+                }
+        } catch (error) {
+                return res.status(500).json({ status: 500, message: "internal server error ", data: error.message, });
+        }
+};
+exports.getAboutUsOasisNotesSupport = async (req, res) => {
+        try {
+                const data = await aboutUsOasisNotesSupport.find()
+                if (data.length == 0) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "aboutUsOasisNotesSupport data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+};
+exports.getIdAboutUsOasisNotesSupport = async (req, res) => {
+        try {
+                const data = await aboutUsOasisNotesSupport.findById(req.params.id)
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                return res.status(200).json({ status: 200, message: "AboutUsOasisNotesSupport data found.", data: data });
+        } catch (err) {
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
+        }
+}
+exports.deleteAboutUsOasisNotesSupport = async (req, res) => {
+        try {
+                const data = await aboutUsOasisNotesSupport.findById(req.params.id)
+                if (!data) {
+                        return res.status(400).send({ msg: "not found" });
+                }
+                const data1 = await aboutUsOasisNotesSupport.findByIdAndDelete(req.params.id);
+                if (data1) {
+                        return res.status(200).send({ msg: "deleted", data: data1 });
+                }
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message, });
+        }
+};
+exports.addDataInAboutUsOasisNotesSupport = async (req, res) => {
+        try {
+                const { title, link } = req.body;
+                const findBanner = await aboutUsOasisNotesSupport.findOne({ _id: req.params.id });
+                if (findBanner) {
+                        let data = {
+                                title: title,
+                                link: link,
+                        }
+                        const newCategory = await aboutUsOasisNotesSupport.findByIdAndUpdate({ _id: findBanner._id }, { $push: { data: data } }, { new: true });
+                        return res.status(200).json({ status: 200, message: 'InfoInAboutUsOasisNotesSupport update successfully', data: newCategory });
+                } else {
+                        return res.status(200).json({ status: 200, message: 'AboutUsOasisNotesSupport not found.', data: newCategory });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).json({ error: 'Failed to create faq' });
+        }
+};
+exports.deleteDataArrayInAboutUsOasisNotesSupport = async (req, res) => {
+        try {
+                const findCart = await aboutUsOasisNotesSupport.findOne({ _id: req.params.id });
+                if (findCart) {
+                        for (let i = 0; i < findCart.dataArray.length; i++) {
+                                if (findCart.dataArray.length > 1) {
+                                        if (((findCart.dataArray[i]._id).toString() == req.params.dataArrayId) == true) {
+                                                let updateCart = await aboutUsOasisNotesSupport.findByIdAndUpdate({ _id: findCart._id, 'dataArray._id': req.params.dataArrayId }, {
+                                                        $pull: {
+                                                                'dataArray':
+                                                                {
+                                                                        _id: req.params.dataArrayId,
+                                                                        title: findCart.dataArray[i].title,
+                                                                        link: findCart.dataArray[i].link
+                                                                }
+                                                        }
+                                                }, { new: true })
+                                                if (updateCart) {
+                                                        return res.status(200).send({ message: "Data from dataArray delete from aboutUsOasisNotesSupport.", data: updateCart, });
+                                                }
+                                        }
+                                } else {
+                                        return res.status(200).send({ status: 200, message: "No Data Found ", data: [] });
+                                }
+                        }
+                } else {
+                        return res.status(200).send({ status: 200, message: "No Data Found ", cart: [] });
+                }
+        } catch (error) {
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
