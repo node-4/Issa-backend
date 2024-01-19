@@ -416,7 +416,7 @@ exports.createNursingAssessment = async (req, res) => {
                         residentFullName: user1.firstName,
                         dateOfBirth: user1.dateOfBirth,
                         age: user1.age,
-                        sex: user1.gender,
+                        sex: req.body.gender,
                         admissionDate: req.body.admissionDate,
                         todayDate: req.body.todayDate,
                         admissionDiagnoses: req.body.admissionDiagnoses,
