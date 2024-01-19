@@ -995,8 +995,8 @@ exports.getAllEmployeeInServiceLog = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let findEmployee = await EmployeeInServiceLog.findOne({ employeeId: user._id });
-                if (!findEmployee) {
+                let findEmployee = await EmployeeInServiceLog.find({ employeeId: user._id });
+                if (findEmployee.length == 0) {
                         return res.status(404).send({ status: 404, message: "EmployeeInServiceLog not found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "EmployeeInServiceLog found.", data: findEmployee });
@@ -1120,8 +1120,8 @@ exports.getAllOnSiteFacility = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let findEmployee = await onSiteFacility.findOne({ employeeId: user._id });
-                if (!findEmployee) {
+                let findEmployee = await onSiteFacility.find({ employeeId: user._id });
+                if (findEmployee.length == 0) {
                         return res.status(404).send({ status: 404, message: "OnSiteFacility not found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "OnSiteFacility found.", data: findEmployee });
@@ -1250,8 +1250,8 @@ exports.getAllSkillAndKnowledge = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let findEmployee = await skillAndKnowledge.findOne({ employeeId: user._id });
-                if (!findEmployee) {
+                let findEmployee = await skillAndKnowledge.find({ employeeId: user._id });
+                if (findEmployee.length == 0) {
                         return res.status(404).send({ status: 404, message: "Skill and knowledge not found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "Skill and knowledge found.", data: findEmployee });
