@@ -733,8 +733,8 @@ exports.getAllMileageLog = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let findEmployee = await mileageLog.findOne({ employeeId: user._id });
-                if (!findEmployee) {
+                let findEmployee = await mileageLog.find({ employeeId: user._id });
+                if (findEmployee.length == 0) {
                         return res.status(404).send({ status: 404, message: "Mileage Log not found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "Mileage Log found.", data: findEmployee });
@@ -1969,8 +1969,8 @@ exports.getAllPrnMedicationLog = async (req, res) => {
                         }
                         filter = { patientId: user2._id };
                 }
-                let findEmployee = await PrnMedicationLog.find(filter);
-                if (!findEmployee) {
+                let findEmployee = await PrnMedicationLog.find(filter).populate('employeeId adminId patientId');
+                if (findEmployee.length == 0) {
                         return res.status(404).send({ status: 404, message: "Prn Medication Log not found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "Prn Medication Log found.", data: findEmployee });
