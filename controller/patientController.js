@@ -143,7 +143,7 @@ exports.getAllUpcomingAppointments = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 const currentDate = new Date();
-                const upcomingAppointments = await appointment.find({ patientId: user._id, date: { $gt: currentDate }, }).sort({ date: 1 });
+                const upcomingAppointments = await appointment.find({ patientId: user._id, date: { $gt: currentDate }, }).sort({ date: 1 }).populate('adminId');
                 if (upcomingAppointments.length === 0) {
                         return res.status(404).send({ status: 404, message: "No appointment found.", data: {} });
                 } else {
@@ -161,7 +161,7 @@ exports.getAllTodayAppointments = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 const currentDate = new Date();
-                const upcomingAppointments = await appointment.find({ patientId: user._id, date: currentDate, }).sort({ date: 1 });
+                const upcomingAppointments = await appointment.find({ patientId: user._id, date: currentDate, }).sort({ date: 1 }).populate('adminId');;
                 if (upcomingAppointments.length === 0) {
                         return res.status(404).send({ status: 404, message: "No appointment found.", data: {} });
                 } else {
@@ -179,7 +179,7 @@ exports.getAllPastAppointments = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 const currentDate = new Date();
-                const upcomingAppointments = await appointment.find({ patientId: user._id, date: { $lt: currentDate }, }).sort({ date: 1 });
+                const upcomingAppointments = await appointment.find({ patientId: user._id, date: { $lt: currentDate }, }).sort({ date: 1 }).populate('adminId');
                 if (upcomingAppointments.length === 0) {
                         return res.status(404).send({ status: 404, message: "No appointment found.", data: {} });
                 } else {
