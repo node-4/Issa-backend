@@ -32,6 +32,7 @@ const residentSafetyPlan = require('../model/patientIntake/residentSafetyPlan');
 const treatmentPlan = require('../model/patientIntake/treatmentPlan');
 const refusalMedicalTreatment = require('../model/refusalMedicalTreatment');
 const mars = require('../model/Medication/employeeMedication/mars');
+const notification = require('../model/notification')
 const MarsMedications = require('../model/Medication/employeeMedication/MarsMedications');
 exports.signin = async (req, res) => {
         try {
@@ -160,8 +161,17 @@ exports.getAllTodayAppointments = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
+
                 const currentDate = new Date();
-                const upcomingAppointments = await appointment.find({ patientId: user._id, date: currentDate, }).sort({ date: 1 }).populate('adminId');;
+                currentDate.setHours(0, 0, 0, 0);  // Set the time to the beginning of the day
+
+                console.log(user);
+
+                const upcomingAppointments = await appointment.find({
+                        patientId: user._id,
+                        date: { $gte: currentDate, $lt: new Date(currentDate.getTime() + 24 * 60 * 60 * 1000) }
+                }).sort({ date: 1 }).populate('adminId');
+
                 if (upcomingAppointments.length === 0) {
                         return res.status(404).send({ status: 404, message: "No appointment found.", data: {} });
                 } else {
@@ -1286,3 +1296,22 @@ exports.getFaceSheet = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+
+exports.allNotification = async (req, res) => {
+        try {
+                const admin = await User.findById({ _id: req.user._id });
+                if (!admin) {
+                        return res.status(404).json({ status: 404, message: "Admin not found" });
+                } else {
+                        let findNotification = await notification.find({ patientId: admin._id, forUser: "Patient" }).populate('adminId employeeId patientId');
+                        if (findNotification.length == 0) {
+                                return res.status(404).json({ status: 404, message: "Notification data not found successfully.", data: {} })
+                        } else {
+                                return res.status(200).json({ status: 200, message: "Notification data found successfully.", data: findNotification })
+                        }
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+}
