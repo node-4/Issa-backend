@@ -39,6 +39,10 @@ const addressSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
+        status: {
+                type: String,
+                enum: ["Pending","Done","Cancel"]
+        },
 }, { timestamps: true });
 addressSchema.plugin(mongoosePaginate);
 addressSchema.plugin(mongooseAggregatePaginate);

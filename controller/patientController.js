@@ -122,6 +122,20 @@ exports.createAppointment = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 }
+exports.cancelAppointment = async (req, res) => {
+        try {
+                const user1 = await appointment.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Upload Document not found", data: {} });
+                } else {
+                        let update = await appointment.findByIdAndUpdate({ _id: user1._id }, { $set: { status: "Cancel" } }, { new: true })
+                        return res.status(200).send({ status: 200, message: "Appointment cancel successfully.", data: update });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
 exports.getAllUpcomingAppointments = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });

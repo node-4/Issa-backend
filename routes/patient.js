@@ -6,6 +6,7 @@ module.exports = (app) => {
         app.get('/api/v1/Patient/getProfile', authJwt.verifyToken, auth.getProfile);
         app.put('/api/v1/Patient/updateProfile', authJwt.verifyToken, upload.single('image'), auth.updateProfile);
         app.post('/api/v1/Patient/createAppointment', authJwt.verifyToken, auth.createAppointment);
+        app.put('/api/v1/Patient/cancelAppointment/:id', authJwt.verifyToken, auth.cancelAppointment);
         app.get('/api/v1/Patient/getAllUpcomingAppointments', authJwt.verifyToken, auth.getAllUpcomingAppointments);
         app.get('/api/v1/Patient/getAllTodayAppointments', authJwt.verifyToken, auth.getAllTodayAppointments);
         app.get('/api/v1/Patient/getAllPastAppointments', authJwt.verifyToken, auth.getAllPastAppointments);
