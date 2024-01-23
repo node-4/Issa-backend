@@ -70,6 +70,7 @@ const termination = require('../model/EmployeeInformation/termination');
 const notification = require('../model/notification');
 const timeSheet = require('../model/GroupNotes/theropyNotes/timeSheet');
 const timeWorkSheet = require('../model/GroupNotes/theropyNotes/timeWorkSheet');
+const attendanceModel = require('../model/attendance');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -5720,4 +5721,461 @@ exports.createTimeSheet = async (req, res) => {
                 console.error(error);
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
+};
+exports.attendanceMark = async (req, res) => {
+        try {
+                let user = await User.findOne({ _id: req.body.employeeId, });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found or not registered", data: {} });
+                } else {
+                        var currDate = new Date();
+                        const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                        let hour = currDate.getHours();
+                        let minute = currDate.getMinutes();
+                        let second = currDate.getSeconds();
+                        let year = currDate.getFullYear();
+                        let month = currDate.getMonth() + 1;
+                        let date = currDate.getDate();
+                        let day = weekday[currDate.getDay()];
+                        let dateMonth = await datemonthCalulate(date, month)
+                        let fullDate = `${year}-${dateMonth}`
+                        let attendanceFind = await attendanceModel.findOne({ userId: user._id, date: fullDate });
+                        if (attendanceFind) {
+                                if (req.body.lunch == "START") {
+                                        if (attendanceFind.lunchType == "STOP") {
+                                                let startBreak = await hourCalulate(hour, minute, second);
+                                                let obj = {
+                                                        startBreak: startBreak,
+                                                        lunchType: "START"
+                                                }
+                                                let attendance = await attendanceModel.findOneAndUpdate({ date: fullDate, userId: user._id }, { $set: { lunchType: "START" }, $push: { lunch: obj } }, { new: true });
+                                                if (attendance) {
+                                                        response(res, SuccessCode.SUCCESS, attendance, SuccessMessage.TAKE_A_BREAK)
+                                                }
+                                        } else {
+                                                response(res, ErrorCode.ALREADY_EXIST, attendanceFind, SuccessMessage.TAKE_A_BREAK)
+                                        }
+                                }
+                                if (req.body.lunch == "STOP") {
+                                        for (let i = 0; i < attendanceFind.lunch.length; i++) {
+                                                if (attendanceFind.lunch[i].lunchType == "START") {
+                                                        const element = attendanceFind.lunch[i].startBreak;
+                                                        let timeTaken = await totalTime(element, hour, minute, second);
+                                                        let stopBreak = await hourCalulate(hour, minute, second);
+                                                        let hr = timeTaken.hr, min = timeTaken.min, sec = timeTaken.sec;
+                                                        let totaltimeTake = hr + ':' + min + ':' + sec;
+                                                        let obj = {
+                                                                startBreak: element,
+                                                                stopBreak: stopBreak,
+                                                                timeTaken: totaltimeTake,
+                                                                lunchType: "STOP"
+                                                        }
+                                                        await attendanceModel.findOneAndUpdate({ date: fullDate, userId: user._id }, { $pull: { 'lunch': { startBreak: element } } }, { new: true });
+                                                        let attendance1 = await attendanceModel.findOneAndUpdate({ date: fullDate, userId: user._id }, { $set: { lunchType: "STOP" }, $push: { lunch: obj } }, { new: true });
+                                                        if (attendance1.lunch.length == 1) {
+                                                                let extra = attendance1.lunch[0].timeTaken;
+                                                                let updateAttendance = await attendanceModel.findOneAndUpdate({ date: fullDate, userId: user._id }, { $set: { totalLunchtime: extra } }, { new: true });
+                                                                if (updateAttendance) {
+                                                                        return res.status(200).send({ status: 200, message: "Create attendance successfully.", data: updateAttendance });
+                                                                }
+                                                        } else {
+                                                                let timeSum;
+                                                                let extra = "00:00:00";
+                                                                for (let i = 0; i < attendance1.lunch.length; i++) {
+                                                                        let element = attendance1.lunch[i].timeTaken;
+                                                                        timeSum = await addTimes(element, extra);
+                                                                        extra = timeSum;
+                                                                }
+                                                                let updateAttendance = await attendanceModel.findOneAndUpdate({ date: fullDate, userId: user._id }, { $set: { totalLunchtime: timeSum } }, { new: true });
+                                                                if (updateAttendance) {
+                                                                        return res.status(200).send({ status: 200, message: "Create attendance successfully.", data: updateAttendance });
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        } else {
+                                let startBreak = await hourCalulate(hour, minute, second);
+                                let obj = {
+                                        userId: user._id,
+                                        adminId: user.adminId,
+                                        currentDate: date,
+                                        month: month,
+                                        year: year,
+                                        date: fullDate,
+                                        day: day,
+                                        lunch: [{
+                                                startBreak: startBreak,
+                                                lunchType: "START"
+                                        }]
+                                };
+                                let result2 = await attendanceModel.create(obj);
+                                return res.status(200).send({ status: 200, message: "Create attendance successfully.", data: result2 });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+// exports.attendanceMark = async (req, res) => {
+//         try {
+//                 let user = await userModel.findOne({ _id: req.userId, status: status.ACTIVE });
+//                 if (!user) {
+//                         response(res, ErrorCode.NOT_FOUND, {}, ErrorMessage.USER_NOT_FOUND);
+//                 } else {
+//                         var currDate = new Date();
+//                         const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+//                         let hour = currDate.getHours();
+//                         let minute = currDate.getMinutes();
+//                         let second = currDate.getSeconds();
+//                         let year = currDate.getFullYear();
+//                         let month = currDate.getMonth() + 1;
+//                         let date = currDate.getDate();
+//                         let day = weekday[currDate.getDay()];
+//                         let dateMonth = await datemonthCalulate(date, month)
+//                         let fullDate = `${dateMonth}-${year}`
+//                         if (req.body.punchType == "IN") {
+//                                 let shiftHr, shiftMin;
+//                                 let findShift = await shiftTiming.findById({ _id: user.WorkingShiftId });
+//                                 if (!findShift) {
+//                                         shiftHr = 10;
+//                                         shiftMin = 0;
+//                                 } else {
+//                                         shiftHr = findShift.startHr;
+//                                         shiftMin = findShift.startMin;
+//                                 }
+//                                 let inType = await inTypeCalulate(hour, minute, shiftHr, shiftMin)
+//                                 let punchIn = await hourCalulate(hour, minute, second);
+//                                 let attendanceFind = await attendanceModel.findOne({ userId: user._id, date: fullDate });
+//                                 if (attendanceFind) {
+//                                         response(res, ErrorCode.ALREADY_EXIST, attendanceFind, SuccessMessage.ATTENDANCE_ALLREADY_MARK)
+//                                 } else {
+//                                         let obj = {
+//                                                 userId: user._id,
+//                                                 adminId: user.adminId,
+//                                                 currentDate: date,
+//                                                 month: month,
+//                                                 year: year,
+//                                                 date: fullDate,
+//                                                 day: day,
+//                                                 punchIn: punchIn,
+//                                                 inType: inType,
+//                                         };
+//                                         let result2 = await attendanceModel.create(obj);
+//                                         response(res, SuccessCode.SUCCESS, result2, SuccessMessage.ATTENDANCE_MARK)
+//                                 }
+//                         }
+//                         if (req.body.punchType == "OUT") {
+//                                 let shiftHr, shiftMin;
+//                                 let findShift = await shiftTiming.findById({ _id: user.WorkingShiftId });
+//                                 if (!findShift) {
+//                                         shiftHr = 6;
+//                                         shiftMin = 30;
+//                                 } else {
+//                                         shiftHr = findShift.endHr;
+//                                         shiftMin = findShift.endMin;
+//                                 }
+//                                 if (req.body.lat && req.body.long) {
+//                                         coordinates = [parseFloat(req.body.lat), parseFloat(req.body.long)]
+//                                         req.body.punchOutLocation = { type: "Point", coordinates };
+//                                 }
+//                                 if (req.file) {
+//                                         req.body.image = req.file.filename
+//                                 } else {
+//                                         req.body.image = ""
+//                                 }
+//                                 var start = `${findShift.startHr}:${findShift.startMin}:00`;
+//                                 var end = `${shiftHr}:${shiftMin}: 00`;
+//                                 let shiftTotalTime = await totalTime1(start, end);
+//                                 let dateMonth = await datemonthCalulate(date, month)
+//                                 let fullDate = `${dateMonth}-${year}`
+//                                 let outType = await outTypeCalulate(hour, minute, shiftHr, shiftMin);
+//                                 let punchOut = await hourCalulate(hour, minute, second);
+//                                 let result2 = await attendanceModel.findOne({ userId: user._id, date: fullDate, });
+//                                 let difference = await totalTime1(result2.punchIn, punchOut);
+//                                 let lunchTime = result2.totalLunchtime || ("00" + ':' + "00" + ':' + "00");
+//                                 let differenceAfterLunch = await totalTime(lunchTime, difference.hr, difference.min, difference.sec);
+//                                 let smsResult = await findLocation(req.body.lat, req.body.long);
+//                                 let punchOutLocationWord = smsResult.results[0].formatted_address;
+//                                 let attendanceFind = await attendanceModel.findOne({ userId: user._id, date: fullDate });
+//                                 let timeTakeInhr = differenceAfterLunch.hr;
+//                                 let shiftTotalHr = shiftTotalTime.hr;
+//                                 if (attendanceFind.inType == "LATEIN") {
+//                                         if (outType == "ONTIME") {
+//                                                 if (outType == "ONTIME" && timeTakeInhr == shiftTotalHr) {
+//                                                         let obj = {
+//                                                                 punchOut: punchOut,
+//                                                                 punchOutSelfie: req.body.image,
+//                                                                 punchOutLocation: req.body.punchOutLocation,
+//                                                                 punchOutLocationWord: punchOutLocationWord,
+//                                                                 outType: outType,
+//                                                                 totalTime: difference.totalTime,
+//                                                                 workingTime: differenceAfterLunch.totalTime,
+//                                                                 dayStatus: dayStatus.FULLDAY
+//                                                         }
+//                                                         let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate, }, { $set: obj }, { new: true });
+//                                                         response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK)
+//                                                 }
+//                                                 if (outType == "ONTIME" && timeTakeInhr > shiftTotalHr) {
+//                                                         let hr = timeTakeInhr - difference.totalTime;
+//                                                         let min = difference.min;
+//                                                         let sec = difference.sec;
+//                                                         let overTime = hr + ':' + min + ':' + sec;
+//                                                         let obj = {
+//                                                                 punchOut: punchOut,
+//                                                                 punchOutSelfie: req.body.image,
+//                                                                 punchOutLocation: req.body.punchOutLocation,
+//                                                                 punchOutLocationWord: punchOutLocationWord,
+//                                                                 outType: outType,
+//                                                                 totalTime: difference.totalTime,
+//                                                                 workingTime: differenceAfterLunch.totalTime,
+//                                                                 dayStatus: dayStatus.OVERTIME,
+//                                                                 overTime: overTime
+//                                                         }
+//                                                         let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate, }, { $set: obj }, { new: true });
+//                                                         response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK)
+//                                                 }
+//                                                 if (outType == "ONTIME" && timeTakeInhr < shiftTotalHr) {
+//                                                         let obj = {
+//                                                                 punchOut: punchOut,
+//                                                                 punchOutSelfie: req.body.image,
+//                                                                 punchOutLocation: req.body.punchOutLocation,
+//                                                                 punchOutLocationWord: punchOutLocationWord,
+//                                                                 outType: outType,
+//                                                                 totalTime: difference.totalTime,
+//                                                                 workingTime: differenceAfterLunch.totalTime,
+//                                                                 dayStatus: dayStatus.HALFDAY
+//                                                         }
+//                                                         let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate }, { $set: obj }, { new: true });
+//                                                         response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK)
+//                                                 }
+//                                         } else if (outType == "EARLY_OUT") {
+//                                                 if (timeTakeInhr >= shiftTotalHr / 2) {
+//                                                         let obj = {
+//                                                                 punchOut: punchOut,
+//                                                                 punchOutSelfie: req.body.image,
+//                                                                 punchOutLocation: req.body.punchOutLocation,
+//                                                                 punchOutLocationWord: punchOutLocationWord,
+//                                                                 outType: outType,
+//                                                                 totalTime: difference.totalTime,
+//                                                                 workingTime: differenceAfterLunch.totalTime,
+//                                                                 dayStatus: dayStatus.HALFDAY
+//                                                         }
+//                                                         let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate }, { $set: obj }, { new: true });
+//                                                         response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK);
+//                                                 } else if (timeTakeInhr < shiftTotalHr / 2) {
+//                                                         let obj = {
+//                                                                 punchOut: punchOut,
+//                                                                 punchOutSelfie: req.body.image,
+//                                                                 punchOutLocation: req.body.punchOutLocation,
+//                                                                 punchOutLocationWord: punchOutLocationWord,
+//                                                                 outType: outType,
+//                                                                 totalTime: difference.totalTime,
+//                                                                 workingTime: differenceAfterLunch.totalTime,
+//                                                                 dayStatus: dayStatus.ABSENT,
+//                                                                 attendanceStatus: attendanceStatus.ABSENT
+//                                                         }
+//                                                         let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate }, { $set: obj }, { new: true });
+//                                                         response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK);
+//                                                 }
+//                                         }
+//                                 } else if (attendanceFind.inType == "ONTIME") {
+//                                         if (timeTakeInhr == shiftTotalHr) {
+//                                                 let obj = {
+//                                                         punchOut: punchOut,
+//                                                         punchOutSelfie: req.body.image,
+//                                                         punchOutLocation: req.body.punchOutLocation,
+//                                                         punchOutLocationWord: punchOutLocationWord,
+//                                                         outType: outType,
+//                                                         totalTime: difference.totalTime,
+//                                                         workingTime: differenceAfterLunch.totalTime,
+//                                                         dayStatus: dayStatus.FULLDAY
+//                                                 }
+//                                                 let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate, }, { $set: obj }, { new: true });
+//                                                 response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK)
+//                                         } else if (timeTakeInhr > shiftTotalHr) {
+//                                                 let hr = timeTakeInhr - difference.totalTime;
+//                                                 let min = difference.min;
+//                                                 let sec = difference.sec;
+//                                                 let overTime = hr + ':' + min + ':' + sec;
+//                                                 let obj = {
+//                                                         punchOut: punchOut,
+//                                                         punchOutSelfie: req.body.image,
+//                                                         punchOutLocation: req.body.punchOutLocation,
+//                                                         punchOutLocationWord: punchOutLocationWord,
+//                                                         outType: outType,
+//                                                         totalTime: difference.totalTime,
+//                                                         workingTime: differenceAfterLunch.totalTime,
+//                                                         dayStatus: dayStatus.OVERTIME,
+//                                                         overTime: overTime
+//                                                 }
+//                                                 let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate, }, { $set: obj }, { new: true });
+//                                                 response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK)
+//                                         } else if (timeTakeInhr < shiftTotalHr) {
+//                                                 let obj = {
+//                                                         punchOut: punchOut,
+//                                                         punchOutSelfie: req.body.image,
+//                                                         punchOutLocation: req.body.punchOutLocation,
+//                                                         punchOutLocationWord: punchOutLocationWord,
+//                                                         outType: outType,
+//                                                         totalTime: difference.totalTime,
+//                                                         workingTime: differenceAfterLunch.totalTime,
+//                                                         dayStatus: dayStatus.HALFDAY,
+//                                                 }
+//                                                 let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate }, { $set: obj }, { new: true });
+//                                                 response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK)
+//                                         }
+//                                 }
+//                         }
+//                 }
+//         } catch (error) {
+//                 ;
+//                 response(res, ErrorCode.WENT_WRONG, error, ErrorMessage.SOMETHING_WRONG);
+//         }
+// };
+const totalDays = async (startDate, endDate) => {
+        var date1 = new Date(startDate);
+        var date2 = new Date(endDate);
+        var Difference_In_Time = date2.getTime() - date1.getTime();
+        var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+        return Difference_In_Days + 1;
 }
+const datemonthCalulate = async (date, month) => {
+        let month1, date1;
+        if (month < 10) {
+                month1 = '' + 0 + month;
+        } else {
+                month1 = month
+        }
+        if (date < 10) {
+                date1 = '' + 0 + date;
+        }
+        else {
+                date1 = date
+        }
+        let dateMonth = `${month1}-${date1}`;
+        return dateMonth;
+}
+var getDaysArray = async (start, end) => {
+        for (var arr = [], dt = new Date(start); dt <= new Date(end); dt.setDate(dt.getDate() + 1)) {
+                arr.push(new Date(dt));
+        }
+        return arr;
+};
+const hourCalulate = async (hour, minute, second) => {
+        let hr1, min1, sec1;
+        if (hour < 10) {
+                hr1 = '' + 0 + hour;
+        } else {
+                hr1 = hour
+        }
+        if (minute < 10) {
+                min1 = '' + 0 + minute;
+        } else {
+                min1 = minute
+        }
+        if (second < 10) {
+                sec1 = '' + 0 + second;
+        } else {
+                sec1 = second
+        }
+        let punchIn = hr1 + ':' + min1 + ':' + sec1;
+        return punchIn;
+};
+const inTypeCalulate = async (hour, minute, shiftHr, shiftMin) => {
+        let inType;
+        if ((hour == shiftHr && minute == shiftMin) || (hour < shiftHr && minute >= shiftMin)) {
+                inType = "ONTIME";
+        } else if ((hour >= shiftHr) && (hour >= shiftHr)) {
+                inType = "LATEIN";
+        }
+        return inType;
+};
+const outTypeCalulate = async (hour, minute, shiftHr, shiftMin) => {
+        let outType;
+        if ((hour == shiftHr && minute >= shiftMin) || (hour > shiftHr && minute >= "00")) {
+                outType = "ONTIME";
+        } else if (hour < shiftHr && minute >= 0) {
+                outType = "EARLY_OUT";
+        }
+        return outType;
+};
+const totalTime = async (punchIn, outHour, outMinute, outSecond) => {
+        var startTime = punchIn;
+        var endTime = `${outHour}:${outMinute}: ${outSecond}`;
+        var todayDate = moment(new Date()).format("MM-DD-YYYY"); //Instead of today date, We can pass whatever date        
+        var startDate = new Date(`${todayDate} ${startTime}`);
+        var endDate = new Date(`${todayDate} ${endTime}`);
+        var timeDiff = Math.abs(startDate.getTime() - endDate.getTime());
+        var hh = Math.floor(timeDiff / 1000 / 60 / 60);
+        hh = ('0' + hh).slice(-2)
+        timeDiff -= hh * 1000 * 60 * 60;
+        var mm = Math.floor(timeDiff / 1000 / 60);
+        mm = ('0' + mm).slice(-2)
+        timeDiff -= mm * 1000 * 60;
+        var ss = Math.floor(timeDiff / 1000);
+        ss = ('0' + ss).slice(-2)
+        let totalTime = `${hh}:${mm}:${ss}`
+        let obj = {
+                totalTime: totalTime,
+                hr: hh,
+                min: mm,
+                sec: ss
+        }
+        return obj;
+};
+const totalTime1 = async (punchIn, punchOut) => {
+        var startTime = punchIn;
+        var endTime = punchOut;
+        var todayDate = moment(new Date()).format("MM-DD-YYYY"); //Instead of today date, We can pass whatever date        
+        var startDate = new Date(`${todayDate} ${startTime}`);
+        var endDate = new Date(`${todayDate} ${endTime}`);
+        var timeDiff = Math.abs(startDate.getTime() - endDate.getTime());
+        var hh = Math.floor(timeDiff / 1000 / 60 / 60);
+        hh = ('0' + hh).slice(-2)
+        timeDiff -= hh * 1000 * 60 * 60;
+        var mm = Math.floor(timeDiff / 1000 / 60);
+        mm = ('0' + mm).slice(-2)
+        timeDiff -= mm * 1000 * 60;
+        var ss = Math.floor(timeDiff / 1000);
+        ss = ('0' + ss).slice(-2)
+        let totalTime = `${hh}:${mm}:${ss}`
+        let obj = {
+                totalTime: totalTime,
+                hr: hh,
+                min: mm,
+                sec: ss
+        }
+        return obj;
+};
+const addTimes = async (startTime, endTime) => {
+        var times = [0, 0, 0]
+        var max = times.length
+        var a = (startTime || '').split(':')
+        var b = (endTime || '').split(':')
+        for (var i = 0; i < max; i++) {
+                a[i] = isNaN(parseInt(a[i])) ? 0 : parseInt(a[i])
+                b[i] = isNaN(parseInt(b[i])) ? 0 : parseInt(b[i])
+        }
+        for (var i = 0; i < max; i++) {
+                times[i] = a[i] + b[i]
+        }
+
+        var hours = times[0]
+        var minutes = times[1]
+        var seconds = times[2]
+
+        if (seconds >= 60) {
+                var m = (seconds / 60) << 0
+                minutes += m
+                seconds -= 60 * m
+        }
+
+        if (minutes >= 60) {
+                var h = (minutes / 60) << 0
+                hours += h
+                minutes -= 60 * h
+        }
+        return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2)
+};

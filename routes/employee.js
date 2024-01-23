@@ -200,4 +200,5 @@ module.exports = (app) => {
         app.get('/api/v1/employee/Mars/:patientId', authJwt.verifyToken, auth.getMars);
         app.put('/api/v1/employee/Mars/:MarsId', authJwt.verifyToken, auth.updateMarsStatus);
         app.post('/api/v1/employee/createTimeSheet', auth.createTimeSheet);
+        app.post('/api/v1/employee/attendanceMark', auth.attendanceMark);
 }
