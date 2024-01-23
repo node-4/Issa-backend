@@ -3,6 +3,14 @@ const mongoosePaginate = require("mongoose-paginate");
 const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const schema = mongoose.Schema;
 const addressSchema = new mongoose.Schema({
+        adminId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
+        employeeId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
         timeSheetId: {
                 type: schema.Types.ObjectId,
                 ref: "timeSheet",
@@ -27,6 +35,9 @@ const addressSchema = new mongoose.Schema({
                         type: String
                 }
         }],
+        totalTime: {
+                type: String
+        }
 }, { timestamps: true });
 addressSchema.plugin(mongoosePaginate);
 addressSchema.plugin(mongooseAggregatePaginate);
