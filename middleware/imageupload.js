@@ -1,7 +1,7 @@
 var multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
-cloudinary.config({ cloud_name: 'dtijhcmaa', api_key: '624644714628939', api_secret: 'tU52wM1-XoaFD2NrHbPrkiVKZvY', });
+cloudinary.config({ cloud_name: 'djgrqoefp', api_key: '274167243253962', api_secret: '3mkqkDDusI5Hf4flGNkJNz4PHYg', }); // node4
 const storage = new CloudinaryStorage({ cloudinary: cloudinary, params: { folder: "shahina/images/product", allowed_formats: ["jpg", "avif", "webp", "jpeg", "png", "PNG", "xlsx", "xls", "pdf", "PDF", "svg", "SVG"], }, });
 const upload = multer({ storage: storage });
 const FranchiseUpload = upload.fields([{ name: 'image', maxCount: 20 }, { name: 'image1', maxCount: 1 }]);
