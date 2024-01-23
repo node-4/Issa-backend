@@ -211,11 +211,16 @@ exports.addEmployeeApplication = async (req, res) => {
                 } else {
                         let obj = {
                                 employeeId: user._id,
+                                firstName: req.body.firstName || findEmployee.firstName,
+                                lastName: req.body.lastName || findEmployee.lastName,
+                                middle: req.body.middle || findEmployee.middle,
+                                maiden: req.body.maiden || findEmployee.maiden,
                                 today: req.body.today || findEmployee.today,
                                 hireDate: req.body.hireDate || findEmployee.hireDate,
                                 addressNumber: req.body.addressNumber || findEmployee.addressNumber,
                                 streetAddress: req.body.streetAddress || findEmployee.streetAddress,
                                 cityAddress: req.body.cityAddress || findEmployee.cityAddress,
+                                stateAddress: req.body.stateAddress || findEmployee.stateAddress,
                                 zipCode: req.body.zipCode || findEmployee.zipCode,
                                 howLong: req.body.howLong || findEmployee.howLong,
                                 primaryPhoneNumber: req.body.primaryPhoneNumber || findEmployee.primaryPhoneNumber,

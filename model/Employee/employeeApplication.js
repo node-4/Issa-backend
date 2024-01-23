@@ -13,10 +13,25 @@ const addressSchema = new mongoose.Schema({
         hireDate: {
                 type: Date,
         },
+        firstName: {
+                type: String,
+        },
+        lastName: {
+                type: String,
+        },
+        middle: {
+                type: String,
+        },
+        maiden: {
+                type: String,
+        },
         addressNumber: {
                 type: String,
         },
         streetAddress: {
+                type: String,
+        },
+        stateAddress: {
                 type: String,
         },
         cityAddress: {
