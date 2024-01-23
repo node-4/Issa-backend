@@ -67,7 +67,9 @@ const offerLetter = require('../model/EmployeeInformation/offerLetter');
 const personalInformation = require('../model/EmployeeInformation/personalInformation');
 const referenceCheck = require('../model/EmployeeInformation/referenceCheck');
 const termination = require('../model/EmployeeInformation/termination');
-const notification = require('../model/notification')
+const notification = require('../model/notification');
+const timeSheet = require('../model/GroupNotes/theropyNotes/timeSheet');
+const timeWorkSheet = require('../model/GroupNotes/theropyNotes/timeWorkSheet');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -5684,7 +5686,7 @@ exports.updateMarsStatus = async (req, res) => {
                 if (!marsRecord) {
                         return res.status(404).send({ status: 404, message: "No mars found.", data: {} });
                 }
-                const { dateToUpdate, timeStatusToUpdate, timeStatusId } = req.body;
+                const { dateToUpdate, timeStatusToUpdate, remark, initials, timeStatusId } = req.body;
                 const dateIndex = marsRecord.medicationStatus.findIndex(date => (date._id).toString() === dateToUpdate);
                 if (dateIndex === -1) {
                         return res.status(404).send({ status: 404, message: "Date not found.", data: {} });
@@ -5692,6 +5694,8 @@ exports.updateMarsStatus = async (req, res) => {
                 marsRecord.medicationStatus[dateIndex].timeStatus.forEach(timeStatus => {
                         if ((timeStatus._id).toString() === timeStatusId) {
                                 timeStatus.status = timeStatusToUpdate;
+                                timeStatus.remark = remark;
+                                timeStatus.initials = initials;
                         }
                 });
                 await marsRecord.save();

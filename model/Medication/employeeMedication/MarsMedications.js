@@ -40,6 +40,12 @@ const medicationSchema = new mongoose.Schema({
                         time: {
                                 type: String,
                         },
+                        initials: {
+                                type: String,
+                        },
+                        remark: {
+                                type: String,
+                        },
                         status: {
                                 type: String,
                                 enum: ["H", "HP", "RM", "H", "UN", ""],
