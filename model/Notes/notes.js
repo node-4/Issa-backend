@@ -1515,40 +1515,22 @@ const addressSchema = new mongoose.Schema({
                 emergencyLights: {
                         type: Boolean,
                 },
-                rightFrontTurnSignal: {
+                rightLeftFrontTurnSignal: {
                         type: Boolean,
                 },
-                leftFrontTurnSignal: {
+                rightLeftBackTurnSignal: {
                         type: Boolean,
                 },
-                rightBackTurnSignal: {
+                rightLeftTailLight: {
                         type: Boolean,
                 },
-                leftBackTurnSignal: {
+                rightLeftEmergencyLight: {
                         type: Boolean,
                 },
-                rightTailLight: {
+                rightLeftFrontDayRunning: {
                         type: Boolean,
                 },
-                leftTailLight: {
-                        type: Boolean,
-                },
-                rightEmergencyLight: {
-                        type: Boolean,
-                },
-                leftEmergencyLight: {
-                        type: Boolean,
-                },
-                rightFrontDayRunning: {
-                        type: Boolean,
-                },
-                leftFrontDayRunning: {
-                        type: Boolean,
-                },
-                rightBackDayRunning: {
-                        type: Boolean,
-                },
-                leftBackDayRunning: {
+                rightLeftBackDayRunning: {
                         type: Boolean,
                 },
         },
