@@ -35,6 +35,7 @@ const mars = require('../model/Medication/employeeMedication/mars');
 const notification = require('../model/notification')
 const MarsMedications = require('../model/Medication/employeeMedication/MarsMedications');
 const mentalStatusReport = require('../model/mentalStatusReport');
+const appointmentTrackingLog = require('../model/appointmentTrackingLog');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -1342,6 +1343,39 @@ exports.getMentalStatusReport = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "No mentalStatusReport found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "mentalStatusReport found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.createAppointmentTrackingLog = async (req, res) => {
+        try {
+                const patient = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!patient) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                req.body.adminId = patient.adminId;
+                const newConsentForm = await appointmentTrackingLog.create(req.body);
+                if (newConsentForm) {
+                        return res.status(200).send({ status: 200, message: "appointmentTrackingLog added successfully.", data: newConsentForm });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message });
+        }
+};
+exports.getAppointmentTrackingLog = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.params.patientId, userType: "Patient" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await appointmentTrackingLog.findOne({ patientId: user._id });
+                if (!filteredTasks) {
+                        return res.status(404).send({ status: 404, message: "No appointmentTrackingLog found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "appointmentTrackingLog found successfully.", data: filteredTasks });
                 }
         } catch (error) {
                 console.error(error);

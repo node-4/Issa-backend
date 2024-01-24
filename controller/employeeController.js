@@ -709,8 +709,8 @@ exports.getAllVisitLogByEmployeeId = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let findEmployee = await visitLog.findOne({ employeeId: req.params.employeeId });
-                if (!findEmployee) {
+                let findEmployee = await visitLog.find({ employeeId: req.params.employeeId });
+                if (findEmployee.length == 0) {
                         return res.status(404).send({ status: 404, message: "Visit Log  not found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "Visit Log  found.", data: findEmployee });

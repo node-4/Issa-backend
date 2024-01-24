@@ -30,4 +30,6 @@ module.exports = (app) => {
         app.get('/api/v1/Patient/allNotification', authJwt.verifyToken, auth.allNotification);
         app.post('/api/v1/Patient/createMentalStatusReport', authJwt.verifyToken, auth.createMentalStatusReport);
         app.get('/api/v1/Patient/getMentalStatusReport/:patientId', authJwt.verifyToken, auth.getMentalStatusReport);
+        app.post('/api/v1/Patient/createAppointmentTrackingLog', authJwt.verifyToken, auth.createAppointmentTrackingLog);
+        app.get('/api/v1/Patient/getAppointmentTrackingLog/:patientId', authJwt.verifyToken, auth.getAppointmentTrackingLog);
 }
