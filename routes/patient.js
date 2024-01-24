@@ -28,4 +28,6 @@ module.exports = (app) => {
         app.post('/api/v1/Patient/createFaceSheet', authJwt.verifyToken, auth.createFaceSheet);
         app.get('/api/v1/Patient/getFaceSheet/:patientId', authJwt.verifyToken, auth.getFaceSheet);
         app.get('/api/v1/Patient/allNotification', authJwt.verifyToken, auth.allNotification);
+        app.post('/api/v1/Patient/createMentalStatusReport', authJwt.verifyToken, auth.createMentalStatusReport);
+        app.get('/api/v1/Patient/getMentalStatusReport/:patientId', authJwt.verifyToken, auth.getMentalStatusReport);
 }

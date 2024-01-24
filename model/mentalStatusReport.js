@@ -98,4 +98,4 @@ const addressSchema = new mongoose.Schema({
 }, { timestamps: true });
 addressSchema.plugin(mongoosePaginate);
 addressSchema.plugin(mongooseAggregatePaginate);
-module.exports = mongoose.model("refusalMedicalTreatment", addressSchema);
+module.exports = mongoose.model("mentalStatusReport", addressSchema);

@@ -34,6 +34,7 @@ const refusalMedicalTreatment = require('../model/refusalMedicalTreatment');
 const mars = require('../model/Medication/employeeMedication/mars');
 const notification = require('../model/notification')
 const MarsMedications = require('../model/Medication/employeeMedication/MarsMedications');
+const mentalStatusReport = require('../model/mentalStatusReport');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -1296,7 +1297,6 @@ exports.getFaceSheet = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
-
 exports.allNotification = async (req, res) => {
         try {
                 const admin = await User.findById({ _id: req.user._id });
@@ -1315,3 +1315,36 @@ exports.allNotification = async (req, res) => {
                 return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 }
+exports.createMentalStatusReport = async (req, res) => {
+        try {
+                const patient = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!patient) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                }
+                req.body.adminId = patient.adminId;
+                const newConsentForm = await mentalStatusReport.create(req.body);
+                if (newConsentForm) {
+                        return res.status(200).send({ status: 200, message: "mentalStatusReport added successfully.", data: newConsentForm });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message });
+        }
+};
+exports.getMentalStatusReport = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.params.patientId, userType: "Patient" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await mentalStatusReport.findOne({ patientId: user._id });
+                if (!filteredTasks) {
+                        return res.status(404).send({ status: 404, message: "No mentalStatusReport found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "mentalStatusReport found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};

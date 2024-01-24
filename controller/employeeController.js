@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+var newOTP = require("otp-generators");
 const moment = require('moment');
 const User = require('../model/userModel');
 const AdminTracking = require('../model/Tracking/adminTracking');
