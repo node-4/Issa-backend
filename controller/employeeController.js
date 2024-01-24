@@ -110,6 +110,75 @@ exports.getProfile = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+exports.forgetPassword = async (req, res) => {
+        try {
+                const data = await User.findOne({ email: req.body.email });
+                if (!data) {
+                        return res.status(400).send({ status: 400, data: {}, msg: "Please use same email id as signup!" });
+                } else {
+                        let otp = newOTP.generate(4, { alphabets: false, upperCase: false, specialChar: false, });
+                        // var transporter = nodemailer.createTransport({ service: 'gmail', auth: { "user": "info@shahinahoja.com", "pass": "gganlypsemwqhwlh" } });
+                        // // var transporter = nodemailer.createTransport({ service: 'gmail', auth: { "user": "vcjagal1994@gmail.com", "pass": "kjoayiyibyjfwxbo" } });
+                        // let mailOptions;
+                        // mailOptions = {
+                        //         from: 'info@shahinahoja.com',
+                        //         to: req.body.email,
+                        //         subject: 'Forget password verification',
+                        //         text: `Your Account Verification Code is ${otp}`,
+                        // };
+                        // let info = await transporter.sendMail(mailOptions);
+                        // if (info) {
+                        let accountVerification = false;
+                        let otpExpiration = new Date(Date.now() + 5 * 60 * 1000);
+                        const updated = await User.findOneAndUpdate({ _id: data._id }, { $set: { isVerified: accountVerification, otp: otp, otpExpiration: otpExpiration } }, { new: true, });
+                        if (updated) {
+                                return res.status(200).json({ message: "Otp send to your email.", status: 200, data: updated });
+                        }
+                        // } else {
+                        //         return res.status(200).json({ message: "Otp not send on your mail please check.", status: 200, data: {} });
+                        // }
+                }
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message, });
+        }
+};
+exports.forgotVerifyotp = async (req, res) => {
+        try {
+                const { otp } = req.body;
+                const user = await User.findOne({ email: req.body.email });
+                if (!user) {
+                        return res.status(404).send({ message: "user not found" });
+                }
+                if (user.otp !== otp || user.otpExpiration < Date.now()) {
+                        return res.status(400).json({ message: "Invalid OTP" });
+                }
+                const updated = await User.findByIdAndUpdate({ _id: user._id }, { isVerified: true }, { new: true });
+                let obj = { userId: updated._id, otp: updated.otp, }
+                return res.status(200).send({ status: 200, message: "Verify otp successfully", data: obj });
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ error: "internal server error" + err.message });
+        }
+};
+exports.changePassword = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.params.id });
+                if (user) {
+                        if (req.body.newPassword == req.body.confirmPassword) {
+                                const updated = await User.findOneAndUpdate({ _id: user._id }, { $set: { password: bcrypt.hashSync(req.body.newPassword), accountVerification: true } }, { new: true });
+                                return res.status(200).send({ message: "Password update successfully.", data: updated, });
+                        } else {
+                                return res.status(501).send({ message: "Password Not matched.", data: {}, });
+                        }
+                } else {
+                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
 exports.getPatient = async (req, res) => {
         try {
                 const findEmployee = await User.findOne({ _id: req.user, userType: "Employee" });

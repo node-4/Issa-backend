@@ -8,6 +8,9 @@ module.exports = (app) => {
         app.get('/api/v1/employee/getProfile', authJwt.verifyToken, auth.getProfile);
         app.get('/api/v1/employee/getPatient', authJwt.verifyToken, auth.getPatient);
         app.get('/api/v1/employee/getPatientById/:id', authJwt.verifyToken, auth.getPatientById);
+        app.post("/api/v1/employee/forgetPassword", auth.forgetPassword);
+        app.post("/api/v1/employee/forgotVerifyOtp", auth.forgotVerifyotp);
+        app.post("/api/v1/employee/changePassword/:id", auth.changePassword);
         app.put('/api/v1/employee/updateProfile', authJwt.verifyToken, upload.single('image'), auth.updateProfile);
         app.post('/api/v1/employee/addEmployeeApplication', authJwt.verifyToken, auth.addEmployeeApplication);
         app.get('/api/v1/employee/viewEmployeeApplication', authJwt.verifyToken, auth.viewEmployeeApplication);
