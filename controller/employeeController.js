@@ -531,7 +531,7 @@ exports.addEmployeeOtherInfo = async (req, res) => {
                         let obj = {
                                 employeeId: user._id,
                                 militaryExperience: req.body.militaryExperience || findEmployee.militaryExperience,
-                                ifYesSpecialty: req.body.ifYesSpecialty || findEmployee.ifYesSpecialty,
+                                ifSpecialty: req.body.ifSpecialty || findEmployee.ifSpecialty,
                                 dateEntered: req.body.dateEntered || findEmployee.dateEntered,
                                 dateDischarged: req.body.dateDischarged || findEmployee.dateDischarged,
                                 nationalGuard: req.body.nationalGuard || findEmployee.nationalGuard,

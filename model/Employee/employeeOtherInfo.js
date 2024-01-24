@@ -11,7 +11,7 @@ const addressSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false
         },
-        ifYesSpeciality: {
+        ifSpecialty: {
                 type: String,
         },
         dateEntered: {
@@ -28,20 +28,20 @@ const addressSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false
         },
-        driverLicenceNumber: {
+        driverLicenseNumber: {
                 type: String,
         },
-        driverLicenceClass: {
+        driverLicenseClass: {
                 type: String,
         },
-        driverLicenceStatusissued: {
+        driverLicenseStatusIssued: {
                 type: String,
         },
         typingSkill: {
                 type: Boolean,
                 default: false
         },
-        wordPerMinutes: {
+        wordsPerMinute: {
                 type: Number,
         },
         familiarWithMicroSoft: {
