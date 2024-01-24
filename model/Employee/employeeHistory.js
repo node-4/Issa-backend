@@ -7,6 +7,9 @@ const addressSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
+        employeeName: {
+                type: String,
+        },
         streetAddress: {
                 type: String,
         },
@@ -24,6 +27,12 @@ const addressSchema = new mongoose.Schema({
         },
         supervisorNameAndTitle: {
                 type: String,
+        },
+        from: {
+                type: Date,
+        },
+        to: {
+                type: Date,
         },
         previousCompany: [{
                 from: {

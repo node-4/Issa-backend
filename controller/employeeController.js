@@ -459,12 +459,15 @@ exports.addEmployeeHistory = async (req, res) => {
                 } else {
                         let obj = {
                                 employeeId: user._id,
+                                employeeName: req.body.employeeName || findEmployee.employeeName,
                                 streetAddress: req.body.streetAddress || findEmployee.streetAddress,
                                 city: req.body.city || findEmployee.city,
                                 state: req.body.state || findEmployee.state,
                                 zipCode: req.body.zipCode || findEmployee.zipCode,
                                 phoneNumber: req.body.phoneNumber || findEmployee.phoneNumber,
                                 supervisorNameAndTitle: req.body.supervisorNameAndTitle || findEmployee.supervisorNameAndTitle,
+                                to: req.body.to || findEmployee.to,
+                                from: req.body.from || findEmployee.from,
                                 previousCompany: req.body.previousCompany || findEmployee.previousCompany,
                         }
                         let update = await employeeHistory.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
