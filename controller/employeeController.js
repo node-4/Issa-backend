@@ -798,6 +798,7 @@ exports.createMileageLog = async (req, res) => {
                         totalMileage: req.body.totalMileage,
                         driverSignature: req.body.driverSignature,
                         anyIssues: req.body.anyIssues,
+                        destination: req.body.destination
                 }
                 let newEmployee = await mileageLog.create(obj);
                 if (newEmployee) {
