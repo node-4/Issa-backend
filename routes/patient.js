@@ -25,6 +25,7 @@ module.exports = (app) => {
         app.post('/api/v1/Patient/createRefusalMedicalTreatment', authJwt.verifyToken, auth.createRefusalMedicalTreatment);
         app.get('/api/v1/Patient/getRefusalMedicalTreatment/:patientId', authJwt.verifyToken, auth.getRefusalMedicalTreatment);
         app.get('/api/v1/Patient/getOngoingMedications/:patientId', auth.getOngoingMedications);
+        app.get('/api/v1/Patient/getPastMedications/:patientId', auth.getPastMedications);
         app.post('/api/v1/Patient/createFaceSheet', authJwt.verifyToken, auth.createFaceSheet);
         app.get('/api/v1/Patient/getFaceSheet/:patientId', authJwt.verifyToken, auth.getFaceSheet);
         app.get('/api/v1/Patient/allNotification', authJwt.verifyToken, auth.allNotification);

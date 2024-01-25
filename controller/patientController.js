@@ -1265,6 +1265,23 @@ exports.getOngoingMedications = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.getPastMedications = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.params.patientId, userType: "Patient" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await MarsMedications.findOne({ patientId: user._id })
+                if (!filteredTasks) {
+                        return res.status(404).send({ status: 404, message: "No mars found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Mars found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
 exports.createFaceSheet = async (req, res) => {
         try {
                 const patient = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
