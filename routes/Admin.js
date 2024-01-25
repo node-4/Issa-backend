@@ -8,6 +8,7 @@ module.exports = (app) => {
         app.post('/api/v1/admin/createUser', authJwt.verifyToken, upload.single('file'), auth.createUser);
         app.get('/api/v1/admin/getUser', authJwt.verifyToken, auth.getUser);
         app.get('/api/v1/admin/getUserById/:id', authJwt.verifyToken, auth.getUserById);
+        app.put('/api/v1/admin/providePermission/:id', authJwt.verifyToken, auth.providePermission);
         app.delete('/api/v1/admin/deleteUser/:id', authJwt.verifyToken, auth.deleteUser);
         app.post('/api/v1/admin/addAdminTracking', authJwt.verifyToken, auth.addAdminTracking);
         app.get('/api/v1/admin/getAdminTrackingById/:id', auth.getAdminTrackingById);

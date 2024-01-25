@@ -181,6 +181,39 @@ exports.getUserById = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+exports.providePermission = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await User.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let obj = {
+                        userType: req.body.userType || user1.userType,
+                        initialAssessment: req.body.initialAssessment || user1.initialAssessment,
+                        nursingAssessment: req.body.nursingAssessment || user1.nursingAssessment,
+                        treatmentPlan: req.body.treatmentPlan || user1.treatmentPlan,
+                        faceSheet: req.body.faceSheet || user1.faceSheet,
+                        safetyPlan: req.body.safetyPlan || user1.safetyPlan,
+                        residentIntakes: req.body.residentIntakes || user1.residentIntakes,
+                        permissionAdmin: req.body.permissionAdmin || user1.permissionAdmin,
+                        permissionEmployee: req.body.permissionEmployee || user1.permissionEmployee,
+                        permissionPatient: req.body.permissionPatient || user1.permissionPatient,
+                        permissionPsychiatricProvider: req.body.permissionPsychiatricProvider || user1.permissionPsychiatricProvider,
+                        permissionClaimSubmission: req.body.permissionClaimSubmission || user1.permissionClaimSubmission,
+                }
+                let update = await User.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                if (update) {
+                        return res.status(200).send({ status: 200, message: "Profile get successfully.", data: update })
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
 exports.deleteUser = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
