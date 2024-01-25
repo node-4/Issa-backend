@@ -16,10 +16,6 @@ const addressSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "user",
         },
-        adminId: {
-                type: schema.Types.ObjectId,
-                ref: "user",
-        },
         date: {
                 type: Date,
         },
