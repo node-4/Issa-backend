@@ -940,7 +940,7 @@ exports.addIncidentReport = async (req, res) => {
                                 investigationCompletionDate: req.body.investigationCompletionDate,
                                 partType: "B",
                         };
-                        const checklist1 = await incidentReport.create(obj1);
+                        const checklist1 = await notes.create(obj1);
                         if (checklist1) {
                                 return res.status(200).send({ status: 200, message: "Incident Report added successfully.", data: { checklist1, checklist } });
                         }

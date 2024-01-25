@@ -12,6 +12,10 @@ const addressSchema = new mongoose.Schema({
                         "incidentReport", "disasterPlanReview"
                 ]
         },
+        partId: {
+                type: schema.Types.ObjectId,
+                ref: "notes",
+        },
         adminId: {
                 type: schema.Types.ObjectId,
                 ref: "user",
@@ -1659,7 +1663,10 @@ const addressSchema = new mongoose.Schema({
         inspectionDate: {
                 type: Date,
         },
-
+        partType: {
+                type: String,
+                enum: ['A', 'B']
+        },
 }, { timestamps: true });
 addressSchema.plugin(mongoosePaginate);
 addressSchema.plugin(mongooseAggregatePaginate);
