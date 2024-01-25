@@ -7,18 +7,18 @@ const admitDetail = require('../model/admitDetail');
 const task = require('../model/task');
 const reciept = require('../model/reciept');
 const appointment = require('../model/appointment');
-const firstAidChecklist = require('../model/Notes/firstAidChecklist');
-const fireEquipementMonitoring = require('../model/Notes/fireEquipementMonitoring');
-const evacuationAndFireDrill = require('../model/Notes/evacuationandFireDrill');
-const disasterDrill = require('../model/Notes/disasterDrill');
-const WeeklyVehicleInspectionChecklist = require('../model/Notes/WeeklyVehicleInspectionChecklist');
-const ClinicalOversight = require('../model/Notes/ClinicalOversight');
-const MonthlyVehicleInspection = require('../model/Notes/MonthlyVehicleInspection');
-const vanEmergencyInformationForm = require('../model/Notes/vanEmergencyInformationForm');
-const qualityManagement = require('../model/Notes/qualityManagement');
-const infectiousData = require('../model/Notes/infectiousData');
-const incidentReport = require('../model/Notes/incidentReport');
-const disasterPlanReview = require('../model/Notes/disasterPlanReview');
+// const firstAidChecklist = require('../model/Notes/firstAidChecklist');
+// const fireEquipementMonitoring = require('../model/Notes/fireEquipementMonitoring');
+// const evacuationAndFireDrill = require('../model/Notes/evacuationandFireDrill');
+// const disasterDrill = require('../model/Notes/disasterDrill');
+// const WeeklyVehicleInspectionChecklist = require('../model/Notes/WeeklyVehicleInspectionChecklist');
+// const ClinicalOversight = require('../model/Notes/ClinicalOversight');
+// const MonthlyVehicleInspection = require('../model/Notes/MonthlyVehicleInspection');
+// const vanEmergencyInformationForm = require('../model/Notes/vanEmergencyInformationForm');
+// const qualityManagement = require('../model/Notes/qualityManagement');
+// const infectiousData = require('../model/Notes/infectiousData');
+// const incidentReport = require('../model/Notes/incidentReport');
+// const disasterPlanReview = require('../model/Notes/disasterPlanReview');
 const notes = require('../model/Notes/notes');
 const package = require('../model/package');
 const staffSchedule = require('../model/GroupNotes/theropyNotes/staffSchedule');
@@ -660,6 +660,7 @@ exports.addFirstAidChecklist = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
+                req.body.name = "firstAidChecklist";
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Checklist added successfully.", data: checklist });
@@ -676,6 +677,7 @@ exports.addFireEquipementMonitoring = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
+                req.body.name = "fireEquipementMonitoring";
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Fire equipement monitoring added successfully.", data: checklist });
@@ -692,6 +694,7 @@ exports.addEvacuationAndFireDrill = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
+                req.body.name = "evacuationAndFireDrill";
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Evacuation And Fire Drill added successfully.", data: checklist });
@@ -708,6 +711,7 @@ exports.addDisasterDrill = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
+                req.body.name = "disasterDrill";
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Disaster drill added successfully.", data: checklist });
@@ -724,6 +728,7 @@ exports.addWeeklyVehicleInspectionChecklist = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
+                req.body.name = "WeeklyVehicleInspectionChecklist";
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Weekly Vehicle Inspection Checklist added successfully.", data: checklist });
@@ -740,6 +745,7 @@ exports.addClinicalOversight = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
+                req.body.name = "ClinicalOversight";
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Clinical Over sight added successfully.", data: checklist });
@@ -756,6 +762,7 @@ exports.addMonthlyVehicleInspection = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
+                req.body.name = "MonthlyVehicleInspection";
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Monthly Vehicle Inspection added successfully.", data: checklist });
@@ -772,6 +779,7 @@ exports.addVanEmergencyInformationForm = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
+                req.body.name = "vanEmergencyInformationForm";
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Van Emergency InformationForm added successfully.", data: checklist });
@@ -788,6 +796,7 @@ exports.addQualityManagement = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
+                req.body.name = "qualityManagement";
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Quality Management added successfully.", data: checklist });
@@ -804,6 +813,7 @@ exports.addInfectiousData = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
+                req.body.name = "infectiousData";
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Infectious Data added successfully.", data: checklist });
@@ -822,6 +832,7 @@ exports.addIncidentReport = async (req, res) => {
                 let obj = {
                         residentsInvolved: residentsInvolved,
                         adminId: user.adminId,
+                        name: "incidentReport",
                         employeesInvolved: employeesInvolved,
                         dateOfIncident: req.body.dateOfIncident,
                         timeOfIncident: req.body.timeOfIncident,
@@ -913,6 +924,7 @@ exports.addDisasterPlanReview = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 req.body.adminId = user._id;
+                req.body.name = "disasterPlanReview";
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Disaster Plan Review added successfully.", data: checklist });

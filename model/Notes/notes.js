@@ -3,6 +3,15 @@ const mongoosePaginate = require("mongoose-paginate");
 const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const schema = mongoose.Schema;
 const addressSchema = new mongoose.Schema({
+        name: {
+                type: String,
+                enum: ["firstAidChecklist", "fireEquipementMonitoring",
+                        "evacuationAndFireDrill", "disasterDrill", "WeeklyVehicleInspectionChecklist",
+                        "WeeklyVehicleInspectionChecklist", "ClinicalOversight", "MonthlyVehicleInspection",
+                        "vanEmergencyInformationForm", "qualityManagement", "infectiousData",
+                        "incidentReport", "disasterPlanReview"
+                ]
+        },
         adminId: {
                 type: schema.Types.ObjectId,
                 ref: "user",
@@ -1654,6 +1663,7 @@ const addressSchema = new mongoose.Schema({
         inspectionDate: {
                 type: Date,
         },
+
 }, { timestamps: true });
 addressSchema.plugin(mongoosePaginate);
 addressSchema.plugin(mongooseAggregatePaginate);
