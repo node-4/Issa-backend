@@ -863,10 +863,10 @@ exports.addIncidentReport = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
                 let obj = {
-                        residentsInvolved: residentsInvolved,
+                        residentsInvolved: req.body.residentsInvolved,
                         adminId: user.adminId,
                         name: "incidentReport",
-                        employeesInvolved: employeesInvolved,
+                        employeesInvolved: req.body.employeesInvolved,
                         dateOfIncident: req.body.dateOfIncident,
                         timeOfIncident: req.body.timeOfIncident,
                         personObservingReporting: req.body.personObservingReporting,
@@ -929,9 +929,9 @@ exports.addIncidentReport = async (req, res) => {
                 const checklist = await notes.create(obj);
                 if (checklist) {
                         let obj1 = {
-                                residentsInvolved: residentsInvolved,
+                                residentsInvolved: req.body.residentsInvolved,
                                 adminId: user.adminId,
-                                employeesInvolved: employeesInvolved,
+                                employeesInvolved: req.body.employeesInvolved,
                                 partId: checklist._id,
                                 investigationDetails: req.body.investigationDetails,
                                 investigationRecommendationsAndActions: req.body.investigationRecommendationsAndActions,
