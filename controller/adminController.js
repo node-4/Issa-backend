@@ -33,8 +33,10 @@ const patientMedication = require('../model/Medication/patientMedication/patient
 const offerLetter = require('../model/EmployeeInformation/offerLetter');
 const jobDescription = require('../model/EmployeeInformation/jobDescription');
 const notification = require('../model/notification')
-const stripe = require("stripe")('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');
-const stripe1 = require("stripe")('pk_live_51OVyc9JE613RQzRwA6tXmVD8oOGgCkgB2m8fl8N8vkQ18wcrMvAhDCXA9CdmKllvqvqnlGHZ8SrRDlJtk6tf3k9w00wq5liSG5');
+const pricing = require("../model/website/pricing");
+const transactionModel = require("../model/transactionModel")
+const stripe1 = require("stripe")('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');
+const stripe = require("stripe")('pk_live_51OVyc9JE613RQzRwA6tXmVD8oOGgCkgB2m8fl8N8vkQ18wcrMvAhDCXA9CdmKllvqvqnlGHZ8SrRDlJtk6tf3k9w00wq5liSG5');
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -254,6 +256,9 @@ exports.getUser = async (req, res) => {
                 if (req.query.permissionClaimSubmission) {
                         filters.permissionClaimSubmission = req.query.permissionClaimSubmission;
                 }
+                if (req.query.userType) {
+                        filters.userType = req.query.userType;
+                }
                 const users = await User.find(filters);
                 if (users.length === 0) {
                         return res.status(404).send({ status: 404, message: "No users found matching the criteria", data: {} });
@@ -350,15 +355,44 @@ exports.deleteAdminTracking = async (req, res) => {
 };
 exports.getAdminTracking = async (req, res) => {
         try {
-                const user1 = await AdminTracking.find({ adminId: req.user._id });
-                if (user1.length == 0) {
-                        return res.status(404).send({ status: 404, message: "Admin tracking not found ! not registered", data: {} });
-                } else {
-                        return res.status(200).send({ status: 200, message: "Get Admin tracking fetch successfully.", data: user1 });
+                const { fromDate, toDate, fromCompletePer, toCompletePer, page, limit } = req.query;
+                let query = { adminId: req.user._id };
+                if (fromCompletePer && !toCompletePer) {
+                        query.completePer = { $gte: fromCompletePer };
                 }
-        } catch (error) {
-                console.error(error);
-                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+                if (!fromCompletePer && toCompletePer) {
+                        query.completePer = { $lte: toCompletePer };
+                }
+                if (fromCompletePer && toCompletePer) {
+                        query.$and = [
+                                { completePer: { $gte: fromCompletePer } },
+                                { completePer: { $lte: toCompletePer } },
+                        ]
+                }
+                if (fromDate && !toDate) {
+                        query.createdAt = { $gte: fromDate };
+                }
+                if (!fromDate && toDate) {
+                        query.createdAt = { $lte: toDate };
+                }
+                if (fromDate && toDate) {
+                        query.$and = [
+                                { createdAt: { $gte: fromDate } },
+                                { createdAt: { $lte: toDate } },
+                        ]
+                }
+                let options = {
+                        page: Number(page) || 1,
+                        limit: Number(limit) || 15,
+                        sort: { createdAt: -1 },
+                        populate: ('')
+                };
+                let data = await AdminTracking.paginate(query, options);
+                return res.status(200).json({ status: 200, message: "Product data found.", data: data });
+
+        } catch (err) {
+                console.log(err);
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }
 };
 exports.addAdmitDetails = async (req, res) => {
@@ -487,6 +521,11 @@ exports.getAdmitDetails = async (req, res) => {
                                 { dateOfDischarge: { $lte: req.query.toDateOfDischarge } },
                         ];
                 }
+                let options = {
+                        page: Number(req.query.page) || 1,
+                        limit: Number(req.query.limit) || 15,
+                        sort: { createdAt: -1 },
+                };
                 const users = await admitDetail.find(filters).populate('patientId');
                 if (users.length === 0) {
                         return res.status(404).send({ status: 404, message: "No Admit detail found matching the criteria", data: {} });
@@ -671,19 +710,47 @@ exports.getRecieptById = async (req, res) => {
 };
 exports.getAllReceipt = async (req, res) => {
         try {
-                const user = await User.findOne({ _id: req.user });
-                if (!user) {
-                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                const { fromDate, toDate, documentType, fromSize, toSize, page, limit } = req.query;
+                let query = { adminId: req.user };
+                if (documentType) {
+                        filters.documentType = documentType;
                 }
-                const filteredTasks = await reciept.find({ adminId: user._id }).sort({ createdAt: -1 })
-                if (filteredTasks.length === 0) {
-                        return res.status(404).send({ status: 404, message: "No tasks found.", data: {} });
-                } else {
-                        return res.status(200).send({ status: 200, message: "Reciept found successfully.", data: filteredTasks });
+                if (fromSize && !toSize) {
+                        query.size = { $gte: fromSize };
                 }
-        } catch (error) {
-                console.error(error);
-                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+                if (!fromSize && toSize) {
+                        query.size = { $lte: toSize };
+                }
+                if (fromSize && toSize) {
+                        query.$and = [
+                                { size: { $gte: fromSize } },
+                                { size: { $lte: toSize } },
+                        ]
+                }
+                if (fromDate && !toDate) {
+                        query.createdAt = { $gte: fromDate };
+                }
+                if (!fromDate && toDate) {
+                        query.createdAt = { $lte: toDate };
+                }
+                if (fromDate && toDate) {
+                        query.$and = [
+                                { createdAt: { $gte: fromDate } },
+                                { createdAt: { $lte: toDate } },
+                        ]
+                }
+                let options = {
+                        page: Number(page) || 1,
+                        limit: Number(limit) || 15,
+                        sort: { createdAt: -1 },
+                        populate: ('')
+                };
+                let data = await reciept.paginate(query, options);
+                return res.status(200).json({ status: 200, message: "Product data found.", data: data });
+
+        } catch (err) {
+                console.log(err);
+                return res.status(500).send({ msg: "internal server error ", error: err.message, });
         }
 };
 exports.addFirstAidChecklist = async (req, res) => {
@@ -978,6 +1045,48 @@ exports.getAllNotes = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "No Notes found.", data: {} });
                 } else {
                         return res.status(200).send({ status: 200, message: "Notes found successfully.", data: tasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getAllNotes = async (req, res) => {
+        try {
+                const { name, search, fromDate, toDate, page, limit } = req.query;
+                const filters = { adminId: req.user };
+                if (search) {
+                        filters.$or = [
+                                { "reasonOfDischarge": { $regex: search, $options: "i" }, },
+                        ]
+                }
+                if (name) {
+                        filters.$or = [
+                                { "name": { $regex: name, $options: "i" }, },
+                        ]
+                }
+                if (fromDate && !toDate) {
+                        query.createdAt = { $gte: fromDate };
+                }
+                if (!fromDate && toDate) {
+                        query.createdAt = { $lte: toDate };
+                }
+                if (fromDate && toDate) {
+                        query.$and = [
+                                { createdAt: { $gte: fromDate } },
+                                { createdAt: { $lte: toDate } },
+                        ]
+                }
+                let options = {
+                        page: Number(page) || 1,
+                        limit: Number(limit) || 15,
+                        sort: { createdAt: -1 },
+                };
+                const users = await notes.find(filters)
+                if (users.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No Admit detail found matching the criteria", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Admit detail successfully.", data: users });
                 }
         } catch (error) {
                 console.error(error);
@@ -1777,3 +1886,127 @@ exports.sendNotification = async (req, res) => {
                 return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 }
+exports.takeSubscription = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user._id, });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found" });
+                } else {
+                        let id = req.params.id;
+                        const findSubscription = await pricing.findById(id);
+                        if (findSubscription) {
+                                const findTransaction = await transactionModel.findOne({ user: user._id, type: "Subscription", Status: "pending" });
+                                if (findTransaction) {
+                                        let deleteData = await transactionModel.findByIdAndDelete({ _id: findTransaction._id })
+                                        let obj = {
+                                                user: user._id,
+                                                subscriptionId: findSubscription._id,
+                                                amount: findSubscription.perUser,
+                                                paymentMode: req.body.paymentMode,
+                                                type: "Subscription",
+                                                Status: "pending",
+                                        }
+                                        let update = await transactionModel.create(obj);
+                                        if (update) {
+                                                let line_items = [];
+                                                let obj2 = {
+                                                        price_data: {
+                                                                currency: "usd",
+                                                                product_data: {
+                                                                        name: `Subscription`,
+                                                                },
+                                                                unit_amount: `${Math.round(findSubscription.perUser * 100)}`,
+                                                        },
+                                                        quantity: 1,
+                                                }
+                                                line_items.push(obj2)
+                                                const session = await stripe1.checkout.sessions.create({
+                                                        payment_method_types: ["card"],
+                                                        success_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/verifySubscription/${update._id}`,
+                                                        cancel_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/faildeSub/${update._id}`,
+                                                        customer_email: req.user.email,
+                                                        client_reference_id: update._id,
+                                                        line_items: line_items,
+                                                        mode: "payment",
+                                                });
+                                                return res.status(200).json({ status: "success", session: session, });
+                                        }
+                                } else {
+                                        let obj = {
+                                                user: user._id,
+                                                subscriptionId: findSubscription._id,
+                                                amount: findSubscription.perUser,
+                                                paymentMode: req.body.paymentMode,
+                                                type: "Subscription",
+                                                Status: "pending",
+                                                checkExpiration: new Date(Date.now() + 10 * 60 * 1000)
+                                        }
+                                        let update = await transactionModel.create(obj);
+                                        if (update) {
+                                                let line_items = [];
+                                                let obj2 = {
+                                                        price_data: {
+                                                                currency: "usd",
+                                                                product_data: {
+                                                                        name: `Subscription`,
+                                                                },
+                                                                unit_amount: `${Math.round(findSubscription.perUser * 100)}`,
+                                                        },
+                                                        quantity: 1,
+                                                }
+                                                line_items.push(obj2)
+                                                const session = await stripe1.checkout.sessions.create({
+                                                        payment_method_types: ["card"],
+                                                        success_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/verifySubscription/${update._id}`,
+                                                        cancel_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/faildeSub/${update._id}`,
+                                                        customer_email: req.user.email,
+                                                        client_reference_id: update._id,
+                                                        line_items: line_items,
+                                                        mode: "payment",
+                                                });
+                                                return res.status(200).json({ status: "success", session: session, });
+                                        }
+                                }
+                        } else {
+                                return res.status(404).send({ status: 404, message: "Subscription not found" });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error" + error.message });
+        }
+};
+exports.verifySubscription = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user._id });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found" });
+                } else {
+                        let findTransaction = await transactionModel.findById({ _id: req.params.transactionId, type: "Subscription", Status: "pending" });
+                        if (findTransaction) {
+                                if (req.body.Status == "Paid") {
+                                        let update = await transactionModel.findByIdAndUpdate({ _id: findTransaction._id }, { $set: { Status: "Paid" } }, { new: true });
+                                        if (update) {
+                                                const findSubscription = await pricing.findById(update.subscriptionId);
+                                                if (findSubscription) {
+                                                        // let subscriptionExpiration = new Date(Date.now() + findSubscription.month * 30 * 24 * 60 * 60 * 1000);
+                                                        let updateUser = await User.findByIdAndUpdate({ _id: user._id }, { $set: { subscriptionId: findTransaction.subscriptionId, isSubscription: true,/*     subscriptionExpiration: subscriptionExpiration */ } }, { new: true });
+                                                        return res.status(200).send({ status: 200, message: 'subscription subscribe successfully.', data: update });
+                                                }
+                                        }
+                                }
+                                if (req.body.Status == "failed") {
+                                        let update = await transactionModel.findByIdAndUpdate({ _id: findTransaction._id }, { $set: { Status: "failed" } }, { new: true });
+                                        if (update) {
+                                                return res.status(200).send({ status: 200, message: 'subscription not subscribe successfully.', data: update });
+                                        }
+                                }
+                        } else {
+                                return res.status(404).send({ status: 404, message: "Transaction not found" });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error" + error.message });
+        }
+};

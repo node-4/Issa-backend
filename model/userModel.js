@@ -19,6 +19,17 @@ const userSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         }],
+        subscriptionId: {
+                type: mongoose.Schema.ObjectId,
+                ref: "pricing",
+        },
+        subscriptionExpiration: {
+                type: Date
+        },
+        isSubscription: {
+                type: Boolean,
+                default: false,
+        },
         fullName: {
                 type: String
         },
