@@ -42,47 +42,14 @@ const progressNoteSchema = new mongoose.Schema({
                 type: String,
                 enum: ['monitors', 'Prompts']
         },
-        groupTherapy: {
-                type: Boolean
+        therapy: {
+                type: Array,
         },
-        individualTherapy: {
-                type: Boolean
+        mood: {
+                type: Array,
         },
-        refusedTherapy: {
-                type: Boolean
-        },
-        isolation: {
-                type: Boolean
-        },
-        anxious: {
-                type: Boolean
-        },
-        depressed: {
-                type: Boolean
-        },
-        excited: {
-                type: Boolean
-        },
-        respondingToInternalStimuli: {
-                type: Boolean
-        },
-        inappropriateSexualComment: {
-                type: Boolean
-        },
-        paranoia: {
-                type: Boolean
-        },
-        verballyAggressive: {
-                type: Boolean
-        },
-        physicallyAggressive: {
-                type: Boolean
-        },
-        agitated: {
-                type: Boolean
-        },
-        suicidalIdeation: {
-                type: Boolean
+        appointment: {
+                type: Array,
         },
         PCP: {
                 type: Boolean
@@ -91,18 +58,6 @@ const progressNoteSchema = new mongoose.Schema({
                 type: Boolean
         },
         otherSpecialist: {
-                type: Boolean
-        },
-        none: {
-                type: Boolean
-        },
-        emergencyRoomVisit: {
-                type: Boolean
-        },
-        inpatient: {
-                type: Boolean
-        },
-        urgentCare: {
                 type: Boolean
         },
         none: {
