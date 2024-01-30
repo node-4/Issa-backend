@@ -2941,7 +2941,7 @@ exports.getAllADLTrackingForm = async (req, res) => {
                         }
                         filter.patientId = req.query.patientId;
                 }
-                let findEmployee = await ADLTrackingForm.find(filter);
+                let findEmployee = await ADLTrackingForm.find(filter).populate('patientId');
                 if (!findEmployee) {
                         return res.status(404).send({ status: 404, message: "ADLTrackingForm not found.", data: {} });
                 } else {
