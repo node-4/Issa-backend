@@ -1888,9 +1888,95 @@ exports.sendNotification = async (req, res) => {
 }
 exports.takeSubscription = async (req, res) => {
         try {
-                const user = await User.findOne({ _id: req.user._id, });
+                const { email } = req.body;
+                req.body.email = email.split(" ").join("").toLowerCase();
+                const user = await User.findOne({ email: req.body.email, userType: "Admin" });
                 if (!user) {
-                        return res.status(404).send({ status: 404, message: "User not found" });
+                        req.body.userType = "Admin";
+                        req.body.accountVerification = true;
+                        let user2 = await User.find({ userType: "Admin" }).count();
+                        req.body.Id = `B${user2 + 1}`
+                        const userCreate = await User.create(req.body);
+                        if (userCreate) {
+                                let id = req.params.id;
+                                const findSubscription = await pricing.findById(id);
+                                if (findSubscription) {
+                                        const findTransaction = await transactionModel.findOne({ user: userCreate._id, type: "Subscription", Status: "pending" });
+                                        if (findTransaction) {
+                                                let deleteData = await transactionModel.findByIdAndDelete({ _id: findTransaction._id })
+                                                let obj = {
+                                                        user: userCreate._id,
+                                                        subscriptionId: findSubscription._id,
+                                                        amount: findSubscription.perUser,
+                                                        paymentMode: req.body.paymentMode,
+                                                        type: "Subscription",
+                                                        Status: "pending",
+                                                }
+                                                let update = await transactionModel.create(obj);
+                                                if (update) {
+                                                        let line_items = [];
+                                                        let obj2 = {
+                                                                price_data: {
+                                                                        currency: "usd",
+                                                                        product_data: {
+                                                                                name: `Subscription`,
+                                                                        },
+                                                                        unit_amount: `${Math.round(findSubscription.perUser * 100)}`,
+                                                                },
+                                                                quantity: 1,
+                                                        }
+                                                        line_items.push(obj2)
+                                                        const session = await stripe1.checkout.sessions.create({
+                                                                payment_method_types: ["card"],
+                                                                success_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/verifySubscription/${update._id}`,
+                                                                cancel_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/faildeSub/${update._id}`,
+                                                                customer_email: userCreate.email,
+                                                                client_reference_id: update._id,
+                                                                line_items: line_items,
+                                                                mode: "payment",
+                                                        });
+                                                        return res.status(200).json({ status: "success", session: session, });
+                                                }
+                                        } else {
+                                                let obj = {
+                                                        user: userCreate._id,
+                                                        subscriptionId: findSubscription._id,
+                                                        amount: findSubscription.perUser,
+                                                        paymentMode: req.body.paymentMode,
+                                                        type: "Subscription",
+                                                        Status: "pending",
+                                                        checkExpiration: new Date(Date.now() + 10 * 60 * 1000)
+                                                }
+                                                let update = await transactionModel.create(obj);
+                                                if (update) {
+                                                        let line_items = [];
+                                                        let obj2 = {
+                                                                price_data: {
+                                                                        currency: "usd",
+                                                                        product_data: {
+                                                                                name: `Subscription`,
+                                                                        },
+                                                                        unit_amount: `${Math.round(findSubscription.perUser * 100)}`,
+                                                                },
+                                                                quantity: 1,
+                                                        }
+                                                        line_items.push(obj2)
+                                                        const session = await stripe1.checkout.sessions.create({
+                                                                payment_method_types: ["card"],
+                                                                success_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/verifySubscription/${update._id}`,
+                                                                cancel_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/faildeSub/${update._id}`,
+                                                                customer_email: userCreate.email,
+                                                                client_reference_id: update._id,
+                                                                line_items: line_items,
+                                                                mode: "payment",
+                                                        });
+                                                        return res.status(200).json({ status: "success", session: session, });
+                                                }
+                                        }
+                                } else {
+                                        return res.status(404).send({ status: 404, message: "Subscription not found" });
+                                }
+                        }
                 } else {
                         let id = req.params.id;
                         const findSubscription = await pricing.findById(id);
@@ -1924,7 +2010,7 @@ exports.takeSubscription = async (req, res) => {
                                                         payment_method_types: ["card"],
                                                         success_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/verifySubscription/${update._id}`,
                                                         cancel_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/faildeSub/${update._id}`,
-                                                        customer_email: req.user.email,
+                                                        customer_email: user.email,
                                                         client_reference_id: update._id,
                                                         line_items: line_items,
                                                         mode: "payment",
@@ -1959,7 +2045,7 @@ exports.takeSubscription = async (req, res) => {
                                                         payment_method_types: ["card"],
                                                         success_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/verifySubscription/${update._id}`,
                                                         cancel_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/faildeSub/${update._id}`,
-                                                        customer_email: req.user.email,
+                                                        customer_email: user.email,
                                                         client_reference_id: update._id,
                                                         line_items: line_items,
                                                         mode: "payment",
