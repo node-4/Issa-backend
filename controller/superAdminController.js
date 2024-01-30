@@ -205,7 +205,10 @@ exports.getAdminTracking = async (req, res) => {
 };
 exports.getAdmitDetails = async (req, res) => {
         try {
-                const filters = { adminId: req.query.adminId };
+                const filters = {};
+                if (req.query.adminId) {
+                        filter.adminId = req.query.adminId;
+                }
                 if (req.query.search) {
                         filters.$or = [
                                 { "reasonOfDischarge": { $regex: req.query.search, $options: "i" }, },
@@ -247,7 +250,7 @@ exports.getAdmitDetails = async (req, res) => {
                                 { dateOfDischarge: { $lte: req.query.toDateOfDischarge } },
                         ];
                 }
-                const users = await admitDetail.find(filters);
+                const users = await admitDetail.find(filters).populate('adminId');
                 if (users.length === 0) {
                         return res.status(404).send({ status: 404, message: "No Admit detail found matching the criteria", data: {} });
                 } else {
