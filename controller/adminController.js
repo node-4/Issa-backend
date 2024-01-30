@@ -2065,35 +2065,35 @@ exports.takeSubscription = async (req, res) => {
 };
 exports.verifySubscription = async (req, res) => {
         try {
-                const user = await User.findOne({ _id: req.user._id });
-                if (!user) {
-                        return res.status(404).send({ status: 404, message: "User not found" });
-                } else {
-                        let findTransaction = await transactionModel.findById({ _id: req.params.transactionId, type: "Subscription", Status: "pending" });
-                        if (findTransaction) {
-                                if (req.body.Status == "Paid") {
-                                        let update = await transactionModel.findByIdAndUpdate({ _id: findTransaction._id }, { $set: { Status: "Paid" } }, { new: true });
-                                        if (update) {
-                                                const findSubscription = await pricing.findById(update.subscriptionId);
-                                                if (findSubscription) {
-                                                        // let subscriptionExpiration = new Date(Date.now() + findSubscription.month * 30 * 24 * 60 * 60 * 1000);
-                                                        let updateUser = await User.findByIdAndUpdate({ _id: user._id }, { $set: { subscriptionId: findTransaction.subscriptionId, isSubscription: true,/*     subscriptionExpiration: subscriptionExpiration */ } }, { new: true });
-                                                        return res.status(200).send({ status: 200, message: 'subscription subscribe successfully.', data: update });
-                                                }
+                let findTransaction = await transactionModel.findOne({ _id: req.params.transactionId, type: "Subscription", Status: "pending" });
+                if (findTransaction) {
+                        if (req.body.Status == "Paid") {
+                                let update = await transactionModel.findByIdAndUpdate({ _id: findTransaction._id }, { $set: { Status: "Paid" } }, { new: true });
+                                if (update) {
+                                        const findSubscription = await pricing.findById(update.subscriptionId);
+                                        if (findSubscription) {
+                                                let subscriptionExpiration = new Date();
+                                                subscriptionExpiration.setMonth(subscriptionExpiration.getMonth() + 1);
+                                                let updateUser = await User.findByIdAndUpdate({ _id: findTransaction.user }, { $set: { subscriptionId: findTransaction.subscriptionId, isSubscription: true, subscriptionExpiration: subscriptionExpiration } }, { new: true });
+                                                return res.status(200).send({ status: 200, message: 'Subscription subscribed successfully.', data: update });
                                         }
                                 }
-                                if (req.body.Status == "failed") {
-                                        let update = await transactionModel.findByIdAndUpdate({ _id: findTransaction._id }, { $set: { Status: "failed" } }, { new: true });
-                                        if (update) {
-                                                return res.status(200).send({ status: 200, message: 'subscription not subscribe successfully.', data: update });
-                                        }
-                                }
-                        } else {
-                                return res.status(404).send({ status: 404, message: "Transaction not found" });
                         }
+                        if (req.body.Status == "failed") {
+                                let update = await transactionModel.findByIdAndUpdate(
+                                        { _id: findTransaction._id },
+                                        { $set: { Status: "failed" } },
+                                        { new: true }
+                                );
+                                if (update) {
+                                        return res.status(200).send({ status: 200, message: 'Subscription not subscribed successfully.', data: update });
+                                }
+                        }
+                } else {
+                        return res.status(404).send({ status: 404, message: "Transaction not found" });
                 }
         } catch (error) {
                 console.error(error);
-                return res.status(500).send({ status: 500, message: "Server error" + error.message });
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message });
         }
 };
