@@ -1929,8 +1929,8 @@ exports.takeSubscription = async (req, res) => {
                                                         line_items.push(obj2)
                                                         const session = await stripe1.checkout.sessions.create({
                                                                 payment_method_types: ["card"],
-                                                                success_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/verifySubscription/${update._id}`,
-                                                                cancel_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/faildeSub/${update._id}`,
+                                                                success_url: `https://issa-website-website.vercel.app/paymet-successfull/${update._id}`,
+                                                                cancel_url: `https://issa-website-website.vercel.app/paymet-failed/${update._id}`,
                                                                 customer_email: userCreate.email,
                                                                 client_reference_id: update._id,
                                                                 line_items: line_items,
@@ -1964,8 +1964,8 @@ exports.takeSubscription = async (req, res) => {
                                                         line_items.push(obj2)
                                                         const session = await stripe1.checkout.sessions.create({
                                                                 payment_method_types: ["card"],
-                                                                success_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/verifySubscription/${update._id}`,
-                                                                cancel_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/faildeSub/${update._id}`,
+                                                                success_url: `https://issa-website-website.vercel.app/paymet-successfull/${update._id}`,
+                                                                cancel_url: `https://issa-website-website.vercel.app/paymet-failed/${update._id}`,
                                                                 customer_email: userCreate.email,
                                                                 client_reference_id: update._id,
                                                                 line_items: line_items,
@@ -2009,8 +2009,8 @@ exports.takeSubscription = async (req, res) => {
                                                 line_items.push(obj2)
                                                 const session = await stripe1.checkout.sessions.create({
                                                         payment_method_types: ["card"],
-                                                        success_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/verifySubscription/${update._id}`,
-                                                        cancel_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/faildeSub/${update._id}`,
+                                                        success_url: `https://issa-website-website.vercel.app/paymet-successfull/${update._id}`,
+                                                        cancel_url: `https://issa-website-website.vercel.app/paymet-failed/${update._id}`,
                                                         customer_email: user.email,
                                                         client_reference_id: update._id,
                                                         line_items: line_items,
@@ -2044,8 +2044,8 @@ exports.takeSubscription = async (req, res) => {
                                                 line_items.push(obj2)
                                                 const session = await stripe1.checkout.sessions.create({
                                                         payment_method_types: ["card"],
-                                                        success_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/verifySubscription/${update._id}`,
-                                                        cancel_url: `http://shahinahoja.s3-website.eu-north-1.amazonaws.com/faildeSub/${update._id}`,
+                                                        success_url: `https://issa-website-website.vercel.app/paymet-successfull/${update._id}`,
+                                                        cancel_url: `https://issa-website-website.vercel.app/paymet-failed/${update._id}`,
                                                         customer_email: user.email,
                                                         client_reference_id: update._id,
                                                         line_items: line_items,
