@@ -85,6 +85,34 @@ exports.signin = async (req, res) => {
                 return res.status(500).send({ message: "Server error" + error.message });
         }
 };
+exports.updateProfile = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "SuperAdmin" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                if (req.file) {
+                        req.body.profilePic = req.file.path
+                } else {
+                        req.body.profilePic = user.profilePic
+                }
+                let obj = {
+                        fullName: req.body.fullName || user.fullName,
+                        email: req.body.email || user.email,
+                        mobileNumber: req.body.mobileNumber || user.mobileNumber,
+                        gender: req.body.gender || user.gender,
+                        address: req.body.address || user.address,
+                        profilePic: req.body.profilePic,
+                }
+                let update = await User.updateOne({ _id: req.user }, { $set: obj }, { new: true });
+                if (update) {
+                        return res.status(200).send({ status: 200, message: "Profile get successfully.", data: update })
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
 exports.getProfile = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user, userType: "SuperAdmin" });
@@ -250,7 +278,7 @@ exports.getAdmitDetails = async (req, res) => {
                                 { dateOfDischarge: { $lte: req.query.toDateOfDischarge } },
                         ];
                 }
-                const users = await admitDetail.find(filters).populate('adminId');
+                const users = await admitDetail.find(filters).populate('adminId patientId');
                 if (users.length === 0) {
                         return res.status(404).send({ status: 404, message: "No Admit detail found matching the criteria", data: {} });
                 } else {
@@ -381,30 +409,43 @@ exports.addBhrfTherapy = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
-                let findData = await bhrfTherapy.findOne({ title: req.body.title, subTitle: req.body.subTitle });
-                if (findData) {
+                let findData1 = await bhrfTherapy.findOne({ status: true });
+                if (findData1) {
+                        req.body.status = false;
+                        const checklist = await bhrfTherapy.create(req.body);
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Bhrf Therapy added successfully.", data: checklist });
+                        }
+                } else {
+                        const checklist = await bhrfTherapy.create(req.body);
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Bhrf Therapy added successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.editBhrfTherapy = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                let findData1 = await bhrfTherapy.findOne({ _id: req.params.id });
+                if (findData1) {
                         let obj = {
                                 title: req.body.title || findData.title,
-                                subTitle: req.body.title || findData.subTitle,
+                                subTitle: req.body.subTitle || findData.subTitle,
+                                status: req.body.status || findData.status,
                         }
                         let update = await bhrfTherapy.findOneAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
                         if (update) {
                                 return res.status(200).send({ status: 200, message: "Bhrf Therapy added successfully.", data: update });
                         }
                 } else {
-                        let findData1 = await bhrfTherapy.findOne({ status: true });
-                        if (findData1) {
-                                req.body.status = false;
-                                const checklist = await bhrfTherapy.create(req.body);
-                                if (checklist) {
-                                        return res.status(200).send({ status: 200, message: "Bhrf Therapy added successfully.", data: checklist });
-                                }
-                        } else {
-                                const checklist = await bhrfTherapy.create(req.body);
-                                if (checklist) {
-                                        return res.status(200).send({ status: 200, message: "Bhrf Therapy added successfully.", data: checklist });
-                                }
-                        }
+                        return res.status(404).send({ status: 404, message: "Bhrf Therapy not found", data: {} });
                 }
         } catch (error) {
                 console.error(error);
@@ -577,6 +618,8 @@ exports.updateNews = async (req, res) => {
                 let image;
                 if (req.file.path) {
                         image = req.file.path
+                } else {
+                        image = findData.image
                 }
                 var currDate = new Date();
                 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -587,15 +630,14 @@ exports.updateNews = async (req, res) => {
                 let date1;
                 if (date < 10) {
                         date1 = '' + 0 + date;
-                }
-                else {
+                } else {
                         date1 = date
                 }
                 let fullDate = `${date1} ${monthName} ${year}`;
                 const data = {
                         data: fullDate || findData.fullDate,
                         title: req.body.title || findData.title,
-                        image: image || findData.image,
+                        image: image,
                         description: req.body.description || findData.description,
                 };
                 const News = await news.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true })

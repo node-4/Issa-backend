@@ -5,6 +5,7 @@ module.exports = (app) => {
         app.post('/api/v1/superAdmin/registration', auth.registration);
         app.post('/api/v1/superAdmin/signin', auth.signin);
         app.get('/api/v1/superAdmin/getProfile', authJwt.verifyToken, auth.getProfile);
+        app.put('/api/v1/superAdmin/updateProfile', authJwt.verifyToken, upload.single('image'), auth.updateProfile);
         app.post('/api/v1/superAdmin/createAdmin', authJwt.verifyToken, auth.createAdmin);
         app.get('/api/v1/superAdmin/getAdmin', authJwt.verifyToken, auth.getAdmin);
         app.get('/api/v1/superAdmin/getAdminById/:id', authJwt.verifyToken, auth.getAdminById);
@@ -19,6 +20,7 @@ module.exports = (app) => {
         app.delete('/api/v1/superAdmin/deletePackage/:id', authJwt.verifyToken, auth.deletePackage);
         app.post('/api/v1/superAdmin/addBhrfTherapy', authJwt.verifyToken, auth.addBhrfTherapy);
         app.get('/api/v1/superAdmin/getBhrfTherapyById/id', auth.getBhrfTherapyById)
+        app.put('/api/v1/superAdmin/editBhrfTherapy/id', auth.editBhrfTherapy)
         app.get('/api/v1/superAdmin/getAllBhrfTherapy', auth.getAllBhrfTherapy);
         app.delete('/api/v1/superAdmin/deleteBhrfTherapy/:id', authJwt.verifyToken, auth.deleteBhrfTherapy);
         app.post('/api/v1/superAdmin/addBhrfTherapyTopic', authJwt.verifyToken, auth.addBhrfTherapyTopic);
