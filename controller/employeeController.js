@@ -3423,6 +3423,11 @@ exports.createIncidentReportPartA = async (req, res) => {
                         notificationIfOther: req.body.notificationIfOther,
                         notificationDate: req.body.notificationDate,
                         notificationTime: req.body.notificationTime,
+                        modeEmail: req.body.modeEmail,
+                        modePhoneCall: req.body.modePhoneCall,
+                        modeInPerson: req.body.modeInPerson,
+                        modeOther: req.body.modeOther,
+                        savedSignedPartA: req.body.savedSignedPartA,
                         reportCompletedBy: req.body.reportCompletedBy,
                         partType: "A",
                 };
@@ -3453,6 +3458,7 @@ exports.createIncidentReportPartB = async (req, res) => {
                                 investigationFollowUp: req.body.investigationFollowUp,
                                 investigationCompletedBy: req.body.investigationCompletedBy,
                                 investigationCompletionDate: req.body.investigationCompletionDate,
+                                savedSignedPartB: req.body.savedSignedPartB,
                                 partType: "B",
                         };
                         const checklist1 = await incidentReport.create(obj1);
@@ -3540,6 +3546,11 @@ exports.editIncidentReportPartA = async (req, res) => {
                         notificationDate: req.body.notificationDate || user2.notificationDate,
                         notificationTime: req.body.notificationTime || user2.notificationTime,
                         reportCompletedBy: req.body.reportCompletedBy || user2.reportCompletedBy,
+                        modeEmail: req.body.modeEmail || user2.modeEmail,
+                        modePhoneCall: req.body.modePhoneCall || user2.modePhoneCall,
+                        modeInPerson: req.body.modeInPerson || user2.modeInPerson,
+                        modeOther: req.body.modeOther || user2.modeOther,
+                        savedSignedPartA: req.body.savedSignedPartA || user2.savedSignedPartA,
                         partType: "A",
                 };
                 let update = await incidentReport.findByIdAndUpdate({ _id: user2._id }, { $set: obj }, { new: true });
@@ -3580,6 +3591,7 @@ exports.editIncidentReportPartB = async (req, res) => {
                         investigationFollowUp: req.body.investigationFollowUp || user2.investigationFollowUp,
                         investigationCompletedBy: req.body.investigationCompletedBy || user2.investigationCompletedBy,
                         investigationCompletionDate: req.body.investigationCompletionDate || user2.investigationCompletionDate,
+                        savedSignedPartB: req.body.savedSignedPartB || user2.savedSignedPartB,
                         partType: "B",
                 };
                 let update = await incidentReport.findByIdAndUpdate({ _id: user2._id }, { $set: obj1 }, { new: true });

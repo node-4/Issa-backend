@@ -139,6 +139,25 @@ const incidentReportSchema = new mongoose.Schema({
         notificationTime: {
                 type: String,
         },
+        modeEmail: {
+                type: Boolean,
+                default: false
+        },
+        modePhoneCall: {
+                type: Boolean,
+                default: false
+        },
+        modeInPerson: {
+                type: Boolean,
+                default: false
+        },
+        modeOther: {
+                type: Boolean,
+                default: false
+        },
+        savedSignedPartA: {
+                type: String,
+        },
         reportCompletedBy: {
                 type: String,
         },
@@ -156,6 +175,9 @@ const incidentReportSchema = new mongoose.Schema({
         },
         investigationCompletionDate: {
                 type: Date,
+        },
+        savedSignedPartB: {
+                type: String,
         },
         partType: {
                 type: String,
