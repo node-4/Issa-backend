@@ -3447,7 +3447,6 @@ exports.createIncidentReportPartA = async (req, res) => {
                         modeOther: req.body.modeOther,
                         savedSignedPartA: req.body.savedSignedPartA,
                         reportCompletedBy: req.body.reportCompletedBy,
-                        partType: "A",
                 };
                 let newEmployee = await incidentReport.create(obj);
                 if (newEmployee) {
@@ -3470,16 +3469,15 @@ exports.createIncidentReportPartB = async (req, res) => {
                                 residentsInvolved: checklist.residentsInvolved,
                                 adminId: checklist.adminId,
                                 employeesInvolved: checklist.employeesInvolved,
-                                partId: checklist._id,
                                 investigationDetails: req.body.investigationDetails,
                                 investigationRecommendationsAndActions: req.body.investigationRecommendationsAndActions,
                                 investigationFollowUp: req.body.investigationFollowUp,
                                 investigationCompletedBy: req.body.investigationCompletedBy,
                                 investigationCompletionDate: req.body.investigationCompletionDate,
                                 savedSignedPartB: req.body.savedSignedPartB,
-                                partType: "B",
+                                partTypeB: true,
                         };
-                        const checklist1 = await incidentReport.create(obj1);
+                        const checklist1 = await incidentReport.findByIdAndUpdate({ _id: checklist._id }, { $set: obj1 }, { new: true });
                         if (checklist1) {
                                 return res.status(200).send({ status: 200, message: "Incident Report added successfully.", data: checklist1 });
                         }
@@ -3514,7 +3512,7 @@ exports.editIncidentReportPartA = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                const user2 = await incidentReport.findOne({ _id: req.params.id, partType: "A" });
+                const user2 = await incidentReport.findOne({ _id: req.params.id });
                 if (!user2) {
                         return res.status(404).send({ status: 404, message: "Incident report not found", data: {} });
                 }
@@ -3569,7 +3567,7 @@ exports.editIncidentReportPartA = async (req, res) => {
                         modeInPerson: req.body.modeInPerson || user2.modeInPerson,
                         modeOther: req.body.modeOther || user2.modeOther,
                         savedSignedPartA: req.body.savedSignedPartA || user2.savedSignedPartA,
-                        partType: "A",
+                        partTypeB: user2.partTypeB,
                 };
                 let update = await incidentReport.findByIdAndUpdate({ _id: user2._id }, { $set: obj }, { new: true });
                 if (update) {
@@ -3586,31 +3584,21 @@ exports.editIncidentReportPartB = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                const user2 = await incidentReport.findOne({ _id: req.params.id, partType: "B" });
+                const user2 = await incidentReport.findOne({ _id: req.params.id });
                 if (!user2) {
                         return res.status(404).send({ status: 404, message: "Incident report not found", data: {} });
-                }
-                let partId;
-                if (req.body.aPartId != (null || undefined)) {
-                        const checklist = await incidentReport.findOne({ _id: req.body.aPartId });
-                        if (checklist) {
-                                partId = checklist._id;
-                        }
-                } else {
-                        partId = user2.partId
                 }
                 let obj1 = {
                         residentsInvolved: user2.residentsInvolved,
                         adminId: user2.adminId,
                         employeesInvolved: user2.employeesInvolved,
-                        partId: partId,
                         investigationDetails: req.body.investigationDetails || user2.investigationDetails,
                         investigationRecommendationsAndActions: req.body.investigationRecommendationsAndActions || user2.investigationRecommendationsAndActions,
                         investigationFollowUp: req.body.investigationFollowUp || user2.investigationFollowUp,
                         investigationCompletedBy: req.body.investigationCompletedBy || user2.investigationCompletedBy,
                         investigationCompletionDate: req.body.investigationCompletionDate || user2.investigationCompletionDate,
                         savedSignedPartB: req.body.savedSignedPartB || user2.savedSignedPartB,
-                        partType: "B",
+                        partTypeB: true,
                 };
                 let update = await incidentReport.findByIdAndUpdate({ _id: user2._id }, { $set: obj1 }, { new: true });
                 if (update) {
@@ -3649,7 +3637,7 @@ exports.getAllIncidentReport = async (req, res) => {
                 if (req.query.partType != (null || undefined)) {
                         filter.partType = req.query.partType;
                 }
-                let findEmployee = await incidentReport.find(filter).populate({ path: 'residentsInvolved employeesInvolved patientId partId', select:"lastName firstName fullName" });
+                let findEmployee = await incidentReport.find(filter).populate({ path: 'residentsInvolved employeesInvolved patientId partId', select: "lastName firstName fullName" });
                 if (!findEmployee) {
                         return res.status(404).send({ status: 404, message: "Incident report not found.", data: {} });
                 } else {

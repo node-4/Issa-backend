@@ -9,10 +9,6 @@ const incidentReportSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
-        partId: {
-                type: schema.Types.ObjectId,
-                ref: "IncidentReport",
-        },
         dateOfIncident: {
                 type: Date,
                 required: true,
@@ -179,9 +175,9 @@ const incidentReportSchema = new mongoose.Schema({
         savedSignedPartB: {
                 type: String,
         },
-        partType: {
-                type: String,
-                enum: ['A', 'B']
+        partTypeB: {
+                type: Boolean,
+                default: false
         },
 });
 
