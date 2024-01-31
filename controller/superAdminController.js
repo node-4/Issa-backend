@@ -39,6 +39,7 @@ const whyChoosePharm = require("../model/website/whyChoosePharm");
 const partner = require("../model/website/partner");
 const downloadPage = require("../model/website/downloadPage");
 const aboutUsOasisNotesSupport = require("../model/website/aboutUsOasisNotesSupport");
+const staticContent = require('../model/website/staticContent');
 exports.registration = async (req, res) => {
         const { mobileNumber, email } = req.body;
         try {
@@ -2525,5 +2526,115 @@ exports.deleteDataArrayInAboutUsOasisNotesSupport = async (req, res) => {
                 }
         } catch (error) {
                 return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.createTerms = async (req, res) => {
+        try {
+                const data = await staticContent.findOne({ type: "TERMS" });
+                if (!data) {
+                        if (!req.body.terms) {
+                                return res.status(400).send("please specify terms");
+                        }
+                        const result = await staticContent.create({ terms: req.body.terms, type: "TERMS" });
+                        return res.status(200).json({ status: 200, message: "Data create successfully.", data: result });
+                } else {
+                        let terms = req.body.terms || data.terms;
+                        const data1 = await staticContent.findOneAndUpdate({ _id: data._id }, { $set: { terms: terms, type: "TERMS" } }, { new: true, });
+                        return res.status(200).json({ status: 200, message: "update successfully.", data: data1 });
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.getTerms = async (req, res) => {
+        try {
+                const data = await staticContent.findOne({ type: "TERMS" });
+                if (!data) {
+                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                }
+                return res.status(200).json({ status: 200, message: "Data found successfully.", data: data });
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.getTermsbyId = async (req, res) => {
+        try {
+                const data = await staticContent.findById(req.params.id);
+                if (!data || data.length === 0) {
+                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                }
+                return res.status(200).json({ status: 200, message: "Data found successfully.", data: data });
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.deleteTerms = async (req, res) => {
+        try {
+                const data = await staticContent.findByIdAndDelete(req.params.id);
+                if (!data) {
+                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                }
+                return res.status(200).json({ status: 200, message: "Deleted Successfully", });
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message });
+        }
+};
+exports.createPrivacy = async (req, res) => {
+        try {
+                const data = await staticContent.findOne({ type: "PRIVACY" });
+                if (!data) {
+                        if (!req.body.privacy) {
+                                return res.status(400).send("please specify privacy");
+                        }
+                        const result = await staticContent.create({ privacy: req.body.privacy, type: "PRIVACY" });
+                        return res.status(200).json({ status: 200, message: "Data create successfully.", data: result });
+                } else {
+                        let privacy = req.body.privacy || data.privacy;
+                        const data1 = await staticContent.findByIdAndUpdate({ _id: data._id }, { $set: { privacy: privacy, type: data.type } }, { new: true, });
+                        return res.status(200).json({ status: 200, message: "update successfully.", data: data1 });
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.getPrivacy = async (req, res) => {
+        try {
+                const data = await staticContent.findOne({ type: "PRIVACY" });
+                if (!data) {
+                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                }
+                return res.status(200).json({ status: 200, message: "Data found successfully.", data: data });
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.getPrivacybyId = async (req, res) => {
+        try {
+                const data = await staticContent.findById(req.params.id);
+                if (!data || data.length === 0) {
+                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                }
+                return res.status(200).json({ status: 200, message: "Data found successfully.", data: data });
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.deletePrivacy = async (req, res) => {
+        try {
+                const data = await staticContent.findByIdAndDelete(req.params.id);
+                if (!data) {
+                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                }
+                return res.status(200).json({ status: 200, message: "Deleted Successfully", });
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message });
         }
 };

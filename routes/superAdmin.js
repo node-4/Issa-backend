@@ -131,4 +131,12 @@ module.exports = (app) => {
         app.delete("/api/v1/AboutUsOasisNotesSupport/delete/:id", [authJwt.verifyToken], auth.deleteAboutUsOasisNotesSupport);
         app.put("/api/v1/AboutUsOasisNotesSupport/addData/:id", authJwt.verifyToken, auth.addDataInAboutUsOasisNotesSupport);
         app.delete("/api/v1/AboutUsOasisNotesSupport/deleteData/:id/:dataArrayId", authJwt.verifyToken, auth.deleteDataArrayInAboutUsOasisNotesSupport);
+        app.post('/api/v1/static/createPrivacy', auth.createPrivacy);
+        app.delete('/api/v1/static/privacy/:id', auth.deletePrivacy);
+        app.get('/api/v1/static/getPrivacy', auth.getPrivacy);
+        app.get('/api/v1/static/privacy/:id', auth.getPrivacybyId);
+        app.post('/api/v1/static/createTerms', auth.createTerms);
+        app.delete('/api/v1/static/terms/:id', auth.deleteTerms);
+        app.get('/api/v1/static/getTerms', auth.getTerms);
+        app.get('/api/v1/static/terms/:id', auth.getTermsbyId);
 }
