@@ -3,11 +3,11 @@ const schema = mongoose.Schema;
 const incidentReportSchema = new mongoose.Schema({
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         patientId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         partId: {
                 type: schema.Types.ObjectId,
@@ -23,11 +23,11 @@ const incidentReportSchema = new mongoose.Schema({
         },
         employeesInvolved: [{
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         }],
         residentsInvolved: [{
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         }],
         personObservingReporting: {
                 type: String,

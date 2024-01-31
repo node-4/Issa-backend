@@ -3649,7 +3649,7 @@ exports.getAllIncidentReport = async (req, res) => {
                 if (req.query.partType != (null || undefined)) {
                         filter.partType = req.query.partType;
                 }
-                let findEmployee = await incidentReport.find(filter).populate('residentsInvolved employeesInvolved patientId partId');
+                let findEmployee = await incidentReport.find(filter).populate({ path: 'residentsInvolved employeesInvolved patientId partId', select:"lastName firstName fullName" });
                 if (!findEmployee) {
                         return res.status(404).send({ status: 404, message: "Incident report not found.", data: {} });
                 } else {
