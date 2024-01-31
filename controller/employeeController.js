@@ -207,6 +207,24 @@ exports.getPatient = async (req, res) => {
                 return res.status(500).json({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.getEmployee = async (req, res) => {
+        try {
+                const findEmployee = await User.findOne({ _id: req.user, userType: "Employee" });
+                if (!findEmployee) {
+                        return res.status(403).json({ status: 403, message: "Unauthorized access", data: {} });
+                }
+                const query = { userType: "Employee", adminId: findEmployee.adminId };
+                const findPatients = await User.find(query);
+                if (findPatients.length === 0) {
+                        return res.status(404).json({ status: 404, message: "No patients found matching the criteria", data: {} });
+                } else {
+                        return res.status(200).json({ status: 200, message: "Patients fetched successfully.", data: findPatients });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).json({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+}
 exports.getPatientById = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });

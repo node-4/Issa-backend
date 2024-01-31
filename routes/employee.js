@@ -7,6 +7,7 @@ module.exports = (app) => {
         app.post('/api/v1/employee/signin', auth.signin);
         app.get('/api/v1/employee/getProfile', authJwt.verifyToken, auth.getProfile);
         app.get('/api/v1/employee/getPatient', authJwt.verifyToken, auth.getPatient);
+        app.get('/api/v1/employee/getEmployee', authJwt.verifyToken, auth.getEmployee);
         app.get('/api/v1/employee/getPatientById/:id', authJwt.verifyToken, auth.getPatientById);
         app.post("/api/v1/employee/forgetPassword", auth.forgetPassword);
         app.post("/api/v1/employee/forgotVerifyOtp", auth.forgotVerifyotp);
