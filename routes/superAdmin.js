@@ -5,6 +5,9 @@ module.exports = (app) => {
         app.post('/api/v1/superAdmin/registration', auth.registration);
         app.post('/api/v1/superAdmin/signin', auth.signin);
         app.get('/api/v1/superAdmin/getProfile', authJwt.verifyToken, auth.getProfile);
+        app.post("/api/v1/superAdmin/forgetPassword", auth.forgetPassword);
+        app.post("/api/v1/superAdmin/forgotVerifyOtp", auth.forgotVerifyotp);
+        app.post("/api/v1/superAdmin/changePassword/:id", auth.changePassword);
         app.put('/api/v1/superAdmin/updateProfile', authJwt.verifyToken, upload.single('image'), auth.updateProfile);
         app.post('/api/v1/superAdmin/createAdmin', authJwt.verifyToken, auth.createAdmin);
         app.get('/api/v1/superAdmin/getAdmin', authJwt.verifyToken, auth.getAdmin);
