@@ -102,6 +102,9 @@ const incidentReportSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false
         },
+        actionsTakenOtherComment: {
+                type: String,
+        },
         abuseNeglectInvolved: {
                 type: Boolean,
                 default: false
