@@ -35,8 +35,8 @@ const jobDescription = require('../model/EmployeeInformation/jobDescription');
 const notification = require('../model/notification')
 const pricing = require("../model/website/pricing");
 const transactionModel = require("../model/transactionModel")
-const stripe1 = require("stripe")('sk_test_51Kr67EJsxpRH9smipLQrIzDFv69P1b1pPk96ba1A4HJGYJEaR7cpAaU4pkCeAIMT9B46D7amC77I3eNEBTIRF2e800Y7zIPNTS'); // shahina test
-// const stripe1 = require("stripe")('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');
+// const stripe1 = require("stripe")('sk_test_51Kr67EJsxpRH9smipLQrIzDFv69P1b1pPk96ba1A4HJGYJEaR7cpAaU4pkCeAIMT9B46D7amC77I3eNEBTIRF2e800Y7zIPNTS'); // shahina test
+const stripe1 = require("stripe")('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');
 const stripe = require("stripe")('pk_live_51OVyc9JE613RQzRwA6tXmVD8oOGgCkgB2m8fl8N8vkQ18wcrMvAhDCXA9CdmKllvqvqnlGHZ8SrRDlJtk6tf3k9w00wq5liSG5');
 exports.signin = async (req, res) => {
         try {
