@@ -3495,7 +3495,7 @@ exports.getIncidentReportById = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                const user1 = await incidentReport.findOne({ _id: req.params.id });
+                const user1 = await incidentReport.findOne({ _id: req.params.id }).populate({ path: 'residentsInvolved employeesInvolved patientId', select: "lastName firstName fullName" });
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Incident report not found", data: {} });
                 } else {
