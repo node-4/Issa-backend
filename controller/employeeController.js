@@ -3397,35 +3397,8 @@ exports.createIncidentReportPartA = async (req, res) => {
                         dateOfIncident: req.body.dateOfIncident,
                         timeOfIncident: req.body.timeOfIncident,
                         personObservingReporting: req.body.personObservingReporting,
-                        incidentsAltercationVerbal: req.body.incidentsAltercationVerbal,
-                        incidentsPropertyLoss: req.body.incidentsPropertyLoss,
-                        incidentsWeapon: req.body.incidentsWeapon,
-                        incidentsRuleViolation: req.body.incidentsRuleViolation,
-                        incidentsAltercationPhysical: req.body.incidentsAltercationPhysical,
-                        incidentsPropertyDamage: req.body.incidentsPropertyDamage,
-                        incidentsContraband: req.body.incidentsContraband,
-                        incidentsSeizure: req.body.incidentsSeizure,
-                        incidentsViolentThreatSelf: req.body.incidentsViolentThreatSelf,
-                        incidentsVehicularAccident: req.body.incidentsVehicularAccident,
-                        incidentsAlcoholDrugUse: req.body.incidentsAlcoholDrugUse,
-                        incidentsMedicationErrors: req.body.incidentsMedicationErrors,
-                        incidentsViolentThreatOthers: req.body.incidentsViolentThreatOthers,
-                        incidentsMedicalEmergency911: req.body.incidentsMedicalEmergency911,
-                        incidentsEquipmentUtilityFailure: req.body.incidentsEquipmentUtilityFailure,
-                        incidentsAWOL: req.body.incidentsAWOL,
-                        incidentsViolentActionSelf: req.body.incidentsViolentActionSelf,
-                        incidentsEmployeeInjury: req.body.incidentsEmployeeInjury,
-                        incidentsBiohazardousMaterial: req.body.incidentsBiohazardousMaterial,
-                        incidentsPsychiatricEmergency: req.body.incidentsPsychiatricEmergency,
-                        incidentsViolentActionOthers: req.body.incidentsViolentActionOthers,
-                        incidentsClientConsumerInjury: req.body.incidentsClientConsumerInjury,
-                        incidentsAMA: req.body.incidentsAMA,
-                        incidentsAbuseNeglect: req.body.incidentsAbuseNeglect,
-                        incidentsTrespassing: req.body.incidentsTrespassing,
-                        incidentsProceduralBreak: req.body.incidentsProceduralBreak,
-                        incidentsSlipFall: req.body.incidentsSlipFall,
-                        incidentsCutAbrasion: req.body.incidentsCutAbrasion,
-                        incidentspharmacyError: req.body.incidentspharmacyError,
+                        levelOfSeverity: req.body.levelOfSeverity,
+                        incidents: req.body.incidents,
                         eventDetails: req.body.eventDetails,
                         medicationErrorsMissedDose: req.body.medicationErrorsMissedDose,
                         medicationErrorsRefusedMedication: req.body.medicationErrorsRefusedMedication,
@@ -3673,7 +3646,7 @@ exports.getAllIncidentReport = async (req, res) => {
                 if (req.query.partType != (null || undefined)) {
                         filter.partType = req.query.partType;
                 }
-                let findEmployee = await incidentReport.find(filter);
+                let findEmployee = await incidentReport.find(filter).populate('residentsInvolved employeesInvolved patientId partId');
                 if (!findEmployee) {
                         return res.status(404).send({ status: 404, message: "Incident report not found.", data: {} });
                 } else {
