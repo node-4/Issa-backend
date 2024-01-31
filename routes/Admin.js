@@ -42,6 +42,7 @@ module.exports = (app) => {
         app.post('/api/v1/admin/addDisasterPlanReview', authJwt.verifyToken, auth.addDisasterPlanReview);
         app.get('/api/v1/admin/getAllNotes', authJwt.verifyToken, auth.getAllNotes);
         app.post('/api/v1/admin/addBhrfTherapyTopic', authJwt.verifyToken, auth.addBhrfTherapyTopic);
+        app.put('/api/v1/admin/editBhrfTherapyTopic/:id', authJwt.verifyToken, auth.editBhrfTherapyTopic)
         app.get('/api/v1/admin/getBhrfTherapyTopicById/id', auth.getBhrfTherapyTopicById)
         app.get('/api/v1/admin/getAllBhrfTherapyTopic', authJwt.verifyToken, auth.getAllBhrfTherapyTopic);
         app.delete('/api/v1/admin/deleteBhrfTherapyTopic/:id', authJwt.verifyToken, auth.deleteBhrfTherapyTopic);

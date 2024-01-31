@@ -1133,6 +1133,36 @@ exports.addBhrfTherapyTopic = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.editBhrfTherapyTopic = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                let findData = await bhrfTherapyTopic.findOne({ _id: req.params.id });
+                if (findData) {
+                        let findData1 = await bhrfTherapyTopic.findOne({ _id: { $ne: findData._id }, topic: req.body.topic });
+                        if (findData1) {
+                                return res.status(409).send({ status: 409, message: "BhrfTherapy Topic already exit.", data: findData });
+                        }
+                        let obj = {
+                                bhrfTherapyId: req.body.bhrfTherapyId || findData.bhrfTherapyId,
+                                topic: req.body.topic || findData.topic,
+                                notesSummary: req.body.notesSummary || findData.notesSummary,
+                                planRecommendation: req.body.planRecommendation || findData.planRecommendation,
+                        }
+                        let update = await bhrfTherapyTopic.findOneAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
+                        if (update) {
+                                return res.status(200).send({ status: 200, message: "BhrfTherapy Topic added successfully.", data: update });
+                        }
+                } else {
+                        return res.status(404).send({ status: 404, message: "BhrfTherapy Topic not found.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
 exports.getBhrfTherapyTopicById = async (req, res) => {
         try {
                 const user1 = await bhrfTherapyTopic.findOne({ _id: req.params.id });

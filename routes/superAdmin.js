@@ -28,6 +28,7 @@ module.exports = (app) => {
         app.delete('/api/v1/superAdmin/deleteBhrfTherapy/:id', authJwt.verifyToken, auth.deleteBhrfTherapy);
         app.post('/api/v1/superAdmin/addBhrfTherapyTopic', authJwt.verifyToken, auth.addBhrfTherapyTopic);
         app.get('/api/v1/superAdmin/getBhrfTherapyTopicById/:id', auth.getBhrfTherapyTopicById)
+        app.put('/api/v1/superAdmin/editBhrfTherapyTopic/:id', authJwt.verifyToken, auth.editBhrfTherapyTopic)
         app.get('/api/v1/superAdmin/getAllBhrfTherapyTopic', auth.getAllBhrfTherapyTopic);
         app.delete('/api/v1/superAdmin/deleteBhrfTherapyTopic/:id', authJwt.verifyToken, auth.deleteBhrfTherapyTopic);
         app.post("/api/v1/News/addNews", [authJwt.verifyToken], upload.single('image'), auth.createNews);
