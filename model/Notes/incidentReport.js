@@ -62,6 +62,10 @@ const incidentReportSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false
         },
+        medicationErrorsNone: {
+                type: Boolean,
+                default: false
+        },
         actionsTakenSenttoERHospital: {
                 type: Boolean,
                 default: false

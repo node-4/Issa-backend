@@ -116,6 +116,8 @@ exports.updateProfile = async (req, res) => {
 };
 exports.forgetPassword = async (req, res) => {
         try {
+                const { email } = req.body;
+                req.body.email = email.split(" ").join("").toLowerCase();
                 const data = await User.findOne({ email: req.body.email, userType: "SuperAdmin" });
                 if (!data) {
                         return res.status(400).send({ status: 400, data: {}, msg: "Please use same email id as signup!" });
