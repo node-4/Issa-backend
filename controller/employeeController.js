@@ -3387,13 +3387,11 @@ exports.createIncidentReportPartA = async (req, res) => {
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                 }
-                let residentsInvolved = [], employeesInvolved = [];
-                employeesInvolved.push(user._id);
-                residentsInvolved.push(user1._id)
                 let obj = {
-                        residentsInvolved: residentsInvolved,
+                        residentsInvolved: req.body.residentsInvolved,
                         adminId: user.adminId,
-                        employeesInvolved: employeesInvolved,
+                        patientId: user1._id,
+                        employeesInvolved: req.body.employeesInvolved,
                         dateOfIncident: req.body.dateOfIncident,
                         timeOfIncident: req.body.timeOfIncident,
                         personObservingReporting: req.body.personObservingReporting,
@@ -3494,54 +3492,25 @@ exports.editIncidentReportPartA = async (req, res) => {
                 if (!user2) {
                         return res.status(404).send({ status: 404, message: "Incident report not found", data: {} });
                 }
-                let residentsInvolved = [], employeesInvolved = [];
+                let patientId;
                 if (req.body.patientId != (null || undefined)) {
                         const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
                         if (!user1) {
                                 return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                         }
-                        employeesInvolved.push(user._id);
-                        residentsInvolved.push(user1._id)
                 } else {
-                        residentsInvolved = user2.residentsInvolved;
-                        employeesInvolved = user2.employeesInvolved;
+                        patientId = user2.patientId;
                 }
                 let obj = {
-                        residentsInvolved: residentsInvolved,
+                        residentsInvolved: req.body.residentsInvolved || user2.residentsInvolved,
                         adminId: user.adminId,
-                        employeesInvolved: employeesInvolved,
+                        patientId: patientId,
+                        employeesInvolved: req.body.employeesInvolved || user2.employeesInvolved,
                         dateOfIncident: req.body.dateOfIncident || user2.dateOfIncident,
                         timeOfIncident: req.body.timeOfIncident || user2.timeOfIncident,
                         personObservingReporting: req.body.personObservingReporting || user2.personObservingReporting,
-                        incidentsAltercationVerbal: req.body.incidentsAltercationVerbal || user2.incidentsAltercationVerbal,
-                        incidentsPropertyLoss: req.body.incidentsPropertyLoss || user2.incidentsPropertyLoss,
-                        incidentsWeapon: req.body.incidentsWeapon || user2.incidentsWeapon,
-                        incidentsRuleViolation: req.body.incidentsRuleViolation || user2.incidentsRuleViolation,
-                        incidentsAltercationPhysical: req.body.incidentsAltercationPhysical || user2.incidentsAltercationPhysical,
-                        incidentsPropertyDamage: req.body.incidentsPropertyDamage || user2.incidentsPropertyDamage,
-                        incidentsContraband: req.body.incidentsContraband || user2.incidentsContraband,
-                        incidentsSeizure: req.body.incidentsSeizure || user2.incidentsSeizure,
-                        incidentsViolentThreatSelf: req.body.incidentsViolentThreatSelf || user2.incidentsViolentThreatSelf,
-                        incidentsVehicularAccident: req.body.incidentsVehicularAccident || user2.incidentsVehicularAccident,
-                        incidentsAlcoholDrugUse: req.body.incidentsAlcoholDrugUse || user2.incidentsAlcoholDrugUse,
-                        incidentsMedicationErrors: req.body.incidentsMedicationErrors || user2.incidentsMedicationErrors,
-                        incidentsViolentThreatOthers: req.body.incidentsViolentThreatOthers || user2.incidentsViolentThreatOthers,
-                        incidentsMedicalEmergency911: req.body.incidentsMedicalEmergency911 || user2.incidentsMedicalEmergency911,
-                        incidentsEquipmentUtilityFailure: req.body.incidentsEquipmentUtilityFailure || user2.incidentsEquipmentUtilityFailure,
-                        incidentsAWOL: req.body.incidentsAWOL || user2.incidentsAWOL,
-                        incidentsViolentActionSelf: req.body.incidentsViolentActionSelf || user2.incidentsViolentActionSelf,
-                        incidentsEmployeeInjury: req.body.incidentsEmployeeInjury || user2.incidentsEmployeeInjury,
-                        incidentsBiohazardousMaterial: req.body.incidentsBiohazardousMaterial || user2.incidentsBiohazardousMaterial,
-                        incidentsPsychiatricEmergency: req.body.incidentsPsychiatricEmergency || user2.incidentsPsychiatricEmergency,
-                        incidentsViolentActionOthers: req.body.incidentsViolentActionOthers || user2.incidentsViolentActionOthers,
-                        incidentsClientConsumerInjury: req.body.incidentsClientConsumerInjury || user2.incidentsClientConsumerInjury,
-                        incidentsAMA: req.body.incidentsAMA || user2.incidentsAMA,
-                        incidentsAbuseNeglect: req.body.incidentsAbuseNeglect || user2.incidentsAbuseNeglect,
-                        incidentsTrespassing: req.body.incidentsTrespassing || user2.incidentsTrespassing,
-                        incidentsProceduralBreak: req.body.incidentsProceduralBreak || user2.incidentsProceduralBreak,
-                        incidentsSlipFall: req.body.incidentsSlipFall || user2.incidentsSlipFall,
-                        incidentsCutAbrasion: req.body.incidentsCutAbrasion || user2.incidentsCutAbrasion,
-                        incidentspharmacyError: req.body.incidentspharmacyError || user2.incidentspharmacyError,
+                        levelOfSeverity: req.body.levelOfSeverity || user2.levelOfSeverity,
+                        incidents: req.body.incidents || user2.incidents,
                         eventDetails: req.body.eventDetails || user2.eventDetails,
                         medicationErrorsMissedDose: req.body.medicationErrorsMissedDose || user2.medicationErrorsMissedDose,
                         medicationErrorsRefusedMedication: req.body.medicationErrorsRefusedMedication || user2.medicationErrorsRefusedMedication,
