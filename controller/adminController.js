@@ -1306,7 +1306,7 @@ exports.getAllPatientTracking = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let findEmployee = await patientTracking.find({ adminId: user._id });
+                let findEmployee = await patientTracking.find({ adminId: user._id }).populate('patientId');
                 if (!findEmployee) {
                         return res.status(404).send({ status: 404, message: "Patient tracking not found.", data: {} });
                 } else {
