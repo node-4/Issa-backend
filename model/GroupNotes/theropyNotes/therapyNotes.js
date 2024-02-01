@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const attitudeEnum = ["cooperative", "Focused", "Suspicious", "Distracted"];
 const qualityEnum = ["Attentive", "Supportive", "Sharing", "Intrusive", "Resistant"];

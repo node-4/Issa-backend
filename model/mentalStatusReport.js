@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const schema = mongoose.Schema;
 const addressSchema = new mongoose.Schema({
@@ -11,7 +11,7 @@ const addressSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
-        before:{
+        before: {
                 Appearance: {
                         type: String,
                         enum: ['Well groomed', 'Casually groomed', 'Tattered'],
@@ -53,7 +53,7 @@ const addressSchema = new mongoose.Schema({
                         enum: ["NormalOrEuthymic", "Sad or dysphoric", "Hopeless", "Variable mood", "Irritable", "Worried or anxious", "Expansive or elevated mood"]
                 },
         },
-        after:{
+        after: {
                 Appearance: {
                         type: String,
                         enum: ['Well groomed', 'Casually groomed', 'Tattered'],

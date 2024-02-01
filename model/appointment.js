@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const schema = mongoose.Schema;
 const addressSchema = new mongoose.Schema({
@@ -41,7 +41,7 @@ const addressSchema = new mongoose.Schema({
         },
         status: {
                 type: String,
-                enum: ["Pending","Done","Cancel"]
+                enum: ["Pending", "Done", "Cancel"]
         },
 }, { timestamps: true });
 addressSchema.plugin(mongoosePaginate);
