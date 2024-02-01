@@ -451,10 +451,11 @@ exports.updateAdmitDetails = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "Admit detail not found", data: {} });
                 }
                 let obj = {
-                        dateOfDischarge: req.body.DateOfDischarge || adminTracking.dateOfDischarge,
-                        reasonOfDischarge: req.body.ReasonOfDischarge || adminTracking.reasonOfDischarge,
+                        dateOfDischarge: req.body.dateOfDischarge,
+                        reasonOfDischarge: req.body.reasonOfDischarge,
                         isDischarge: true,
                 }
+                console.log(obj);
                 let update = await admitDetail.findByIdAndUpdate({ _id: adminTracking._id }, { $set: obj }, { new: true })
                 return res.status(200).send({ status: 200, message: "Admit detail updated successfully", data: update });
         } catch (error) {
