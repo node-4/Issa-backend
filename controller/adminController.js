@@ -450,11 +450,13 @@ exports.updateAdmitDetails = async (req, res) => {
                 if (!adminTracking) {
                         return res.status(404).send({ status: 404, message: "Admit detail not found", data: {} });
                 }
-                adminTracking.dateOfDischarge = req.body.DateOfDischarge || adminTracking.dateOfDischarge;
-                adminTracking.reasonOfDischarge = req.body.ReasonOfDischarge || adminTracking.reasonOfDischarge;
-                adminTracking.isDischarge = true;
-                await adminTracking.save();
-                return res.status(200).send({ status: 200, message: "Admit detail updated successfully", data: adminTracking });
+                let obj = {
+                        dateOfDischarge: req.body.DateOfDischarge || adminTracking.dateOfDischarge,
+                        reasonOfDischarge: req.body.ReasonOfDischarge || adminTracking.reasonOfDischarge,
+                        isDischarge: true,
+                }
+                let update = await admitDetail.findByIdAndUpdate({ _id: adminTracking._id }, { $set: obj }, { new: true })
+                return res.status(200).send({ status: 200, message: "Admit detail updated successfully", data: update });
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
