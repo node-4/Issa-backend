@@ -58,6 +58,9 @@ const contactNoteSchema = new mongoose.Schema({
         emergencyIssue: {
                 type: Boolean,
         },
+        savedSigned: {
+                type: String,
+        },
 });
 const ContactNote = mongoose.model('ContactNote', contactNoteSchema);
 module.exports = ContactNote;

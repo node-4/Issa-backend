@@ -3676,7 +3676,8 @@ exports.createContactNote = async (req, res) => {
                         inPerson: req.body.inPerson,
                         modeOfContactOther: req.body.modeOfContactOther,
                         contactSummaryNote: req.body.contactSummaryNote,
-                        emergencyIssue: req.body.emergencyIssue
+                        emergencyIssue: req.body.emergencyIssue,
+                        savedSigned: req.body.savedSigned
                 };
                 let newEmployee = await contactNote.create(obj);
                 if (newEmployee) {
@@ -3693,7 +3694,7 @@ exports.getContactNoteById = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                const user1 = await contactNote.findOne({ _id: req.params.id });
+                const user1 = await contactNote.findOne({ _id: req.params.id }).populate('employeeId patientId adminId');
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Contact note not found", data: {} });
                 } else {
@@ -3743,6 +3744,7 @@ exports.editContactNoteById = async (req, res) => {
                                 modeOfContactOther: req.body.modeOfContactOther || user1.modeOfContactOther,
                                 contactSummaryNote: req.body.contactSummaryNote || user1.contactSummaryNote,
                                 emergencyIssue: req.body.emergencyIssue || user1.emergencyIssue,
+                                savedSigned: req.body.savedSigned || user1.savedSigned,
                         };
                         let update = await contactNote.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
@@ -3780,7 +3782,7 @@ exports.getAllContactNote = async (req, res) => {
                 }
                 let filter = {};
                 filter.employeeId = user._id;
-                let findEmployee = await contactNote.find(filter);
+                let findEmployee = await contactNote.find(filter).populate('employeeId patientId adminId');
                 if (!findEmployee) {
                         return res.status(404).send({ status: 404, message: "Contact note not found.", data: {} });
                 } else {
