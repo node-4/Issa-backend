@@ -927,55 +927,33 @@ exports.addInfectiousData = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
-exports.addIncidentReport = async (req, res) => {
+exports.createIncidentReportPartA = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
                 if (!user) {
-                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                 }
                 let obj = {
                         residentsInvolved: req.body.residentsInvolved,
-                        adminId: user.adminId,
-                        name: "incidentReport",
+                        adminId: user._id,
+                        patientId: user1._id,
                         employeesInvolved: req.body.employeesInvolved,
                         dateOfIncident: req.body.dateOfIncident,
                         timeOfIncident: req.body.timeOfIncident,
                         personObservingReporting: req.body.personObservingReporting,
-                        incidentsAltercationVerbal: req.body.incidentsAltercationVerbal,
-                        incidentsPropertyLoss: req.body.incidentsPropertyLoss,
-                        incidentsWeapon: req.body.incidentsWeapon,
-                        incidentsRuleViolation: req.body.incidentsRuleViolation,
-                        incidentsAltercationPhysical: req.body.incidentsAltercationPhysical,
-                        incidentsPropertyDamage: req.body.incidentsPropertyDamage,
-                        incidentsContraband: req.body.incidentsContraband,
-                        incidentsSeizure: req.body.incidentsSeizure,
-                        incidentsViolentThreatSelf: req.body.incidentsViolentThreatSelf,
-                        incidentsVehicularAccident: req.body.incidentsVehicularAccident,
-                        incidentsAlcoholDrugUse: req.body.incidentsAlcoholDrugUse,
-                        incidentsMedicationErrors: req.body.incidentsMedicationErrors,
-                        incidentsViolentThreatOthers: req.body.incidentsViolentThreatOthers,
-                        incidentsMedicalEmergency911: req.body.incidentsMedicalEmergency911,
-                        incidentsEquipmentUtilityFailure: req.body.incidentsEquipmentUtilityFailure,
-                        incidentsAWOL: req.body.incidentsAWOL,
-                        incidentsViolentActionSelf: req.body.incidentsViolentActionSelf,
-                        incidentsEmployeeInjury: req.body.incidentsEmployeeInjury,
-                        incidentsBiohazardousMaterial: req.body.incidentsBiohazardousMaterial,
-                        incidentsPsychiatricEmergency: req.body.incidentsPsychiatricEmergency,
-                        incidentsViolentActionOthers: req.body.incidentsViolentActionOthers,
-                        incidentsClientConsumerInjury: req.body.incidentsClientConsumerInjury,
-                        incidentsAMA: req.body.incidentsAMA,
-                        incidentsAbuseNeglect: req.body.incidentsAbuseNeglect,
-                        incidentsTrespassing: req.body.incidentsTrespassing,
-                        incidentsProceduralBreak: req.body.incidentsProceduralBreak,
-                        incidentsSlipFall: req.body.incidentsSlipFall,
-                        incidentsCutAbrasion: req.body.incidentsCutAbrasion,
-                        incidentspharmacyError: req.body.incidentspharmacyError,
+                        levelOfSeverity: req.body.levelOfSeverity,
+                        incidents: req.body.incidents,
                         eventDetails: req.body.eventDetails,
                         medicationErrorsMissedDose: req.body.medicationErrorsMissedDose,
                         medicationErrorsRefusedMedication: req.body.medicationErrorsRefusedMedication,
                         medicationErrorsWrongClient: req.body.medicationErrorsWrongClient,
                         medicationErrorsWrongTime: req.body.medicationErrorsWrongTime,
                         medicationErrorsWrongMed: req.body.medicationErrorsWrongMed,
+                        medicationErrorsNone: req.body.medicationErrorsNone,
                         actionsTakenSenttoERHospital: req.body.actionsTakenSenttoERHospital,
                         actionsTakenFirstAid: req.body.actionsTakenFirstAid,
                         actionsTakenNoMedicalCareRequired: req.body.actionsTakenNoMedicalCareRequired,
@@ -985,6 +963,7 @@ exports.addIncidentReport = async (req, res) => {
                         actionsTakenReferredtoAdministratorRiskManagement: req.body.actionsTakenReferredtoAdministratorRiskManagement,
                         actionsTakenMaintenanceCalledWorkOrderCompleted: req.body.actionsTakenMaintenanceCalledWorkOrderCompleted,
                         actionsTakenOther: req.body.actionsTakenOther,
+                        actionsTakenOtherComment: req.body.actionsTakenOtherComment,
                         abuseNeglectInvolved: req.body.abuseNeglectInvolved,
                         abuseNeglectInvolvedifYes: req.body.abuseNeglectInvolvedifYes,
                         notificationsFamily: req.body.notificationsFamily,
@@ -994,31 +973,52 @@ exports.addIncidentReport = async (req, res) => {
                         notificationIfOther: req.body.notificationIfOther,
                         notificationDate: req.body.notificationDate,
                         notificationTime: req.body.notificationTime,
+                        modeEmail: req.body.modeEmail,
+                        modePhoneCall: req.body.modePhoneCall,
+                        modeInPerson: req.body.modeInPerson,
+                        modeOther: req.body.modeOther,
+                        savedSignedPartA: req.body.savedSignedPartA,
                         reportCompletedBy: req.body.reportCompletedBy,
-                        partType: "A",
                 };
-                const checklist = await notes.create(obj);
+                let newEmployee = await incidentReport.create(obj);
+                if (newEmployee) {
+                        return res.status(200).send({ status: 200, message: "Authorization For Release Of Information add successfully.", data: newEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.createIncidentReportPartB = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const checklist = await incidentReport.findOne({ _id: req.body.aPartId });
                 if (checklist) {
                         let obj1 = {
-                                residentsInvolved: req.body.residentsInvolved,
-                                adminId: user.adminId,
-                                employeesInvolved: req.body.employeesInvolved,
-                                partId: checklist._id,
+                                residentsInvolved: checklist.residentsInvolved,
+                                adminId: checklist.adminId,
+                                employeesInvolved: checklist.employeesInvolved,
                                 investigationDetails: req.body.investigationDetails,
                                 investigationRecommendationsAndActions: req.body.investigationRecommendationsAndActions,
                                 investigationFollowUp: req.body.investigationFollowUp,
                                 investigationCompletedBy: req.body.investigationCompletedBy,
                                 investigationCompletionDate: req.body.investigationCompletionDate,
-                                partType: "B",
+                                savedSignedPartB: req.body.savedSignedPartB,
+                                partTypeB: true,
                         };
-                        const checklist1 = await notes.create(obj1);
+                        const checklist1 = await incidentReport.findByIdAndUpdate({ _id: checklist._id }, { $set: obj1 }, { new: true });
                         if (checklist1) {
-                                return res.status(200).send({ status: 200, message: "Incident Report added successfully.", data: { checklist1, checklist } });
+                                return res.status(200).send({ status: 200, message: "Incident Report added successfully.", data: checklist1 });
                         }
+                } else {
+                        return res.status(404).send({ status: 404, message: "Incident Report not found", data: {} });
                 }
         } catch (error) {
                 console.error(error);
-                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
 exports.addDisasterPlanReview = async (req, res) => {
