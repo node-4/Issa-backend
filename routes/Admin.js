@@ -38,8 +38,7 @@ module.exports = (app) => {
         app.post('/api/v1/admin/addVanEmergencyInformationForm', authJwt.verifyToken, auth.addVanEmergencyInformationForm);
         app.post('/api/v1/admin/addQualityManagement', authJwt.verifyToken, auth.addQualityManagement);
         app.post('/api/v1/admin/addInfectiousData', authJwt.verifyToken, auth.addInfectiousData);
-        app.post('/api/v1/admin/createIncidentReportPartA', authJwt.verifyToken, auth.createIncidentReportPartA);
-        app.post('/api/v1/admin/createIncidentReportPartB', authJwt.verifyToken, auth.createIncidentReportPartB);
+        app.post('/api/v1/admin/addIncidentReport', authJwt.verifyToken, auth.addIncidentReport);
         app.post('/api/v1/admin/addDisasterPlanReview', authJwt.verifyToken, auth.addDisasterPlanReview);
         app.get('/api/v1/admin/getAllNotes', authJwt.verifyToken, auth.getAllNotes);
         app.post('/api/v1/admin/addBhrfTherapyTopic', authJwt.verifyToken, auth.addBhrfTherapyTopic);

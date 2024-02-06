@@ -927,7 +927,7 @@ exports.addInfectiousData = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
-exports.createIncidentReportPartA = async (req, res) => {
+exports.addIncidentReport = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
                 if (!user) {
@@ -979,42 +979,17 @@ exports.createIncidentReportPartA = async (req, res) => {
                         modeOther: req.body.modeOther,
                         savedSignedPartA: req.body.savedSignedPartA,
                         reportCompletedBy: req.body.reportCompletedBy,
+                        investigationDetails: req.body.investigationDetails,
+                        investigationRecommendationsAndActions: req.body.investigationRecommendationsAndActions,
+                        investigationFollowUp: req.body.investigationFollowUp,
+                        investigationCompletedBy: req.body.investigationCompletedBy,
+                        investigationCompletionDate: req.body.investigationCompletionDate,
+                        savedSignedPartB: req.body.savedSignedPartB,
+                        partTypeB: true,
                 };
                 let newEmployee = await incidentReport.create(obj);
                 if (newEmployee) {
                         return res.status(200).send({ status: 200, message: "Authorization For Release Of Information add successfully.", data: newEmployee });
-                }
-        } catch (error) {
-                console.error(error);
-                return res.status(500).send({ status: 200, message: "Server error" + error.message });
-        }
-};
-exports.createIncidentReportPartB = async (req, res) => {
-        try {
-                const user = await User.findOne({ _id: req.user });
-                if (!user) {
-                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
-                }
-                const checklist = await incidentReport.findOne({ _id: req.body.aPartId });
-                if (checklist) {
-                        let obj1 = {
-                                residentsInvolved: checklist.residentsInvolved,
-                                adminId: checklist.adminId,
-                                employeesInvolved: checklist.employeesInvolved,
-                                investigationDetails: req.body.investigationDetails,
-                                investigationRecommendationsAndActions: req.body.investigationRecommendationsAndActions,
-                                investigationFollowUp: req.body.investigationFollowUp,
-                                investigationCompletedBy: req.body.investigationCompletedBy,
-                                investigationCompletionDate: req.body.investigationCompletionDate,
-                                savedSignedPartB: req.body.savedSignedPartB,
-                                partTypeB: true,
-                        };
-                        const checklist1 = await incidentReport.findByIdAndUpdate({ _id: checklist._id }, { $set: obj1 }, { new: true });
-                        if (checklist1) {
-                                return res.status(200).send({ status: 200, message: "Incident Report added successfully.", data: checklist1 });
-                        }
-                } else {
-                        return res.status(404).send({ status: 404, message: "Incident Report not found", data: {} });
                 }
         } catch (error) {
                 console.error(error);
