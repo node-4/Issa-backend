@@ -564,7 +564,7 @@ exports.createResidentIntake = async (req, res) => {
                 const consentFormData = {
                         adminId: patient.adminId,
                         patientId: patient._id,
-                        companyName: req.body.companyName,
+                        companyName: patient.companyName,
                         residentName: req.body.residentName,
                         residentSignature: req.body.residentSignature,
                         residentDate: req.body.residentDate,
@@ -719,7 +719,7 @@ exports.createInitialAssessment = async (req, res) => {
                         assessmentOn: req.body.assessmentOn,
                         hasNotified: req.body.hasNotified,
                         dob: req.body.dateOfBirth,
-                        companyName: req.body.companyName,
+                        companyName: patient.companyName,
                         residentName: req.body.residentName,
                         sex: req.body.sex,
                         dateOfAssessment: req.body.dateOfAssessment,

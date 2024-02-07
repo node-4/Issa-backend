@@ -106,6 +106,7 @@ exports.updateProfile = async (req, res) => {
                         email: req.body.email || user.email,
                         mobileNumber: req.body.mobileNumber || user.mobileNumber,
                         gender: req.body.gender || user.gender,
+                        companyName: req.body.companyName || user.companyName,
                         address: req.body.address || user.address,
                         proffession: req.body.proffession || user.proffession,
                         profilePic: req.body.profilePic,
@@ -157,6 +158,7 @@ exports.createUser = async (req, res) => {
                         if (req.body.userType == "Employee") {
                                 req.body.Id = `E${user2 + 1}`
                         }
+                        req.body.companyName = user.companyName;
                         const userCreate = await User.create(req.body);
                         return res.status(200).send({ message: "registered successfully ", data: userCreate, });
                 } else {
@@ -1660,7 +1662,7 @@ exports.addOfferLetter = async (req, res) => {
                                                 adminId: user1.adminId,
                                                 employeeId: user1._id,
                                                 employeeName: req.body.employeeName || findData.employeeName,
-                                                companyName: req.body.companyName || findData.companyName,
+                                                companyName: user.companyName || findData.companyName,
                                                 positionOffered: req.body.positionOffered || findData.positionOffered,
                                                 startingPay: req.body.startingPay || findData.startingPay,
                                                 startDate: req.body.startDate || findData.startDate,
@@ -1676,7 +1678,7 @@ exports.addOfferLetter = async (req, res) => {
                                                 adminId: user1.adminId,
                                                 employeeId: user1._id,
                                                 employeeName: req.body.employeeName,
-                                                companyName: req.body.companyName,
+                                                companyName: user.companyName,
                                                 positionOffered: req.body.positionOffered,
                                                 startingPay: req.body.startingPay,
                                                 startDate: req.body.startDate,

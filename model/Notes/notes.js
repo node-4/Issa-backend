@@ -23,6 +23,12 @@ const addressSchema = new mongoose.Schema({
         date: {
                 type: Date,
         },
+        month: {
+                type: String,
+        },
+        year: {
+                type: String,
+        },
         beginTime: {
                 type: String,
         },
@@ -87,9 +93,6 @@ const addressSchema = new mongoose.Schema({
         },
         facititAddress: {
                 type: String,
-        },
-        date: {
-                type: Date,
         },
         tornado: {
                 type: Boolean
@@ -212,9 +215,6 @@ const addressSchema = new mongoose.Schema({
         facititAddress: {
                 type: String,
         },
-        date: {
-                type: Date,
-        },
         startTime: {
                 type: String,
         },
@@ -262,9 +262,6 @@ const addressSchema = new mongoose.Schema({
         adminId: {
                 type: schema.Types.ObjectId,
                 ref: "user",
-        },
-        date: {
-                type: Date,
         },
         location: {
                 type: String,
@@ -448,9 +445,6 @@ const addressSchema = new mongoose.Schema({
         adminId: {
                 type: schema.Types.ObjectId,
                 ref: "user",
-        },
-        date: {
-                type: Date,
         },
         location: {
                 type: String,
@@ -1497,12 +1491,6 @@ const addressSchema = new mongoose.Schema({
                 ref: "user",
         },
         site: {
-                type: String,
-        },
-        date: {
-                type: Date,
-        },
-        year: {
                 type: String,
         },
         make: {

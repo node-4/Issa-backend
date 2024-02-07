@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false,
         },
+        companyName: {
+                type: String
+        },
         fullName: {
                 type: String
         },
