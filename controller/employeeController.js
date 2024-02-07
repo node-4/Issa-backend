@@ -1066,7 +1066,7 @@ exports.getStaffScheduleByEmployeeId = async (req, res) => {
                 if (!user) {
                         return res.status(404).json({ status: 404, message: "User not found! Not registered", data: {} });
                 }
-                let filter = { adminId: user._id };
+                let filter = {};
                 if (req.query.employeeId != (null || undefined)) {
                         filter = { employeeId: req.query.employeeId };
                 }
