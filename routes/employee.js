@@ -198,12 +198,13 @@ module.exports = (app) => {
         app.get('/api/v1/employee/getNursingAssessment/:patientId', authJwt.verifyToken, auth.getNursingAssessment);
         app.post('/api/v1/employee/createResidentIntake', authJwt.verifyToken, auth.createResidentIntake);
         app.get('/api/v1/employee/ResidentIntake/:patientId', authJwt.verifyToken, auth.getResidentIntake);
-        app.post('/api/v1/employee/createEmployeeTracking', authJwt.verifyToken, auth.createEmployeeTracking);
+        app.post('/api/v1/employee/createEmployeeTracking', auth.createEmployeeTracking);
         app.get('/api/v1/employee/EmployeeTracking/:employeeId', authJwt.verifyToken, auth.getEmployeeTracking);
         app.get('/api/v1/employee/EmployeeTrackingById/:id', authJwt.verifyToken, auth.getEmployeeTrackingById);
         app.post('/api/v1/employee/createMars', authJwt.verifyToken, auth.createMars);
         app.get('/api/v1/employee/Mars/:patientId', authJwt.verifyToken, auth.getMars);
         app.put('/api/v1/employee/Mars/:MarsId', authJwt.verifyToken, auth.updateMarsStatus);
         app.post('/api/v1/employee/createTimeSheet', auth.createTimeSheet);
+        app.get('/api/v1/employee/getTimeSheet', auth.getTimeSheet);
         app.post('/api/v1/employee/attendanceMark', auth.attendanceMark);
 }

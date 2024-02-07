@@ -76,7 +76,7 @@ exports.updateImage = async (req, res) => {
         try {
                 let image = "";
                 if (req.file) {
-                        image=   req.file.path
+                        image = req.file.path
                 }
                 return res.status(200).send({ status: 200, message: "Profile get successfully.", data: image })
         } catch (error) {
@@ -5521,7 +5521,7 @@ exports.createEmployeeTracking = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found or not registered", data: {} });
                 }
-                const existingEmployee = await EmployeeTracking.findOne({ employeeId: user._id });
+                const existingEmployee = await employeeTracking.findOne({ employeeId: user._id });
                 if (!existingEmployee) {
                         req.body.employeeId = user._id;
                         req.body.employeeSignature = req.body.employeeSignature;
@@ -5570,55 +5570,55 @@ exports.createEmployeeTracking = async (req, res) => {
                                 req.body.vacationPersonalTimeUsed = req.body.vacationPersonalTimeUsed;
                                 req.body.vacationPersonalTimeUsedExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        const newConsentForm = await EmployeeTracking.create(req.body);
+                        const newConsentForm = await employeeTracking.create(req.body);
                         if (newConsentForm) {
                                 return res.status(200).send({ status: 200, message: "Employee Tracking added successfully.", data: newConsentForm });
                         }
                 } else {
                         existingEmployee.employeeSignature = req.body.employeeSignature;
                         existingEmployee.adminId = user.adminId;
-                        if (req.files['CPRFirstAid']) {
-                                existingEmployee.CPRFirstAid = req.files['CPRFirstAid'][0].path;
+                        if (req.body.CPRFirstAid) {
+                                existingEmployee.CPRFirstAid = req.body.CPRFirstAid;
                                 existingEmployee.CPRFirstAidExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['TBTestChestXray']) {
-                                existingEmployee.TBTestChestXray = req.files['TBTestChestXray'][0].path;
+                        if (req.body.TBTestChestXray) {
+                                existingEmployee.TBTestChestXray = req.body.TBTestChestXray;
                                 existingEmployee.TBTestChestXrayExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['TBtestQuestionnaire']) {
-                                existingEmployee.TBtestQuestionnaire = req.files['TBtestQuestionnaire'][0].path;
+                        if (req.body.TBtestQuestionnaire) {
+                                existingEmployee.TBtestQuestionnaire = req.body.TBtestQuestionnaire;
                                 existingEmployee.TBtestQuestionnaireExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['FingerprintClearanceCard']) {
-                                existingEmployee.FingerprintClearanceCard = req.files['FingerprintClearanceCard'][0].path;
+                        if (req.body.FingerprintClearanceCard) {
+                                existingEmployee.FingerprintClearanceCard = req.body.FingerprintClearanceCard;
                                 existingEmployee.FingerprintClearanceCardExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['InfectiousControlTraining']) {
-                                existingEmployee.InfectiousControlTraining = req.files['InfectiousControlTraining'][0].path;
+                        if (req.body.InfectiousControlTraining) {
+                                existingEmployee.InfectiousControlTraining = req.body.InfectiousControlTraining;
                                 existingEmployee.InfectiousControlTrainingExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['TBAnnualEducation']) {
-                                existingEmployee.TBAnnualEducation = req.files['TBAnnualEducation'][0].path;
+                        if (req.body.TBAnnualEducation) {
+                                existingEmployee.TBAnnualEducation = req.body.TBAnnualEducation;
                                 existingEmployee.TBAnnualEducationExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['FallPreventionandFallRecovery']) {
-                                existingEmployee.FallPreventionandFallRecovery = req.files['FallPreventionandFallRecovery'][0].path;
+                        if (req.body.FallPreventionandFallRecovery) {
+                                existingEmployee.FallPreventionandFallRecovery = req.body.FallPreventionandFallRecovery;
                                 existingEmployee.FallPreventionandFallRecoveryExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['APSSearch']) {
-                                existingEmployee.APSSearch = req.files['APSSearch'][0].path;
+                        if (req.body.APSSearch) {
+                                existingEmployee.APSSearch = req.body.APSSearch;
                                 existingEmployee.APSSearchExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['CPIPreventionandControl']) {
-                                existingEmployee.CPIPreventionandControl = req.files['CPIPreventionandControl'][0].path;
+                        if (req.body.CPIPreventionandControl) {
+                                existingEmployee.CPIPreventionandControl = req.body.CPIPreventionandControl;
                                 existingEmployee.CPIPreventionandControlExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['Annualabuseandneglecttraining']) {
-                                existingEmployee.Annualabuseandneglecttraining = req.files['Annualabuseandneglecttraining'][0].path;
+                        if (req.body.Annualabuseandneglecttraining) {
+                                existingEmployee.Annualabuseandneglecttraining = req.body.Annualabuseandneglecttraining;
                                 existingEmployee.AnnualabuseandneglecttrainingExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['vacationPersonalTimeUsed']) {
-                                existingEmployee.vacationPersonalTimeUsed = req.files['vacationPersonalTimeUsed'][0].path;
+                        if (req.body.vacationPersonalTimeUsed) {
+                                existingEmployee.vacationPersonalTimeUsed = req.body.vacationPersonalTimeUsed;
                                 existingEmployee.vacationPersonalTimeUsedExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
                         const updatedEmployee = await existingEmployee.save();
@@ -5814,7 +5814,7 @@ exports.createTimeSheet = async (req, res) => {
                                 }
                                 console.log(filteredTasks)
                                 let findEmployee = await staffSchedule.find(filter);
-                                let timeSheetId = [];
+                                let timeSheetId = [], week1TotalHr = 0, week2TotalHr = 0, week3TotalHr = 0, week4TotalHr = 0, week5TotalHr = 0;
                                 for (let j = 0; j < findEmployee.length; j++) {
                                         let work = [];
                                         let totalTime = 0;
@@ -5847,8 +5847,37 @@ exports.createTimeSheet = async (req, res) => {
                                         };
                                         const newConsentForm12 = await timeWorkSheet.create(obj);
                                         timeSheetId.push(newConsentForm12._id)
+                                        let date1 = moment(newConsentForm12.date);
+                                        let year1 = date1.year();
+                                        let month1 = date1.month();
+                                        let weekNumber1 = date1.isoWeek();
+                                        let startOfMonth = moment([year1, month1]);
+                                        let weekNumber = weekNumber1 - moment(startOfMonth).isoWeek() + 1;
+                                        console.log(weekNumber)
+                                        if (weekNumber === 1) {
+                                                let [hours, minutes, seconds] = newConsentForm12.totalTime.split(':');
+                                                week1TotalHr += parseInt(hours) + parseInt(minutes) / 60 + parseInt(seconds) / 3600;
+                                        }
+                                        if (weekNumber === 2) {
+                                                let [hours, minutes, seconds] = newConsentForm12.totalTime.split(':');
+                                                week2TotalHr += parseInt(hours) + parseInt(minutes) / 60 + parseInt(seconds) / 3600;
+                                        }
+                                        if (weekNumber === 3) {
+                                                let [hours, minutes, seconds] = newConsentForm12.totalTime.split(':');
+                                                week3TotalHr += parseInt(hours) + parseInt(minutes) / 60 + parseInt(seconds) / 3600;
+                                        }
+                                        if (weekNumber === 4) {
+                                                let [hours, minutes, seconds] = newConsentForm12.totalTime.split(':');
+                                                week4TotalHr += parseInt(hours) + parseInt(minutes) / 60 + parseInt(seconds) / 3600;
+                                        }
+                                        if (weekNumber === 5) {
+                                                let [hours, minutes, seconds] = newConsentForm12.totalTime.split(':');
+                                                week5TotalHr += parseInt(hours) + parseInt(minutes) / 60 + parseInt(seconds) / 3600;
+                                        }
                                 }
-                                const newConsentForm1 = await timeSheet.findByIdAndUpdate({ _id: newConsentForm._id }, { $set: { dateData: timeSheetId } }, { new: true }).populate('dateData');
+                                let totalHr = week1TotalHr + week2TotalHr + week3TotalHr + week4TotalHr + week5TotalHr;
+                                let paycheckTotalHr = filteredTasks.startingPay * totalHr;
+                                const newConsentForm1 = await timeSheet.findByIdAndUpdate({ _id: newConsentForm._id }, { $set: { dateData: timeSheetId, week1TotalHr: week1TotalHr, week2TotalHr: week2TotalHr, week3TotalHr: week3TotalHr, week4TotalHr: week4TotalHr, week5TotalHr: week5TotalHr, paycheckTotalHr: paycheckTotalHr } }, { new: true }).populate('dateData');
                                 return res.status(200).send({ status: 200, message: "Create timeSheet successfully.", data: newConsentForm1 });
                         }
                 }
@@ -5857,6 +5886,115 @@ exports.createTimeSheet = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.getTimeSheet = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found or not registered", data: {} });
+                } else {
+                        const filteredTasks = await offerLetter.findOne({ employeeId: user._id });
+                        if (!filteredTasks) {
+                                return res.status(404).send({ status: 404, message: "No OfferLetter found.", data: {} });
+                        }
+                        console.log(filteredTasks);
+                        let filter = { employeeId: user._id };
+                        const year = req.body.year || moment().format('YYYY');
+                        const month = req.body.month || moment().format('MM');
+                        filter.year = year;
+                        filter.month = month;
+                        if (req.body.stateDate && !req.body.endDate) {
+                                filter.dateCreated = { $gte: req.body.stateDate };
+                        }
+                        if (!req.body.stateDate && req.body.endDate) {
+                                filter.dateCreated = { $lte: req.body.endDate };
+                        }
+                        if (req.body.stateDate && req.body.endDate) {
+                                filter.$and = [
+                                        { dateCreated: { $gte: req.body.stateDate } },
+                                        { dateCreated: { $lte: req.body.endDate } },
+                                ];
+                        }
+                        let findEmployee = await staffSchedule.find(filter);
+                        let timeSheetData = {
+                                adminId: user.adminId,
+                                employeeId: user._id,
+                                month: req.body.month,
+                                year: req.body.year,
+                                week1TotalHr: 0,
+                                week2TotalHr: 0,
+                                week3TotalHr: 0,
+                                week4TotalHr: 0,
+                                week5TotalHr: 0,
+                                paycheckTotalHr: 0,
+                                scheduleData: []
+                        };
+                        for (let j = 0; j < findEmployee.length; j++) {
+                                let work = [];
+                                let totalTime = 0;
+                                if (findEmployee[j].schedule.length > 0) {
+                                        for (let i = 0; i < findEmployee[j].schedule.length; i++) {
+                                                let x = {
+                                                        start: findEmployee[j].schedule[i].start,
+                                                        end: findEmployee[j].schedule[i].end,
+                                                        type: findEmployee[j].schedule[i].type,
+                                                        timeTaken: findEmployee[j].schedule[i].timeTaken,
+                                                };
+                                                work.push(x);
+                                                let [hours, minutes, seconds] = findEmployee[j].schedule[i].timeTaken.split(':');
+                                                totalTime += parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds);
+                                        }
+                                }
+                                let totalHours = Math.floor(totalTime / 3600);
+                                let totalMinutes = Math.floor((totalTime % 3600) / 60);
+                                let totalSeconds = totalTime % 60;
+                                let totalFormatted = `${totalHours}:${totalMinutes < 10 ? '0' + totalMinutes : totalMinutes}:${totalSeconds < 10 ? '0' + totalSeconds : totalSeconds}`;
+                                timeSheetData.scheduleData.push({
+                                        date: findEmployee[j].date,
+                                        work: work,
+                                        totalTime: totalFormatted
+                                });
+                        }
+                        // Calculate totals
+                        timeSheetData.scheduleData.forEach(item => {
+                                let date1 = moment(item.date);
+                                let year1 = date1.year();
+                                let month1 = date1.month();
+                                let weekNumber1 = date1.isoWeek();
+                                let startOfMonth = moment([year1, month1]);
+                                let weekNumber = weekNumber1 - moment(startOfMonth).isoWeek() + 1;
+                                console.log(weekNumber);
+                                switch (weekNumber) {
+                                        case 1:
+                                                timeSheetData.week1TotalHr += calculateHours(item.totalTime);
+                                                break;
+                                        case 2:
+                                                timeSheetData.week2TotalHr += calculateHours(item.totalTime);
+                                                break;
+                                        case 3:
+                                                timeSheetData.week3TotalHr += calculateHours(item.totalTime);
+                                                break;
+                                        case 4:
+                                                timeSheetData.week4TotalHr += calculateHours(item.totalTime);
+                                                break;
+                                        case 5:
+                                                timeSheetData.week5TotalHr += calculateHours(item.totalTime);
+                                                break;
+                                        default:
+                                                break;
+                                }
+                        });
+                        timeSheetData.paycheckTotalHr = filteredTasks.startingPay * (timeSheetData.week1TotalHr + timeSheetData.week2TotalHr + timeSheetData.week3TotalHr + timeSheetData.week4TotalHr + timeSheetData.week5TotalHr);
+                        return res.status(200).send({ status: 200, message: "TimeSheet created successfully.", data: timeSheetData });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+function calculateHours(timeString) {
+        let [hours, minutes, seconds] = timeString.split(':');
+        return parseInt(hours) + parseInt(minutes) / 60 + parseInt(seconds) / 3600;
+}
 exports.attendanceMark = async (req, res) => {
         try {
                 let user = await User.findOne({ _id: req.body.employeeId, });

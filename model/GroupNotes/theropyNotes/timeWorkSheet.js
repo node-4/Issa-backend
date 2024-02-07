@@ -22,7 +22,7 @@ const addressSchema = new mongoose.Schema({
                 type: String
         },
         date: {
-                type: String
+                type: Date
         },
         work: [{
                 start: {

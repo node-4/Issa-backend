@@ -53,6 +53,18 @@ const addressSchema = new mongoose.Schema({
                 type: Number,
                 default: 0
         },
+        week3TotalHr: {
+                type: Number,
+                default: 0
+        },
+        week4TotalHr: {
+                type: Number,
+                default: 0
+        },
+        week5TotalHr: {
+                type: Number,
+                default: 0
+        },
         paycheckTotalHr: {
                 type: Number,
                 default: 0
