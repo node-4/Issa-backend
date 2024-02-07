@@ -942,7 +942,7 @@ exports.addStaffSchedule = async (req, res) => {
                 let date = req.body.currentDate;
                 const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
                 var currDate = new Date(`${year}-${month}-${date}T00:00:00.000Z`);
-                let day = weekday[currDate.getDay()];
+                let day = weekday[currDate.getDay()-1];
                 for (let i = 0; i < req.body.schedule.length; i++) {
                         let timeTakenObj = await totalTime1(req.body.schedule[i].start, req.body.schedule[i].end);
                         let ob1 = {

@@ -25,15 +25,19 @@ const addressSchema = new mongoose.Schema({
                 type: String
         },
         work: [{
-                clockIn: {
-                        type: String,
+                start: {
+                        type: String
                 },
-                clockOut: {
+                end: {
+                        type: String
+                },
+                type: {
                         type: String,
+                        enum: ["amToAm", "amToPm", "pmToAm"]
                 },
                 timeTaken: {
                         type: String
-                }
+                },
         }],
         totalTime: {
                 type: String
