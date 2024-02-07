@@ -11,30 +11,34 @@ const addressSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
-        year: {
-                type: String,
+        currentDate: {
+                type: Number
         },
         month: {
-                type: String,
+                type: String
+        },
+        year: {
+                type: String
+        },
+        date: {
+                type: String
+        },
+        day: {
+                type: String
         },
         schedule: [{
-                date: {
-                        type: Number,
-                        min: 1,
-                        max: 31
+                start: {
+                        type: String
                 },
-                day: {
-                        type: String,
-                        enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                end: {
+                        type: String
                 },
-                amToAm: {
+                type: {
                         type: String,
+                        enum: ["amToAm", "amToPm", "pmToAm"]
                 },
-                amToPm: {
-                        type: String,
-                },
-                pmToAm: {
-                        type: String,
+                timeTaken: {
+                        type: String
                 },
         }],
         administratorAndNumber: {

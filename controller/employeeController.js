@@ -938,55 +938,76 @@ exports.addStaffSchedule = async (req, res) => {
                 }
                 let findStaffSchedule = await staffSchedule.findOne({ employeeId: findEmployee._id, year: req.body.year, month: req.body.month });
                 if (findStaffSchedule) {
-                        const scheduleWithDays = req.body.schedule.map(scheduleItem => {
-                                const date = new Date(req.body.year, req.body.month - 1, scheduleItem.date);
-                                const day = date.toLocaleString('en-us', { weekday: 'long' });
-                                return { ...scheduleItem, day };
-                        });
-                        let savedSigned = `${user.firstName} ${user.lastName}`;
-                        let obj = {
-                                employeeId: findEmployee._id,
-                                adminId: user._id,
-                                year: findStaffSchedule.year,
-                                month: findStaffSchedule.month,
-                                schedule: scheduleWithDays || findStaffSchedule.schedule,
-                                administratorAndNumber: req.body.administratorAndNumber || findStaffSchedule.administratorAndNumber,
-                                registeredNurseAndNumber: req.body.registeredNurseAndNumber || findStaffSchedule.registeredNurseAndNumber,
-                                bhtNameAndNumber: req.body.bhtNameAndNumber || findStaffSchedule.bhtNameAndNumber,
-                                savedSigned: savedSigned,
-                        };
-                        let update = await staffSchedule.findOneAndUpdate({ _id: findStaffSchedule._id }, { $set: obj }, { new: true });
-                        if (update) {
-                                return res.status(200).send({ status: 200, message: "Staff Schedule updated successfully.", data: update });
-                        }
+
                 } else {
-                        const scheduleWithDays = req.body.schedule.map(scheduleItem => {
-                                const date = new Date(req.body.year, req.body.month - 1, scheduleItem.date);
-                                const day = date.toLocaleString('en-us', { weekday: 'long' });
-                                return { ...scheduleItem, day };
-                        });
-                        let savedSigned = `${user.firstName} ${user.lastName}`;
-                        let obj = {
-                                employeeId: findEmployee._id,
-                                adminId: user._id,
-                                year: req.body.year,
-                                month: req.body.month,
-                                schedule: scheduleWithDays,
-                                administratorAndNumber: req.body.administratorAndNumber,
-                                registeredNurseAndNumber: req.body.registeredNurseAndNumber,
-                                bhtNameAndNumber: req.body.bhtNameAndNumber,
-                                savedSigned: savedSigned,
-                        };
-                        let newEmployee = await staffSchedule.create(obj);
-                        if (newEmployee) {
-                                return res.status(200).send({ status: 200, message: "Staff Schedule added successfully.", data: newEmployee });
-                        }
+
                 }
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+// exports.addStaffSchedule = async (req, res) => {
+//         try {
+//                 const user = await User.findById(req.user);
+//                 if (!user) {
+//                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
+//                 }
+//                 const findEmployee = await User.findById(req.body.employeeId);
+//                 if (!findEmployee) {
+//                         return res.status(404).send({ status: 404, message: "Employee not found.", data: {} });
+//                 }
+//                 let findStaffSchedule = await staffSchedule.findOne({ employeeId: findEmployee._id, year: req.body.year, month: req.body.month });
+//                 if (findStaffSchedule) {
+//                         const scheduleWithDays = req.body.schedule.map(scheduleItem => {
+//                                 const date = new Date(req.body.year, req.body.month - 1, scheduleItem.date);
+//                                 const day = date.toLocaleString('en-us', { weekday: 'long' });
+//                                 return { ...scheduleItem, day };
+//                         });
+//                         let savedSigned = `${user.firstName} ${user.lastName}`;
+//                         let obj = {
+//                                 employeeId: findEmployee._id,
+//                                 adminId: user._id,
+//                                 year: findStaffSchedule.year,
+//                                 month: findStaffSchedule.month,
+//                                 schedule: scheduleWithDays || findStaffSchedule.schedule,
+//                                 administratorAndNumber: req.body.administratorAndNumber || findStaffSchedule.administratorAndNumber,
+//                                 registeredNurseAndNumber: req.body.registeredNurseAndNumber || findStaffSchedule.registeredNurseAndNumber,
+//                                 bhtNameAndNumber: req.body.bhtNameAndNumber || findStaffSchedule.bhtNameAndNumber,
+//                                 savedSigned: savedSigned,
+//                         };
+//                         let update = await staffSchedule.findOneAndUpdate({ _id: findStaffSchedule._id }, { $set: obj }, { new: true });
+//                         if (update) {
+//                                 return res.status(200).send({ status: 200, message: "Staff Schedule updated successfully.", data: update });
+//                         }
+//                 } else {
+//                         const scheduleWithDays = req.body.schedule.map(scheduleItem => {
+//                                 const date = new Date(req.body.year, req.body.month - 1, scheduleItem.date);
+//                                 const day = date.toLocaleString('en-us', { weekday: 'long' });
+//                                 return { ...scheduleItem, day };
+//                         });
+//                         let savedSigned = `${user.firstName} ${user.lastName}`;
+//                         let obj = {
+//                                 employeeId: findEmployee._id,
+//                                 adminId: user._id,
+//                                 year: req.body.year,
+//                                 month: req.body.month,
+//                                 schedule: scheduleWithDays,
+//                                 administratorAndNumber: req.body.administratorAndNumber,
+//                                 registeredNurseAndNumber: req.body.registeredNurseAndNumber,
+//                                 bhtNameAndNumber: req.body.bhtNameAndNumber,
+//                                 savedSigned: savedSigned,
+//                         };
+//                         let newEmployee = await staffSchedule.create(obj);
+//                         if (newEmployee) {
+//                                 return res.status(200).send({ status: 200, message: "Staff Schedule added successfully.", data: newEmployee });
+//                         }
+//                 }
+//         } catch (error) {
+//                 console.error(error);
+//                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+//         }
+// };
 exports.getStaffSchedule = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user, userType: "Employee" });
@@ -1578,7 +1599,7 @@ exports.createTimeOffRequest = async (req, res) => {
                         vacationPersonTimeUsed: req.body.vacationPersonTimeUsed,
                         sickTimeUsed: req.body.sickTimeUsed,
                         notes: req.body.notes,
-                        signature: employeeSignature,
+                        signature: req.body.signature,
                         requestType: req.body.requestType,
                 }
                 let newEmployee = await timeOffRequest.create(obj);
