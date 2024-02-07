@@ -1474,6 +1474,9 @@ const addressSchema = new mongoose.Schema({
         BHRFAdministratorInformation: {
                 type: String,
         },
+        caseManagerInformation: {
+                type: String,
+        },
         pharamacyHospital: {
                 type: String,
         },
