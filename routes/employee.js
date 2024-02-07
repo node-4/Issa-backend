@@ -12,6 +12,7 @@ module.exports = (app) => {
         app.post("/api/v1/employee/forgetPassword", auth.forgetPassword);
         app.post("/api/v1/employee/forgotVerifyOtp", auth.forgotVerifyotp);
         app.post("/api/v1/employee/changePassword/:id", auth.changePassword);
+        app.post('/api/v1/employee/updateImage', upload.single('image'), auth.updateImage);
         app.put('/api/v1/employee/updateProfile', authJwt.verifyToken, upload.single('image'), auth.updateProfile);
         app.post('/api/v1/employee/addEmployeeApplication', authJwt.verifyToken, auth.addEmployeeApplication);
         app.get('/api/v1/employee/viewEmployeeApplication', authJwt.verifyToken, auth.viewEmployeeApplication);
@@ -197,7 +198,7 @@ module.exports = (app) => {
         app.get('/api/v1/employee/getNursingAssessment/:patientId', authJwt.verifyToken, auth.getNursingAssessment);
         app.post('/api/v1/employee/createResidentIntake', authJwt.verifyToken, auth.createResidentIntake);
         app.get('/api/v1/employee/ResidentIntake/:patientId', authJwt.verifyToken, auth.getResidentIntake);
-        app.post('/api/v1/employee/createEmployeeTracking', authJwt.verifyToken, employeeTrackingUpload, auth.createEmployeeTracking);
+        app.post('/api/v1/employee/createEmployeeTracking', authJwt.verifyToken, auth.createEmployeeTracking);
         app.get('/api/v1/employee/EmployeeTracking/:employeeId', authJwt.verifyToken, auth.getEmployeeTracking);
         app.get('/api/v1/employee/EmployeeTrackingById/:id', authJwt.verifyToken, auth.getEmployeeTrackingById);
         app.post('/api/v1/employee/createMars', authJwt.verifyToken, auth.createMars);

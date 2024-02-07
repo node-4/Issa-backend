@@ -72,6 +72,18 @@ const notification = require('../model/notification');
 const timeSheet = require('../model/GroupNotes/theropyNotes/timeSheet');
 const timeWorkSheet = require('../model/GroupNotes/theropyNotes/timeWorkSheet');
 const attendanceModel = require('../model/attendance');
+exports.updateImage = async (req, res) => {
+        try {
+                let image = "";
+                if (req.file) {
+                        image=   req.file.path
+                }
+                return res.status(200).send({ status: 200, message: "Profile get successfully.", data: image })
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -955,7 +967,7 @@ exports.addStaffSchedule = async (req, res) => {
                 }
                 let findStaffSchedule = await staffSchedule.findOne({ employeeId: findEmployee._id, currentDate: req.body.currentDate, year: req.body.year, month: req.body.month });
                 if (findStaffSchedule) {
-                        let findStaffSchedule1 = await staffSchedule.findOneAndUpdate({ employeeId: findEmployee._id, currentDate: req.body.currentDate, year: req.body.year, month: req.body.month }, { employeeId: findEmployee._id, adminId: user._id, year: req.body.year, month: req.body.month, currentDate: req.body.currentDate, date: `${year}-${month}-${date}`, day: day, schedule: schedule, administratorAndNumber: req.body.administratorAndNumber, registeredNurseAndNumber: req.body.registeredNurseAndNumber, bhtNameAndNumber: req.body.bhtNameAndNumber, savedSigned: req.body.savedSigned, }, { upsert: true, new: true });
+                        let findStaffSchedule1 = await staffSchedule.findOneAndUpdate({ employeeId: findEmployee._id, currentDate: req.body.currentDate, year: req.body.year, month: req.body.month }, { employeeId: findEmployee._id, adminId: user._id, year: req.body.year, month: req.body.month, currentDate: req.body.currentDate, date: `${year}-${month}-${date}`, dateCreated: `${year}-${month}-${date}`, day: day, schedule: schedule, administratorAndNumber: req.body.administratorAndNumber, registeredNurseAndNumber: req.body.registeredNurseAndNumber, bhtNameAndNumber: req.body.bhtNameAndNumber, savedSigned: req.body.savedSigned, }, { upsert: true, new: true });
                         return res.status(200).send({ status: 200, message: "Staff Schedule added successfully.", data: findStaffSchedule1 });
                 } else {
                         let obj = {
@@ -965,6 +977,7 @@ exports.addStaffSchedule = async (req, res) => {
                                 month: req.body.month,
                                 currentDate: req.body.currentDate,
                                 date: `${year}-${month}-${date}`,
+                                dateCreated: `${year}-${month}-${date}`,
                                 day: day,
                                 schedule: schedule,
                                 administratorAndNumber: req.body.administratorAndNumber,
@@ -5513,48 +5526,48 @@ exports.createEmployeeTracking = async (req, res) => {
                         req.body.employeeId = user._id;
                         req.body.employeeSignature = req.body.employeeSignature;
                         req.body.adminId = user.adminId;
-                        if (req.files['CPRFirstAid']) {
-                                req.body.CPRFirstAid = req.files['CPRFirstAid'][0].path;
+                        if (req.body.CPRFirstAid) {
+                                req.body.CPRFirstAid = req.body.CPRFirstAid;
                                 req.body.CPRFirstAidExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['TBTestChestXray']) {
-                                req.body.TBTestChestXray = req.files['TBTestChestXray'][0].path;
+                        if (req.body.TBTestChestXray) {
+                                req.body.TBTestChestXray = req.body.TBTestChestXray;
                                 req.body.TBTestChestXrayExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['TBtestQuestionnaire']) {
-                                req.body.TBtestQuestionnaire = req.files['TBtestQuestionnaire'][0].path;
+                        if (req.body.TBtestQuestionnaire) {
+                                req.body.TBtestQuestionnaire = req.body.TBtestQuestionnaire;
                                 req.body.TBtestQuestionnaireExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['FingerprintClearanceCard']) {
-                                req.body.FingerprintClearanceCard = req.files['FingerprintClearanceCard'][0].path;
+                        if (req.body.FingerprintClearanceCard) {
+                                req.body.FingerprintClearanceCard = req.body.FingerprintClearanceCard;
                                 req.body.FingerprintClearanceCardExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['InfectiousControlTraining']) {
-                                req.body.InfectiousControlTraining = req.files['InfectiousControlTraining'][0].path;
+                        if (req.body.InfectiousControlTraining) {
+                                req.body.InfectiousControlTraining = req.body.InfectiousControlTraining;
                                 req.body.InfectiousControlTrainingExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['TBAnnualEducation']) {
-                                req.body.TBAnnualEducation = req.files['TBAnnualEducation'][0].path;
+                        if (req.body.TBAnnualEducation) {
+                                req.body.TBAnnualEducation = req.body.TBAnnualEducation;
                                 req.body.TBAnnualEducationExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['FallPreventionandFallRecovery']) {
-                                req.body.FallPreventionandFallRecovery = req.files['FallPreventionandFallRecovery'][0].path;
+                        if (req.body.FallPreventionandFallRecovery) {
+                                req.body.FallPreventionandFallRecovery = req.body.FallPreventionandFallRecovery;
                                 req.body.FallPreventionandFallRecoveryExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['APSSearch']) {
-                                req.body.APSSearch = req.files['APSSearch'][0].path;
+                        if (req.body.APSSearch) {
+                                req.body.APSSearch = req.body.APSSearch;
                                 req.body.APSSearchExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['CPIPreventionandControl']) {
-                                req.body.CPIPreventionandControl = req.files['CPIPreventionandControl'][0].path;
+                        if (req.body.CPIPreventionandControl) {
+                                req.body.CPIPreventionandControl = req.body.CPIPreventionandControl;
                                 req.body.CPIPreventionandControlExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['Annualabuseandneglecttraining']) {
-                                req.body.Annualabuseandneglecttraining = req.files['Annualabuseandneglecttraining'][0].path;
+                        if (req.body.Annualabuseandneglecttraining) {
+                                req.body.Annualabuseandneglecttraining = req.body.Annualabuseandneglecttraining;
                                 req.body.AnnualabuseandneglecttrainingExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
-                        if (req.files['vacationPersonalTimeUsed']) {
-                                req.body.vacationPersonalTimeUsed = req.files['vacationPersonalTimeUsed'][0].path;
+                        if (req.body.vacationPersonalTimeUsed) {
+                                req.body.vacationPersonalTimeUsed = req.body.vacationPersonalTimeUsed;
                                 req.body.vacationPersonalTimeUsedExpireDate = new Date(Date.now() + (365 * 24 * 60 * 60 * 1000));
                         }
                         const newConsentForm = await EmployeeTracking.create(req.body);
@@ -5778,7 +5791,65 @@ exports.createTimeSheet = async (req, res) => {
                         req.body.adminId = user.adminId;
                         const newConsentForm = await timeSheet.create(req.body);
                         if (newConsentForm) {
-                                return res.status(200).send({ status: 200, message: "Create timeSheet successfully.", data: newConsentForm });
+                                let filter = { employeeId: user._id };
+                                const year = req.body.year || moment().format('YYYY');
+                                const month = req.body.month || moment().format('MM');
+                                filter.year = year;
+                                filter.month = month;
+                                if (req.body.stateDate && !req.body.endDate) {
+                                        filter.dateCreated = { $gte: req.body.stateDate };
+                                }
+                                if (!req.body.stateDate && req.body.endDate) {
+                                        filter.dateCreated = { $lte: req.body.endDate };
+                                }
+                                if (req.body.stateDate && req.body.endDate) {
+                                        filter.$and = [
+                                                { dateCreated: { $gte: req.body.stateDate } },
+                                                { dateCreated: { $lte: req.body.endDate } },
+                                        ]
+                                }
+                                const filteredTasks = await offerLetter.findOne({ employeeId: user._id });
+                                if (!filteredTasks) {
+                                        return res.status(404).send({ status: 404, message: "No OfferLetter found.", data: {} });
+                                }
+                                console.log(filteredTasks)
+                                let findEmployee = await staffSchedule.find(filter);
+                                let timeSheetId = [];
+                                for (let j = 0; j < findEmployee.length; j++) {
+                                        let work = [];
+                                        let totalTime = 0;
+                                        if (findEmployee[j].schedule.length > 0) {
+                                                for (let i = 0; i < findEmployee[j].schedule.length; i++) {
+                                                        let x = {
+                                                                start: findEmployee[j].schedule[i].start,
+                                                                end: findEmployee[j].schedule[i].end,
+                                                                type: findEmployee[j].schedule[i].type,
+                                                                timeTaken: findEmployee[j].schedule[i].timeTaken,
+                                                        };
+                                                        work.push(x);
+                                                        let [hours, minutes, seconds] = findEmployee[j].schedule[i].timeTaken.split(':');
+                                                        totalTime += parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds);
+                                                }
+                                        }
+                                        let totalHours = Math.floor(totalTime / 3600);
+                                        let totalMinutes = Math.floor((totalTime % 3600) / 60);
+                                        let totalSeconds = totalTime % 60;
+                                        let totalFormatted = `${totalHours}:${totalMinutes < 10 ? '0' + totalMinutes : totalMinutes}:${totalSeconds < 10 ? '0' + totalSeconds : totalSeconds}`;
+                                        let obj = {
+                                                adminId: user.adminId,
+                                                employeeId: user._id,
+                                                timeSheetId: newConsentForm._id,
+                                                month: req.body.month,
+                                                year: req.body.year,
+                                                date: findEmployee[j].date,
+                                                work: work,
+                                                totalTime: totalFormatted
+                                        };
+                                        const newConsentForm12 = await timeWorkSheet.create(obj);
+                                        timeSheetId.push(newConsentForm12._id)
+                                }
+                                const newConsentForm1 = await timeSheet.findByIdAndUpdate({ _id: newConsentForm._id }, { $set: { dateData: timeSheetId } }, { new: true }).populate('dateData');
+                                return res.status(200).send({ status: 200, message: "Create timeSheet successfully.", data: newConsentForm1 });
                         }
                 }
         } catch (error) {
@@ -5882,222 +5953,6 @@ exports.attendanceMark = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
-// exports.attendanceMark = async (req, res) => {
-//         try {
-//                 let user = await userModel.findOne({ _id: req.userId, status: status.ACTIVE });
-//                 if (!user) {
-//                         response(res, ErrorCode.NOT_FOUND, {}, ErrorMessage.USER_NOT_FOUND);
-//                 } else {
-//                         var currDate = new Date();
-//                         const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-//                         let hour = currDate.getHours();
-//                         let minute = currDate.getMinutes();
-//                         let second = currDate.getSeconds();
-//                         let year = currDate.getFullYear();
-//                         let month = currDate.getMonth() + 1;
-//                         let date = currDate.getDate();
-//                         let day = weekday[currDate.getDay()];
-//                         let dateMonth = await datemonthCalulate(date, month)
-//                         let fullDate = `${dateMonth}-${year}`
-//                         if (req.body.punchType == "IN") {
-//                                 let shiftHr, shiftMin;
-//                                 let findShift = await shiftTiming.findById({ _id: user.WorkingShiftId });
-//                                 if (!findShift) {
-//                                         shiftHr = 10;
-//                                         shiftMin = 0;
-//                                 } else {
-//                                         shiftHr = findShift.startHr;
-//                                         shiftMin = findShift.startMin;
-//                                 }
-//                                 let inType = await inTypeCalulate(hour, minute, shiftHr, shiftMin)
-//                                 let punchIn = await hourCalulate(hour, minute, second);
-//                                 let attendanceFind = await attendanceModel.findOne({ userId: user._id, date: fullDate });
-//                                 if (attendanceFind) {
-//                                         response(res, ErrorCode.ALREADY_EXIST, attendanceFind, SuccessMessage.ATTENDANCE_ALLREADY_MARK)
-//                                 } else {
-//                                         let obj = {
-//                                                 userId: user._id,
-//                                                 adminId: user.adminId,
-//                                                 currentDate: date,
-//                                                 month: month,
-//                                                 year: year,
-//                                                 date: fullDate,
-//                                                 day: day,
-//                                                 punchIn: punchIn,
-//                                                 inType: inType,
-//                                         };
-//                                         let result2 = await attendanceModel.create(obj);
-//                                         response(res, SuccessCode.SUCCESS, result2, SuccessMessage.ATTENDANCE_MARK)
-//                                 }
-//                         }
-//                         if (req.body.punchType == "OUT") {
-//                                 let shiftHr, shiftMin;
-//                                 let findShift = await shiftTiming.findById({ _id: user.WorkingShiftId });
-//                                 if (!findShift) {
-//                                         shiftHr = 6;
-//                                         shiftMin = 30;
-//                                 } else {
-//                                         shiftHr = findShift.endHr;
-//                                         shiftMin = findShift.endMin;
-//                                 }
-//                                 if (req.body.lat && req.body.long) {
-//                                         coordinates = [parseFloat(req.body.lat), parseFloat(req.body.long)]
-//                                         req.body.punchOutLocation = { type: "Point", coordinates };
-//                                 }
-//                                 if (req.file) {
-//                                         req.body.image = req.file.filename
-//                                 } else {
-//                                         req.body.image = ""
-//                                 }
-//                                 var start = `${findShift.startHr}:${findShift.startMin}:00`;
-//                                 var end = `${shiftHr}:${shiftMin}: 00`;
-//                                 let shiftTotalTime = await totalTime1(start, end);
-//                                 let dateMonth = await datemonthCalulate(date, month)
-//                                 let fullDate = `${dateMonth}-${year}`
-//                                 let outType = await outTypeCalulate(hour, minute, shiftHr, shiftMin);
-//                                 let punchOut = await hourCalulate(hour, minute, second);
-//                                 let result2 = await attendanceModel.findOne({ userId: user._id, date: fullDate, });
-//                                 let difference = await totalTime1(result2.punchIn, punchOut);
-//                                 let lunchTime = result2.totalLunchtime || ("00" + ':' + "00" + ':' + "00");
-//                                 let differenceAfterLunch = await totalTime(lunchTime, difference.hr, difference.min, difference.sec);
-//                                 let smsResult = await findLocation(req.body.lat, req.body.long);
-//                                 let punchOutLocationWord = smsResult.results[0].formatted_address;
-//                                 let attendanceFind = await attendanceModel.findOne({ userId: user._id, date: fullDate });
-//                                 let timeTakeInhr = differenceAfterLunch.hr;
-//                                 let shiftTotalHr = shiftTotalTime.hr;
-//                                 if (attendanceFind.inType == "LATEIN") {
-//                                         if (outType == "ONTIME") {
-//                                                 if (outType == "ONTIME" && timeTakeInhr == shiftTotalHr) {
-//                                                         let obj = {
-//                                                                 punchOut: punchOut,
-//                                                                 punchOutSelfie: req.body.image,
-//                                                                 punchOutLocation: req.body.punchOutLocation,
-//                                                                 punchOutLocationWord: punchOutLocationWord,
-//                                                                 outType: outType,
-//                                                                 totalTime: difference.totalTime,
-//                                                                 workingTime: differenceAfterLunch.totalTime,
-//                                                                 dayStatus: dayStatus.FULLDAY
-//                                                         }
-//                                                         let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate, }, { $set: obj }, { new: true });
-//                                                         response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK)
-//                                                 }
-//                                                 if (outType == "ONTIME" && timeTakeInhr > shiftTotalHr) {
-//                                                         let hr = timeTakeInhr - difference.totalTime;
-//                                                         let min = difference.min;
-//                                                         let sec = difference.sec;
-//                                                         let overTime = hr + ':' + min + ':' + sec;
-//                                                         let obj = {
-//                                                                 punchOut: punchOut,
-//                                                                 punchOutSelfie: req.body.image,
-//                                                                 punchOutLocation: req.body.punchOutLocation,
-//                                                                 punchOutLocationWord: punchOutLocationWord,
-//                                                                 outType: outType,
-//                                                                 totalTime: difference.totalTime,
-//                                                                 workingTime: differenceAfterLunch.totalTime,
-//                                                                 dayStatus: dayStatus.OVERTIME,
-//                                                                 overTime: overTime
-//                                                         }
-//                                                         let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate, }, { $set: obj }, { new: true });
-//                                                         response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK)
-//                                                 }
-//                                                 if (outType == "ONTIME" && timeTakeInhr < shiftTotalHr) {
-//                                                         let obj = {
-//                                                                 punchOut: punchOut,
-//                                                                 punchOutSelfie: req.body.image,
-//                                                                 punchOutLocation: req.body.punchOutLocation,
-//                                                                 punchOutLocationWord: punchOutLocationWord,
-//                                                                 outType: outType,
-//                                                                 totalTime: difference.totalTime,
-//                                                                 workingTime: differenceAfterLunch.totalTime,
-//                                                                 dayStatus: dayStatus.HALFDAY
-//                                                         }
-//                                                         let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate }, { $set: obj }, { new: true });
-//                                                         response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK)
-//                                                 }
-//                                         } else if (outType == "EARLY_OUT") {
-//                                                 if (timeTakeInhr >= shiftTotalHr / 2) {
-//                                                         let obj = {
-//                                                                 punchOut: punchOut,
-//                                                                 punchOutSelfie: req.body.image,
-//                                                                 punchOutLocation: req.body.punchOutLocation,
-//                                                                 punchOutLocationWord: punchOutLocationWord,
-//                                                                 outType: outType,
-//                                                                 totalTime: difference.totalTime,
-//                                                                 workingTime: differenceAfterLunch.totalTime,
-//                                                                 dayStatus: dayStatus.HALFDAY
-//                                                         }
-//                                                         let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate }, { $set: obj }, { new: true });
-//                                                         response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK);
-//                                                 } else if (timeTakeInhr < shiftTotalHr / 2) {
-//                                                         let obj = {
-//                                                                 punchOut: punchOut,
-//                                                                 punchOutSelfie: req.body.image,
-//                                                                 punchOutLocation: req.body.punchOutLocation,
-//                                                                 punchOutLocationWord: punchOutLocationWord,
-//                                                                 outType: outType,
-//                                                                 totalTime: difference.totalTime,
-//                                                                 workingTime: differenceAfterLunch.totalTime,
-//                                                                 dayStatus: dayStatus.ABSENT,
-//                                                                 attendanceStatus: attendanceStatus.ABSENT
-//                                                         }
-//                                                         let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate }, { $set: obj }, { new: true });
-//                                                         response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK);
-//                                                 }
-//                                         }
-//                                 } else if (attendanceFind.inType == "ONTIME") {
-//                                         if (timeTakeInhr == shiftTotalHr) {
-//                                                 let obj = {
-//                                                         punchOut: punchOut,
-//                                                         punchOutSelfie: req.body.image,
-//                                                         punchOutLocation: req.body.punchOutLocation,
-//                                                         punchOutLocationWord: punchOutLocationWord,
-//                                                         outType: outType,
-//                                                         totalTime: difference.totalTime,
-//                                                         workingTime: differenceAfterLunch.totalTime,
-//                                                         dayStatus: dayStatus.FULLDAY
-//                                                 }
-//                                                 let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate, }, { $set: obj }, { new: true });
-//                                                 response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK)
-//                                         } else if (timeTakeInhr > shiftTotalHr) {
-//                                                 let hr = timeTakeInhr - difference.totalTime;
-//                                                 let min = difference.min;
-//                                                 let sec = difference.sec;
-//                                                 let overTime = hr + ':' + min + ':' + sec;
-//                                                 let obj = {
-//                                                         punchOut: punchOut,
-//                                                         punchOutSelfie: req.body.image,
-//                                                         punchOutLocation: req.body.punchOutLocation,
-//                                                         punchOutLocationWord: punchOutLocationWord,
-//                                                         outType: outType,
-//                                                         totalTime: difference.totalTime,
-//                                                         workingTime: differenceAfterLunch.totalTime,
-//                                                         dayStatus: dayStatus.OVERTIME,
-//                                                         overTime: overTime
-//                                                 }
-//                                                 let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate, }, { $set: obj }, { new: true });
-//                                                 response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK)
-//                                         } else if (timeTakeInhr < shiftTotalHr) {
-//                                                 let obj = {
-//                                                         punchOut: punchOut,
-//                                                         punchOutSelfie: req.body.image,
-//                                                         punchOutLocation: req.body.punchOutLocation,
-//                                                         punchOutLocationWord: punchOutLocationWord,
-//                                                         outType: outType,
-//                                                         totalTime: difference.totalTime,
-//                                                         workingTime: differenceAfterLunch.totalTime,
-//                                                         dayStatus: dayStatus.HALFDAY,
-//                                                 }
-//                                                 let result3 = await attendanceModel.findOneAndUpdate({ userId: user._id, date: fullDate }, { $set: obj }, { new: true });
-//                                                 response(res, SuccessCode.SUCCESS, result3, SuccessMessage.ATTENDANCE_MARK)
-//                                         }
-//                                 }
-//                         }
-//                 }
-//         } catch (error) {
-//                 ;
-//                 response(res, ErrorCode.WENT_WRONG, error, ErrorMessage.SOMETHING_WRONG);
-//         }
-// };
 const totalDays = async (startDate, endDate) => {
         var date1 = new Date(startDate);
         var date2 = new Date(endDate);

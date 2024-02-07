@@ -19,7 +19,8 @@ const offerLetterSchema = new mongoose.Schema({
                 type: String,
         },
         startingPay: {
-                type: String,
+                type: Number,
+                default:0
         },
         startDate: {
                 type: Date,

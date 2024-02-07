@@ -47,18 +47,15 @@ const addressSchema = new mongoose.Schema({
         }],
         week1TotalHr: {
                 type: Number,
+                default: 0
         },
         week2TotalHr: {
                 type: Number,
-        },
-        week3TotalHr: {
-                type: Number,
-        },
-        week4TotalHr: {
-                type: Number,
+                default: 0
         },
         paycheckTotalHr: {
                 type: Number,
+                default: 0
         },
         managerName: {
                 type: String,

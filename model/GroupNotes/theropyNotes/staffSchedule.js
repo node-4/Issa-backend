@@ -23,6 +23,9 @@ const addressSchema = new mongoose.Schema({
         date: {
                 type: String
         },
+        dateCreated: {
+                type: Date
+        },
         day: {
                 type: String
         },
