@@ -1438,40 +1438,38 @@ exports.createTherapySession = async (req, res) => {
                 }
                 let data = []
                 let employeeSignature = `${user.firstName} ${user.lastName}`
-                for (let i = 0; i < req.body.residentId.length; i++) {
-                        let obj = {
-                                employeeId: user._id,
-                                date: req.body.date,
-                                startTime: req.body.startTime,
-                                endTime: req.body.endTime,
-                                totalDuration: req.body.totalDuration,
-                                behaviorTech: req.body.behaviorTech,
-                                location: req.body.location,
-                                topic: req.body.topicId,
-                                residentId: req.body.residentId[i],
-                                residentCompletedSession: req.body.residentCompletedSession,
-                                attitude: req.body.attitude,
-                                treatmentGoalsAddressed: req.body.treatmentGoalsAddressed,
-                                residentParticipation: req.body.residentParticipation,
-                                residentQuality: req.body.residentQuality,
-                                significantInfoNotSpecifiedAbove: req.body.significantInfoNotSpecifiedAbove,
-                                residentAppearance: req.body.residentAppearance,
-                                residentMood: req.body.residentMood,
-                                residentProgress: req.body.residentProgress,
-                                pleaseSpecify: req.body.pleaseSpecify,
-                                residentResponse: req.body.residentResponse,
-                                significantInfoNotSpecifiedAbove1: req.body.significantInfoNotSpecifiedAbove1,
-                                pleaseSpecify1: req.body.pleaseSpecify1,
-                                date: req.body.date,
-                                behavioralHealthProfessionalName: user.firstName,
-                                behavioralHealthProfessionalSignature: employeeSignature,
-                                behavioralTechnicianName: user.firstName,
-                                behavioralTechnicianSignature: employeeSignature,
-                        }
-                        let newEmployee = await TherapySession.create(obj);
-                        data.push(newEmployee)
+                let obj = {
+                        employeeId: user._id,
+                        date: req.body.date,
+                        therapyType: req.body.therapyType,
+                        startTime: req.body.startTime,
+                        endTime: req.body.endTime,
+                        totalDuration: req.body.totalDuration,
+                        behaviorTech: req.body.behaviorTech,
+                        location: req.body.location,
+                        topic: req.body.topicId,
+                        residentId: req.body.residentId,
+                        residentCompletedSession: req.body.residentCompletedSession,
+                        attitude: req.body.attitude,
+                        treatmentGoalsAddressed: req.body.treatmentGoalsAddressed,
+                        residentParticipation: req.body.residentParticipation,
+                        residentQuality: req.body.residentQuality,
+                        significantInfoNotSpecifiedAbove: req.body.significantInfoNotSpecifiedAbove,
+                        residentAppearance: req.body.residentAppearance,
+                        residentMood: req.body.residentMood,
+                        residentProgress: req.body.residentProgress,
+                        pleaseSpecify: req.body.pleaseSpecify,
+                        residentResponse: req.body.residentResponse,
+                        significantInfoNotSpecifiedAbove1: req.body.significantInfoNotSpecifiedAbove1,
+                        pleaseSpecify1: req.body.pleaseSpecify1,
+                        pleaseSpecify1Date: req.body.pleaseSpecify1Date,
+                        behavioralHealthProfessionalName: user.firstName,
+                        behavioralHealthProfessionalSignature: employeeSignature,
+                        behavioralTechnicianName: user.firstName,
+                        behavioralTechnicianSignature: employeeSignature,
                 }
-                return res.status(200).send({ status: 200, message: "TherapySession add successfully.", data: date });
+                let newEmployee = await TherapySession.create(obj);
+                return res.status(200).send({ status: 200, message: "TherapySession add successfully.", data: data });
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });

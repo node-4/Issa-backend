@@ -11,6 +11,7 @@ const therapySessionSchema = new mongoose.Schema({
                 type: mongoose.Schema.ObjectId,
                 ref: "User",
         },
+        therapyType: { type: String },
         date: { type: Date, required: true },
         startTime: { type: String, required: true },
         endTime: { type: String, required: true },
@@ -21,10 +22,10 @@ const therapySessionSchema = new mongoose.Schema({
                 type: mongoose.Schema.ObjectId,
                 ref: "bhrfTherapyTopic",
         },
-        residentId: {
+        residentId: [{
                 type: mongoose.Schema.ObjectId,
                 ref: "User",
-        },
+        }],
         residentCompletedSession: {
                 type: Boolean,
                 default: false
@@ -86,6 +87,8 @@ const therapySessionSchema = new mongoose.Schema({
         behavioralTechnicianSignature: {
                 type: String, required: true
         },
+        pleaseSpecify1Date: { type: Date, required: true },
+
 });
 
 therapySessionSchema.plugin(mongoosePaginate);
