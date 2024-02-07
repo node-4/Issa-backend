@@ -936,11 +936,46 @@ exports.addStaffSchedule = async (req, res) => {
                 if (!findEmployee) {
                         return res.status(404).send({ status: 404, message: "Employee not found.", data: {} });
                 }
-                let findStaffSchedule = await staffSchedule.findOne({ employeeId: findEmployee._id, year: req.body.year, month: req.body.month });
+                let schedule = [];
+                let year = req.body.year;
+                let month = req.body.month;
+                let date = req.body.currentDate;
+                const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                var currDate = new Date(`${year}-${month}-${date}T00:00:00.000Z`);
+                let day = weekday[currDate.getDay()];
+                for (let i = 0; i < req.body.schedule.length; i++) {
+                        let timeTakenObj = await totalTime1(req.body.schedule[i].start, req.body.schedule[i].end);
+                        let ob1 = {
+                                start: req.body.schedule[i].start,
+                                end: req.body.schedule[i].end,
+                                type: req.body.schedule[i].type,
+                                timeTaken: timeTakenObj.totalTime
+                        };
+                        schedule.push(ob1);
+                }
+                let findStaffSchedule = await staffSchedule.findOne({ employeeId: findEmployee._id, currentDate: req.body.currentDate, year: req.body.year, month: req.body.month });
                 if (findStaffSchedule) {
-
+                        let findStaffSchedule1 = await staffSchedule.findOneAndUpdate({ employeeId: findEmployee._id, currentDate: req.body.currentDate, year: req.body.year, month: req.body.month }, { employeeId: findEmployee._id, adminId: user._id, year: req.body.year, month: req.body.month, currentDate: req.body.currentDate, date: `${year}-${month}-${date}`, day: day, schedule: schedule, administratorAndNumber: req.body.administratorAndNumber, registeredNurseAndNumber: req.body.registeredNurseAndNumber, bhtNameAndNumber: req.body.bhtNameAndNumber, savedSigned: req.body.savedSigned, }, { upsert: true, new: true });
+                        return res.status(200).send({ status: 200, message: "Staff Schedule added successfully.", data: findStaffSchedule1 });
                 } else {
-
+                        let obj = {
+                                employeeId: findEmployee._id,
+                                adminId: user._id,
+                                year: req.body.year,
+                                month: req.body.month,
+                                currentDate: req.body.currentDate,
+                                date: `${year}-${month}-${date}`,
+                                day: day,
+                                schedule: schedule,
+                                administratorAndNumber: req.body.administratorAndNumber,
+                                registeredNurseAndNumber: req.body.registeredNurseAndNumber,
+                                bhtNameAndNumber: req.body.bhtNameAndNumber,
+                                savedSigned: req.body.savedSigned,
+                        };
+                        let newEmployee = await staffSchedule.create(obj);
+                        if (newEmployee) {
+                                return res.status(200).send({ status: 200, message: "Staff Schedule added successfully.", data: newEmployee });
+                        }
                 }
         } catch (error) {
                 console.error(error);
@@ -1484,10 +1519,10 @@ exports.createTherapySession = async (req, res) => {
                         significantInfoNotSpecifiedAbove1: req.body.significantInfoNotSpecifiedAbove1,
                         pleaseSpecify1: req.body.pleaseSpecify1,
                         pleaseSpecify1Date: req.body.pleaseSpecify1Date,
-                        behavioralHealthProfessionalName: user.firstName,
-                        behavioralHealthProfessionalSignature: employeeSignature,
-                        behavioralTechnicianName: user.firstName,
-                        behavioralTechnicianSignature: employeeSignature,
+                        behavioralHealthProfessionalName: req.body.behavioralHealthProfessionalName,
+                        behavioralHealthProfessionalSignature: req.body.behavioralHealthProfessionalSignature,
+                        behavioralTechnicianName: req.body.behavioralTechnicianName,
+                        behavioralTechnicianSignature: req.body.behavioralTechnicianSignature,
                 }
                 let newEmployee = await TherapySession.create(obj);
                 return res.status(200).send({ status: 200, message: "TherapySession add successfully.", data: data });
@@ -1588,7 +1623,6 @@ exports.createTimeOffRequest = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let employeeSignature = `${user.firstName} ${user.lastName}`
                 let obj = {
                         employeeId: user._id,
                         adminId: user.adminId,
@@ -6162,6 +6196,9 @@ const totalTime1 = async (punchIn, punchOut) => {
         var todayDate = moment(new Date()).format("MM-DD-YYYY"); //Instead of today date, We can pass whatever date        
         var startDate = new Date(`${todayDate} ${startTime}`);
         var endDate = new Date(`${todayDate} ${endTime}`);
+        if (endDate < startDate) {
+                endDate.setDate(endDate.getDate() + 1);
+        }
         var timeDiff = Math.abs(startDate.getTime() - endDate.getTime());
         var hh = Math.floor(timeDiff / 1000 / 60 / 60);
         hh = ('0' + hh).slice(-2)
@@ -6179,6 +6216,33 @@ const totalTime1 = async (punchIn, punchOut) => {
                 sec: ss
         }
         return obj;
+};
+const totalTime2 = async (punchIn, punchOut) => {
+        var startTime = punchIn;
+        var endTime = punchOut;
+        var todayDate = moment(new Date()).format("MM-DD-YYYY"); //Instead of today date, We can pass whatever date        
+        var startDate = new Date(`${todayDate} ${startTime}`);
+        var endDate = new Date(`${todayDate} ${endTime}`);
+        if (endDate < startDate) {
+                endDate.setDate(endDate.getDate() + 1);
+        }
+        var timeDiff = Math.abs(startDate.getTime() - endDate.getTime());
+        var hh = Math.floor(timeDiff / 1000 / 60 / 60);
+        hh = ('0' + hh).slice(-2)
+        timeDiff -= hh * 1000 * 60 * 60;
+        var mm = Math.floor(timeDiff / 1000 / 60);
+        mm = ('0' + mm).slice(-2)
+        timeDiff -= mm * 1000 * 60;
+        var ss = Math.floor(timeDiff / 1000);
+        ss = ('0' + ss).slice(-2)
+        let totalTime = `${hh}:${mm}:${ss}`
+        let obj = {
+                totalTime: totalTime,
+                hr: hh,
+                min: mm,
+                sec: ss
+        }
+        return totalTime;
 };
 const addTimes = async (startTime, endTime) => {
         var times = [0, 0, 0]

@@ -41,6 +41,9 @@ const addressSchema = new mongoose.Schema({
                         type: String
                 },
         }],
+        timeTaken: {
+                type: String
+        },
         administratorAndNumber: {
                 type: String,
         },
