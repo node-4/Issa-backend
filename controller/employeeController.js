@@ -942,7 +942,7 @@ exports.addStaffSchedule = async (req, res) => {
                 let date = req.body.currentDate;
                 const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
                 var currDate = new Date(`${year}-${month}-${date}T00:00:00.000Z`);
-                let day = weekday[currDate.getDay()-1];
+                let day = weekday[currDate.getDay()];
                 for (let i = 0; i < req.body.schedule.length; i++) {
                         let timeTakenObj = await totalTime1(req.body.schedule[i].start, req.body.schedule[i].end);
                         let ob1 = {
@@ -1703,12 +1703,11 @@ exports.createEmployeePerformanceReview = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let employeeSignature = `${user.firstName} ${user.lastName}`
                 let obj = {
                         employeeId: user._id,
                         adminId: user.adminId,
                         name: req.body.name,
-                        employeeDate: req.body.employeeDate,
+                        date: req.body.date,
                         employeeJobTitle: req.body.employeeJobTitle,
                         employeeManager: req.body.employeeManager,
                         typeOfReview: req.body.typeOfReview,
@@ -1723,7 +1722,7 @@ exports.createEmployeePerformanceReview = async (req, res) => {
                         evaluation: req.body.evaluation,
                         additionalComments: req.body.additionalComments,
                         employeeName: req.body.employeeName,
-                        employeeSignature: employeeSignature,
+                        employeeSignature: req.body.employeeSignature,
                         employeeDate: req.body.employeeDate,
                 }
                 let newEmployee = await employeePerformanceReview.create(obj);

@@ -12,7 +12,7 @@ const performanceReviewSchema = new mongoose.Schema({
         name: {
                 type: String
         },
-        employeeDate: {
+        date: {
                 type: Date
         },
         employeeJobTitle: {
