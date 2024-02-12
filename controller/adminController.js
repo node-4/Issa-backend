@@ -1010,23 +1010,23 @@ exports.addDisasterPlanReview = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
-exports.getAllNotes = async (req, res) => {
-        try {
-                const user = await User.findOne({ _id: req.user });
-                if (!user) {
-                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
-                }
-                const tasks = await notes.find({ adminId: user._id }).sort({ createdAt: -1 })
-                if (tasks.length === 0) {
-                        return res.status(404).send({ status: 404, message: "No Notes found.", data: {} });
-                } else {
-                        return res.status(200).send({ status: 200, message: "Notes found successfully.", data: tasks });
-                }
-        } catch (error) {
-                console.error(error);
-                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
-        }
-};
+// exports.getAllNotes = async (req, res) => {
+//         try {
+//                 const user = await User.findOne({ _id: req.user });
+//                 if (!user) {
+//                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
+//                 }
+//                 const tasks = await notes.find({ adminId: user._id }).sort({ createdAt: -1 })
+//                 if (tasks.length === 0) {
+//                         return res.status(404).send({ status: 404, message: "No Notes found.", data: {} });
+//                 } else {
+//                         return res.status(200).send({ status: 200, message: "Notes found successfully.", data: tasks });
+//                 }
+//         } catch (error) {
+//                 console.error(error);
+//                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+//         }
+// };
 exports.getAllNotes = async (req, res) => {
         try {
                 const { name, search, fromDate, toDate, page, limit } = req.query;
@@ -1055,14 +1055,14 @@ exports.getAllNotes = async (req, res) => {
                 }
                 let options = {
                         page: Number(page) || 1,
-                        limit: Number(limit) || 15,
+                        limit: Number(limit) || 1000,
                         sort: { createdAt: -1 },
                 };
-                const users = await notes.find(filters)
+                const users = await notes.paginate(filters, options)
                 if (users.length === 0) {
                         return res.status(404).send({ status: 404, message: "No Admit detail found matching the criteria", data: {} });
                 } else {
-                        return res.status(200).send({ status: 200, message: "Admit detail successfully.", data: users });
+                        return res.status(200).send({ status: 200, message: "Admit detail successfully.", data: users.docs });
                 }
         } catch (error) {
                 console.error(error);
