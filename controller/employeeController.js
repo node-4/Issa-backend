@@ -3475,6 +3475,7 @@ exports.createIncidentReportPartA = async (req, res) => {
                 let obj = {
                         residentsInvolved: req.body.residentsInvolved,
                         adminId: user.adminId,
+                        name: "incidentReport",
                         patientId: user1._id,
                         employeesInvolved: req.body.employeesInvolved,
                         dateOfIncident: req.body.dateOfIncident,
@@ -3515,7 +3516,7 @@ exports.createIncidentReportPartA = async (req, res) => {
                         savedSignedPartA: req.body.savedSignedPartA,
                         reportCompletedBy: req.body.reportCompletedBy,
                 };
-                let newEmployee = await incidentReport.create(obj);
+                let newEmployee = await notes.create(obj);
                 if (newEmployee) {
                         return res.status(200).send({ status: 200, message: "Authorization For Release Of Information add successfully.", data: newEmployee });
                 }
@@ -3530,7 +3531,7 @@ exports.createIncidentReportPartB = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                const checklist = await incidentReport.findOne({ _id: req.body.aPartId });
+                const checklist = await notes.findOne({ _id: req.body.aPartId });
                 if (checklist) {
                         let obj1 = {
                                 residentsInvolved: checklist.residentsInvolved,
@@ -3544,7 +3545,7 @@ exports.createIncidentReportPartB = async (req, res) => {
                                 savedSignedPartB: req.body.savedSignedPartB,
                                 partTypeB: true,
                         };
-                        const checklist1 = await incidentReport.findByIdAndUpdate({ _id: checklist._id }, { $set: obj1 }, { new: true });
+                        const checklist1 = await notes.findByIdAndUpdate({ _id: checklist._id }, { $set: obj1 }, { new: true });
                         if (checklist1) {
                                 return res.status(200).send({ status: 200, message: "Incident Report added successfully.", data: checklist1 });
                         }
@@ -3562,7 +3563,7 @@ exports.getIncidentReportById = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                const user1 = await incidentReport.findOne({ _id: req.params.id }).populate({ path: 'residentsInvolved employeesInvolved patientId', select: "lastName firstName fullName" });
+                const user1 = await notes.findOne({ _id: req.params.id }).populate({ path: 'residentsInvolved employeesInvolved patientId', select: "lastName firstName fullName" });
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Incident report not found", data: {} });
                 } else {
@@ -3579,7 +3580,7 @@ exports.editIncidentReportPartA = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                const user2 = await incidentReport.findOne({ _id: req.params.id });
+                const user2 = await notes.findOne({ _id: req.params.id });
                 if (!user2) {
                         return res.status(404).send({ status: 404, message: "Incident report not found", data: {} });
                 }
@@ -3636,7 +3637,7 @@ exports.editIncidentReportPartA = async (req, res) => {
                         savedSignedPartA: req.body.savedSignedPartA || user2.savedSignedPartA,
                         partTypeB: user2.partTypeB,
                 };
-                let update = await incidentReport.findByIdAndUpdate({ _id: user2._id }, { $set: obj }, { new: true });
+                let update = await notes.findByIdAndUpdate({ _id: user2._id }, { $set: obj }, { new: true });
                 if (update) {
                         return res.status(200).send({ status: 200, message: "Incident report update.", data: update });
                 }
@@ -3651,7 +3652,7 @@ exports.editIncidentReportPartB = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                const user2 = await incidentReport.findOne({ _id: req.params.id });
+                const user2 = await notes.findOne({ _id: req.params.id });
                 if (!user2) {
                         return res.status(404).send({ status: 404, message: "Incident report not found", data: {} });
                 }
@@ -3667,7 +3668,7 @@ exports.editIncidentReportPartB = async (req, res) => {
                         savedSignedPartB: req.body.savedSignedPartB || user2.savedSignedPartB,
                         partTypeB: true,
                 };
-                let update = await incidentReport.findByIdAndUpdate({ _id: user2._id }, { $set: obj1 }, { new: true });
+                let update = await notes.findByIdAndUpdate({ _id: user2._id }, { $set: obj1 }, { new: true });
                 if (update) {
                         return res.status(200).send({ status: 200, message: "Incident report update.", data: update });
                 }
@@ -3682,11 +3683,11 @@ exports.deleteIncidentReport = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                const user1 = await incidentReport.findOne({ _id: req.params.id });
+                const user1 = await notes.findOne({ _id: req.params.id });
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Incident report  not found", data: {} });
                 } else {
-                        await incidentReport.findByIdAndDelete({ _id: user1._id })
+                        await notes.findByIdAndDelete({ _id: user1._id })
                         return res.status(200).send({ status: 200, message: "Incident report delete successfully.", data: {} });
                 }
         } catch (error) {
@@ -3700,20 +3701,21 @@ exports.getAllIncidentReport = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let filter = { employeesInvolved: { $in: [user._id.toString()] } };
-                if (req.query.partType != (null || undefined)) {
-                        filter.partType = req.query.partType;
-                }
-                let findEmployee = await incidentReport.find(filter).populate({ path: 'residentsInvolved employeesInvolved patientId', select: "lastName firstName fullName" });
-                if (!findEmployee) {
-                        return res.status(404).send({ status: 404, message: "Incident report not found.", data: {} });
-                } else {
-                        return res.status(200).send({ status: 200, message: "Incident report found.", data: findEmployee });
-                }
-        } catch (error) {
-                console.error(error);
-                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+                let filter = { employeesInvolved: { $in: [user._id.toString()] },{ name:"incidentReport"}
+        };
+        if (req.query.partType != (null || undefined)) {
+                filter.partType = req.query.partType;
         }
+        let findEmployee = await notes.find(filter).populate({ path: 'residentsInvolved employeesInvolved patientId', select: "lastName firstName fullName" });
+        if (!findEmployee) {
+                return res.status(404).send({ status: 404, message: "Incident report not found.", data: {} });
+        } else {
+                return res.status(200).send({ status: 200, message: "Incident report found.", data: findEmployee });
+        }
+} catch (error) {
+        console.error(error);
+        return res.status(500).send({ status: 200, message: "Server error" + error.message });
+}
 };
 exports.createContactNote = async (req, res) => {
         try {

@@ -938,6 +938,7 @@ exports.addIncidentReport = async (req, res) => {
                 let obj = {
                         residentsInvolved: req.body.residentsInvolved,
                         adminId: user._id,
+                        name:"incidentReport",
                         employeesInvolved: req.body.employeesInvolved,
                         dateOfIncident: req.body.dateOfIncident,
                         timeOfIncident: req.body.timeOfIncident,
@@ -984,7 +985,7 @@ exports.addIncidentReport = async (req, res) => {
                         savedSignedPartB: req.body.savedSignedPartB,
                         partTypeB: true,
                 };
-                let newEmployee = await incidentReport.create(obj);
+                let newEmployee = await notes.create(obj);
                 if (newEmployee) {
                         return res.status(200).send({ status: 200, message: "Authorization For Release Of Information add successfully.", data: newEmployee });
                 }

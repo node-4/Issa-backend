@@ -1048,109 +1048,10 @@ const addressSchema = new mongoose.Schema({
         personObservingReporting: {
                 type: String,
         },
-        incidentsAltercationVerbal: {
-                type: Boolean,
-        },
-        incidentsPropertyLoss: {
-                type: Boolean,
-        },
-        incidentsWeapon: {
-                type: Boolean,
-        },
-        incidentsRuleViolation: {
-                type: Boolean,
-        },
-        incidentsAltercationPhysical: {
-                type: Boolean,
-        },
-        incidentsPropertyDamage: {
-                type: Boolean,
-        },
-        incidentsContraband: {
-                type: Boolean,
-        },
-        incidentsSeizure: {
-                type: Boolean,
-        },
-        incidentsViolentThreatSelf: {
-                type: Boolean,
-        },
-        incidentsVehicularAccident: {
-                type: Boolean,
-        },
-        incidentsAlcoholDrugUse: {
-                type: Boolean,
-        },
-        incidentsMedicationErrors: {
-                type: Boolean,
-        },
-        incidentsViolentThreatOthers: {
-                type: Boolean,
-        },
-        incidentsMedicalEmergency911: {
-                type: Boolean,
-        },
-        incidentsEquipmentUtilityFailure: {
-                type: Boolean,
-        },
-        incidentsAWOL: {
-                type: Boolean,
-        },
-        incidentsViolentActionSelf: {
-                type: Boolean,
-        },
-        incidentsEmployeeInjury: {
-                type: Boolean,
-        },
-        incidentsBiohazardousMaterial: {
-                type: Boolean,
-        },
-        incidentsPsychiatricEmergency: {
-                type: Boolean,
-        },
-        incidentsViolentActionOthers: {
-                type: Boolean,
-        },
-        incidentsClientConsumerInjury: {
-                type: Boolean,
-        },
-        incidentsAMA: {
-                type: Boolean,
-        },
-        incidentsAbuseNeglect: {
-                type: Boolean,
-        },
-        incidentsTrespassing: {
-                type: Boolean,
-        },
-        incidentsProceduralBreak: {
-                type: Boolean,
-        },
-        incidentsSlipFall: {
-                type: Boolean,
-        },
-        incidentsCutAbrasion: {
-                type: Boolean,
-        },
-        incidentspharmacyError: {
-                type: Boolean,
-        },
         eventDetails: {
                 type: String
         },
         medicationErrorsMissedDose: {
-                type: Boolean,
-        },
-        medicationErrorsRefusedMedication: {
-                type: Boolean,
-        },
-        medicationErrorsWrongClient: {
-                type: Boolean,
-        },
-        medicationErrorsWrongTime: {
-                type: Boolean,
-        },
-        medicationErrorsWrongMed: {
                 type: Boolean,
         },
         actionsTakenSenttoERHospital: {
@@ -1160,27 +1061,6 @@ const addressSchema = new mongoose.Schema({
                 type: Boolean,
         },
         actionsTakenNoMedicalCareRequired: {
-                type: Boolean,
-        },
-        CareRefused: {
-                type: Boolean,
-        },
-        actionsTakenFireDepartmentCalled: {
-                type: Boolean,
-        },
-        actionsTakenPoliceCalled: {
-                type: Boolean,
-        },
-        actionsTakenReferredtoAdministratorRiskManagement: {
-                type: Boolean,
-        },
-        actionsTakenMaintenanceCalledWorkOrderCompleted: {
-                type: Boolean,
-        },
-        actionsTakenOther: {
-                type: Boolean,
-        },
-        abuseNeglectInvolved: {
                 type: Boolean,
         },
         abuseNeglectInvolvedifYes: {
@@ -1654,9 +1534,136 @@ const addressSchema = new mongoose.Schema({
         inspectionDate: {
                 type: Date,
         },
-        partType: {
+        patientId: {
+                type: schema.Types.ObjectId,
+                ref: "user",
+        },
+        incidents: {
+                type: Array
+        },
+        levelOfSeverity: {
+                type: Array
+        },
+        medicationErrorsRefusedMedication: {
+                type: Boolean,
+                default: false
+        },
+        medicationErrorsWrongClient: {
+                type: Boolean,
+                default: false
+        },
+        medicationErrorsWrongTime: {
+                type: Boolean,
+                default: false
+        },
+        medicationErrorsWrongMed: {
+                type: Boolean,
+                default: false
+        },
+        medicationErrorsNone: {
+                type: Boolean,
+                default: false
+        },
+        CareRefused: {
+                type: Boolean,
+                default: false
+        },
+        actionsTakenFireDepartmentCalled: {
+                type: Boolean,
+                default: false
+        },
+        actionsTakenPoliceCalled: {
+                type: Boolean,
+                default: false
+        },
+        actionsTakenReferredtoAdministratorRiskManagement: {
+                type: Boolean,
+                default: false
+        },
+        actionsTakenMaintenanceCalledWorkOrderCompleted: {
+                type: Boolean,
+                default: false
+        },
+        actionsTakenOther: {
+                type: Boolean,
+                default: false
+        },
+        actionsTakenOtherComment: {
                 type: String,
-                enum: ['A', 'B']
+        },
+        abuseNeglectInvolved: {
+                type: Boolean,
+                default: false
+        },
+        notificationsFamily: {
+                type: Boolean,
+                default: false
+        },
+        notificationsGuardian: {
+                type: Boolean,
+                default: false
+        },
+        notificationsCaseManager: {
+                type: Boolean,
+                default: false
+        },
+        notificationsOther: {
+                type: Boolean,
+                default: false
+        },
+        notificationIfOther: {
+                type: String,
+                default: false
+        },
+        notificationDate: {
+                type: Date,
+        },
+        notificationTime: {
+                type: String,
+        },
+        modeEmail: {
+                type: Boolean,
+                default: false
+        },
+        modePhoneCall: {
+                type: Boolean,
+                default: false
+        },
+        modeInPerson: {
+                type: Boolean,
+                default: false
+        },
+        modeOther: {
+                type: Boolean,
+                default: false
+        },
+        savedSignedPartA: {
+                type: String,
+        },
+        reportCompletedBy: {
+                type: String,
+        },
+        investigationDetails: {
+                type: String,
+        },
+        investigationRecommendationsAndActions: {
+                type: String,
+        },
+        investigationFollowUp: {
+                type: String,
+        },
+        investigationCompletedBy: {
+                type: String,
+        },
+        investigationCompletionDate: {
+                type: Date,
+        },
+        savedSignedPartB: {
+                type: String,
+        },
+        partTypeB: {
+                type: Boolean,
+                default: false
         },
 }, { timestamps: true });
 addressSchema.plugin(mongoosePaginate);
