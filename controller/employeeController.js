@@ -3701,21 +3701,20 @@ exports.getAllIncidentReport = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let filter = { employeesInvolved: { $in: [user._id.toString()] },{ name:"incidentReport"}
-        };
-        if (req.query.partType != (null || undefined)) {
-                filter.partType = req.query.partType;
+                let filter = { employeesInvolved: { $in: [user._id.toString()] }, name: "incidentReport" };
+                if (req.query.partType != (null || undefined)) {
+                        filter.partType = req.query.partType;
+                }
+                let findEmployee = await notes.find(filter).populate({ path: 'residentsInvolved employeesInvolved patientId', select: "lastName firstName fullName" });
+                if (!findEmployee) {
+                        return res.status(404).send({ status: 404, message: "Incident report not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Incident report found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
-        let findEmployee = await notes.find(filter).populate({ path: 'residentsInvolved employeesInvolved patientId', select: "lastName firstName fullName" });
-        if (!findEmployee) {
-                return res.status(404).send({ status: 404, message: "Incident report not found.", data: {} });
-        } else {
-                return res.status(200).send({ status: 200, message: "Incident report found.", data: findEmployee });
-        }
-} catch (error) {
-        console.error(error);
-        return res.status(500).send({ status: 200, message: "Server error" + error.message });
-}
 };
 exports.createContactNote = async (req, res) => {
         try {
