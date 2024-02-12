@@ -5,6 +5,10 @@ const informedConsentSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
+        patientId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
         name: {
                 type: String,
         },

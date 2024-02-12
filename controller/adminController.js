@@ -935,14 +935,9 @@ exports.addIncidentReport = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                const user1 = await User.findOne({ _id: req.body.patientId, userType: "Patient" });
-                if (!user1) {
-                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
-                }
                 let obj = {
                         residentsInvolved: req.body.residentsInvolved,
                         adminId: user._id,
-                        patientId: user1._id,
                         employeesInvolved: req.body.employeesInvolved,
                         dateOfIncident: req.body.dateOfIncident,
                         timeOfIncident: req.body.timeOfIncident,
@@ -1264,7 +1259,7 @@ exports.updateEmployeePerformanceReview = async (req, res) => {
                         let employeeSignature = `${user.firstName} ${user.lastName}`
                         let obj = {
                                 administratorName: user.fullName || `${user.firstName} ${user.lastName}`,
-                                administratorSignature: employeeSignature,
+                                administratorSignature: req.body.administratorSignature,
                                 administratorDate: req.body.administratorDate,
                         }
                         let update = await employeePerformanceReview.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
@@ -1391,7 +1386,12 @@ exports.addMedicationEmployee = async (req, res) => {
                 if (findData) {
                         return res.status(409).send({ status: 409, message: "Medication employee already exit.", data: {} });
                 } else {
+                        const user2 = await patientMedication.findOne({ _id: req.body.patientId });
+                        if (!user2) {
+                                return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                        }
                         req.body.adminId = user._id;
+                        req.body.patientId = user2._id;
                         const checklist = await medicationEmployee.create(req.body);
                         if (checklist) {
                                 return res.status(200).send({ status: 200, message: "Medication employee added successfully.", data: checklist });
@@ -1404,7 +1404,7 @@ exports.addMedicationEmployee = async (req, res) => {
 };
 exports.getMedicationEmployeeById = async (req, res) => {
         try {
-                const user1 = await medicationEmployee.findOne({ _id: req.params.id });
+                const user1 = await medicationEmployee.findOne({ _id: req.params.id }).populate('patientId');
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Medication employee not found", data: {} });
                 } else {
@@ -1425,9 +1425,21 @@ exports.updateMedicationEmployee = async (req, res) => {
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Medication employee  not found", data: {} });
                 } else {
+                        let patientId;
+                        if (req.body.patientId != (null || undefined)) {
+                                const user2 = await patientMedication.findOne({ _id: req.body.patientId });
+                                if (!user2) {
+                                        return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
+                                } else {
+                                        patientId = user2._id;
+                                }
+                        } else {
+                                patientId = user1.patientId
+                        }
                         let obj = {
                                 adminId: user._id,
                                 name: req.body.name || user1.name,
+                                patientId: patientId,
                                 instruction: req.body.instruction || user1.instruction,
                         }
                         let update = await medicationEmployee.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
@@ -1464,7 +1476,7 @@ exports.getAllMedicationEmployee = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
-                const tasks = await medicationEmployee.find({ adminId: user._id }).sort({ createdAt: -1 })
+                const tasks = await medicationEmployee.find({ adminId: user._id }).sort({ createdAt: -1 }).populate('patientId');
                 if (tasks.length === 0) {
                         return res.status(404).send({ status: 404, message: "No Medication employee found.", data: {} });
                 } else {
