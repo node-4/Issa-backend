@@ -5888,7 +5888,7 @@ exports.createTimeSheet = async (req, res) => {
 };
 exports.getTimeSheet = async (req, res) => {
         try {
-                const user = await User.findOne({ _id: req.body.employeeId, userType: "Employee" });
+                const user = await User.findOne({ _id: req.query.employeeId, userType: "Employee" });
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found or not registered", data: {} });
                 } else {
@@ -5898,28 +5898,28 @@ exports.getTimeSheet = async (req, res) => {
                         }
                         console.log(filteredTasks);
                         let filter = { employeeId: user._id };
-                        const year = req.body.year || moment().format('YYYY');
-                        const month = req.body.month || moment().format('MM');
+                        const year = req.query.year || moment().format('YYYY');
+                        const month = req.query.month || moment().format('MM');
                         filter.year = year;
                         filter.month = month;
-                        if (req.body.stateDate && !req.body.endDate) {
-                                filter.dateCreated = { $gte: req.body.stateDate };
+                        if (req.query.stateDate && !req.query.endDate) {
+                                filter.dateCreated = { $gte: req.query.stateDate };
                         }
-                        if (!req.body.stateDate && req.body.endDate) {
-                                filter.dateCreated = { $lte: req.body.endDate };
+                        if (!req.query.stateDate && req.query.endDate) {
+                                filter.dateCreated = { $lte: req.query.endDate };
                         }
-                        if (req.body.stateDate && req.body.endDate) {
+                        if (req.query.stateDate && req.query.endDate) {
                                 filter.$and = [
-                                        { dateCreated: { $gte: req.body.stateDate } },
-                                        { dateCreated: { $lte: req.body.endDate } },
+                                        { dateCreated: { $gte: req.query.stateDate } },
+                                        { dateCreated: { $lte: req.query.endDate } },
                                 ];
                         }
                         let findEmployee = await staffSchedule.find(filter);
                         let timeSheetData = {
                                 adminId: user.adminId,
                                 employeeId: user._id,
-                                month: req.body.month,
-                                year: req.body.year,
+                                month: req.query.month,
+                                year: req.query.year,
                                 week1TotalHr: 0,
                                 week2TotalHr: 0,
                                 week3TotalHr: 0,
