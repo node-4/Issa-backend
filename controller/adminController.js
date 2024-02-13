@@ -1071,6 +1071,24 @@ exports.getAllNotes = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.deleteNotes = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found", data: {} });
+                }
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Note not found", data: {} });
+                } else {
+                        await notes.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "Note delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
 exports.addBhrfTherapyTopic = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
