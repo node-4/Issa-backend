@@ -121,6 +121,9 @@ const userSchema = new mongoose.Schema({
         permissionClaimSubmission: {
                 type: Boolean,
         },
+        permissionAccessDocuments: {
+                type: Boolean,
+        },
         gender: {
                 type: String,
                 enum: ["Male", "Female", "Other"],

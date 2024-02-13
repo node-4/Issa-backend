@@ -1277,7 +1277,7 @@ const addressSchema = new mongoose.Schema({
                 type: String,
         },
         dataCollectionPatientChart: {
-                type: Number,
+                type: String,
         },
         dataCollectionIncidentReports: {
                 type: Number,

@@ -209,6 +209,7 @@ exports.providePermission = async (req, res) => {
                         permissionPatient: req.body.permissionPatient || user1.permissionPatient,
                         permissionPsychiatricProvider: req.body.permissionPsychiatricProvider || user1.permissionPsychiatricProvider,
                         permissionClaimSubmission: req.body.permissionClaimSubmission || user1.permissionClaimSubmission,
+                        permissionAccessDocuments: req.body.permissionAccessDocuments || user1.permissionAccessDocuments,
                 }
                 let update = await User.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                 if (update) {
@@ -938,7 +939,7 @@ exports.addIncidentReport = async (req, res) => {
                 let obj = {
                         residentsInvolved: req.body.residentsInvolved,
                         adminId: user._id,
-                        name:"incidentReport",
+                        name: "incidentReport",
                         employeesInvolved: req.body.employeesInvolved,
                         dateOfIncident: req.body.dateOfIncident,
                         timeOfIncident: req.body.timeOfIncident,
