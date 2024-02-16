@@ -17,6 +17,9 @@ const informedConsentSchema = new mongoose.Schema({
                         type: String,
                 }
         }],
+        other: {
+                type: String,
+        },
 });
 const InformedConsent = mongoose.model('medicationEmployee', informedConsentSchema);
 module.exports = InformedConsent;
