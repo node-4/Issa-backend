@@ -67,29 +67,33 @@ const assessmentSchema = new mongoose.Schema({
         otherAllergies: {
                 type: String
         },
-        primaryCareProviderName: {
-                type: String
-        },
-        primaryCareProviderPhone: {
-                type: String
-        },
-        primaryCareProviderAddress: {
-                type: String
-        },
-        primaryCareProviderOtherSpecialists: [{
-                type: String
+        primaryCareProvider: [{
+                name: {
+                        type: String
+                },
+                phone: {
+                        type: String
+                },
+                address: {
+                        type: String
+                },
+                OtherSpecialists: {
+                        type: String
+                },
         }],
-        psychiatricProviderName: {
-                type: String
-        },
-        psychiatricProviderPhone: {
-                type: String
-        },
-        psychiatricProviderAddress: {
-                type: String
-        },
-        psychiatricProviderOtherSpecialists: [{
-                type: String
+        psychiatricProvider: [{
+                name: {
+                        type: String
+                },
+                phone: {
+                        type: String
+                },
+                address: {
+                        type: String
+                },
+                OtherSpecialists: {
+                        type: String
+                },
         }],
         preferredHospitalName: {
                 type: String
@@ -133,6 +137,10 @@ const assessmentSchema = new mongoose.Schema({
         pastSurgeries: {
                 type: String
         },
+        bhpName: { type: String },
+        bhpSignature: { type: String },
+        bhpDate: { type: Date, default: Date.now },
+        time: { type: String },
 });
 const Assessment = mongoose.model('faceSheet', assessmentSchema);
 module.exports = Assessment;

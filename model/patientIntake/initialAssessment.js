@@ -24,19 +24,32 @@ const assessmentSchema = new mongoose.Schema({
         ahcccsNumber: { type: String },
         preferredLanguage: { type: String },
         ethnicity: { type: String },
-        admissionStatus: { type: String, enum: ['Voluntary', 'Court Ordered Treatment'], default: 'Voluntary' },
+        admissionStatus: [{
+                type: String,
+                enum: ['Voluntary', 'Court Ordered Treatment'],
+                default: 'Voluntary'
+        }],
         programLocation: { type: String },
         guardianship: { type: String },
         powerOfAttorneyStatus: { type: String },
         todayDate: { type: Date, default: Date.now },
         guardianshipPoaPubFidName: { type: String },
         approvedBy: { type: String },
-        reasonForAdmission: { type: String },
+        reasonForAdmission: {
+                type: Array
+        },
         residentGoals: { type: String },
         residentStrengths: [{
                 type: String,
-                enum: ['Self motivated', 'Loving', 'Honesty', 'Helping others', 'Communication', 'Creative', 'Patient', 'Dedication', 'Coloring', 'Decision making', 'Team work', 'Family', 'Writing', 'Coloring', 'Art']
+                enum: ['Self motivated', 'Loving',
+                        'Honesty', 'Helping others',
+                        'Communication', 'Creative',
+                        'Patient', 'Dedication',
+                        'Coloring', 'Decision making',
+                        'Team work', 'Family', 'Writing',
+                        'Coloring', 'Art']
         }],
+        residentStrengthsOther: String,
         residentLimitations: { type: String },
         currentBehavioralIssues: { type: String },
         behavioralInterventions: [{
@@ -50,22 +63,26 @@ const assessmentSchema = new mongoose.Schema({
                 name: { type: String },
                 signature: { type: String },
                 date: { type: Date },
+                time: { type: String },
         },
         staffAgreement: {
                 name: { type: String },
                 signature: { type: String },
                 date: { type: Date },
+                time: { type: String },
         },
         bhpAgreement: {
                 name: { type: String },
                 signature: { type: String },
                 date: { type: Date },
+                time: { type: String },
         },
         other: {
                 name: { type: String },
                 relationship: { type: String },
                 signature: { type: String },
                 date: { type: Date },
+                time: { type: String },
         },
         // SECTION II - Current and Past Medical/Psychiatric Conditions
         medicalConditions: [{
@@ -73,25 +90,26 @@ const assessmentSchema = new mongoose.Schema({
                 yes: { type: Boolean },
                 no: { type: Boolean },
                 comments: { type: String },
+                comment: { type: Array },
         }],
         SignificantFamilyMedicalPsychiatricHistory: {
-                type: String
+                type: Array
         },
-        mentalHealthTreatmentHistory: [{
-                typeOfService: { type: String },
+        mentalHealthTreatmentHistory: {
+                typeOfService: { type: Array },
                 where: { type: String },
                 dates: { type: String },
-                diagnosisReason: { type: String },
-        }],
+                diagnosisReason: { type: Array },
+        },
         substanceAbuseHistory: { type: Boolean },
         substanceAbuseDenies: { type: Boolean },
-        substanceAbuseHistoryData: [{
-                types: { type: String },
+        substanceAbuseHistoryData: {
+                types: { type: Array },
                 ageOfFirstUse: { type: String },
-                lastUse: { type: String },
-                frequency: { type: String },
-                lengthOfSobriety: { type: String },
-        }],
+                lastUse: { type: Array },
+                frequency: { type: Array },
+                lengthOfSobriety: { type: Array },
+        },
         ActiveWithdrawalSymptoms: {
                 noneReportedOrObserved: { type: Boolean },
                 Agitation: { type: Boolean },
@@ -299,114 +317,28 @@ const assessmentSchema = new mongoose.Schema({
                 activeDuty: { type: Boolean }
         },
         legalHistory: {
-                arrestedForDUI: { type: Boolean },
-                arrestedForAssault: { type: Boolean },
-                arrestedForBadChecks: { type: Boolean },
-                arrestedForShoplifting: { type: Boolean },
-                arrestedForAttemptedMurder: { type: Boolean },
-                arrestedForDrug: { type: Boolean },
-                arrestedForAlcohol: { type: Boolean },
-                arrestedForDisorderlyConduct: { type: Boolean },
-                arrestedForIdentityTheft: { type: Boolean },
-                arrestedForSexOffense: { type: Boolean },
-                arrestedForOther: { type: String },
-                probationParole: { type: Boolean },
-                custody: { type: Boolean },
-                pendingLitigation: { type: Boolean },
-                sentencingDates: { type: Boolean },
-                needsLegalAid: { type: Boolean },
-                incarcerated: { type: Boolean }
+                type: Array
         },
-        independentLivingSkills: {
-                bathingShowering: {
-                        good: { type: Boolean },
-                        fair: { type: Boolean },
-                        needAssist: { type: Boolean },
-                        comments: { type: String },
-                },
-                groomingHygiene: {
-                        good: { type: Boolean },
-                        fair: { type: Boolean },
-                        needAssist: { type: Boolean },
-                        comments: { type: String },
-                },
-                mobility: {
-                        good: { type: Boolean },
-                        fair: { type: Boolean },
-                        needAssist: { type: Boolean },
-                        comments: { type: String },
-                },
-                housework: {
-                        good: { type: Boolean },
-                        fair: { type: Boolean },
-                        needAssist: { type: Boolean },
-                        comments: { type: String },
-                },
-                shopping: {
-                        good: { type: Boolean },
-                        fair: { type: Boolean },
-                        needAssist: { type: Boolean },
-                        comments: { type: String },
-                },
-                managingMoneyBudget: {
-                        good: { type: Boolean },
-                        fair: { type: Boolean },
-                        needAssist: { type: Boolean },
-                        comments: { type: String },
-                },
-                takingMedications: {
-                        good: { type: Boolean },
-                        fair: { type: Boolean },
-                        needAssist: { type: Boolean },
-                        comments: { type: String },
-                },
-                preparingFood: {
-                        good: { type: Boolean },
-                        fair: { type: Boolean },
-                        needAssist: { type: Boolean },
-                        comments: { type: String },
-                },
-                eating: {
-                        good: { type: Boolean },
-                        fair: { type: Boolean },
-                        needAssist: { type: Boolean },
-                        comments: { type: String },
-                },
-                toileting: {
-                        good: { type: Boolean },
-                        fair: { type: Boolean },
-                        needAssist: { type: Boolean },
-                        comments: { type: String },
-                },
-                other: {
-                        good: { type: Boolean },
-                        fair: { type: Boolean },
-                        needAssist: { type: Boolean },
-                        comments: { type: String },
-                }
-        },
+        independentLivingSkills: [{
+                type: String,
+                good: { type: Boolean },
+                fair: { type: Boolean },
+                needAssist: { type: Boolean },
+                comments: { type: String },
+        }],
         triggers: { type: String },
         fallRiskData: {
                 fallRisk: { type: Boolean },
                 fallRiskExplanation: { type: String },
         },
         hobbiesLeisureActivities: { type: String },
-        medicalEquipment: {
-                wheelchair: { type: Boolean },
-                oxygenTank: { type: Boolean },
-                cpapMachine: { type: Boolean },
-                showerChair: { type: Boolean },
-                other: { type: String },
-        },
-        specialPrecautions: {
-                seizure: { type: Boolean },
-                elopementAwol: { type: Boolean },
-                physicalAggression: { type: Boolean },
-                withdrawal: { type: Boolean },
-                inappropriateSexualBehaviors: { type: Boolean },
-                substanceUse: { type: Boolean },
-                noSpecialPrecautions: { type: Boolean }
-        },
+        medicalEquipment: [{
+                type: Array
+        }],
+        medicalEquipmentOther: { type: String },
+        specialPrecautions: [{
+                type: Array
+        }],
         currentThoughtsOfHarmingSelf: { type: Boolean },
         suicidalIdeation: {
                 ideation: { type: String },
@@ -416,28 +348,24 @@ const assessmentSchema = new mongoose.Schema({
                 },
         },
         currentThoughtsOfHarmingOthers: { type: Boolean },
-        riskFactors: {
-                currentSuicidalIdeation: { type: Boolean },
-                priorSuicideAttempt: { type: Boolean },
-                accessToMeans: { type: Boolean },
-                substanceAbuse: { type: Boolean },
-                otherSelfAbusingBehavior: { type: Boolean },
-                recentLossesLackOfSupport: { type: Boolean },
-                behaviorCues: { type: String },
-                symptomsOfPsychosis: { type: String },
-                familyHistoryOfSuicide: { type: Boolean },
-                terminalPhysicalIllness: { type: Boolean },
-                currentStressors: { type: String },
-                chronicPain: { type: Boolean },
-        },
-        protectiveFactors: {
-                supportsAvailable: { type: Boolean },
-                spiritualReligiousSupport: { type: Boolean },
-                religiousCulturalProhibitions: { type: Boolean },
-                fearOfConsequences: { type: Boolean },
-                ableToBeEngagedInIntervention: { type: Boolean },
-                willingToCommitToKeepingSelfSafe: { type: Boolean },
-        },
+        riskFactors: [{
+                type: String,
+                yesNo: {
+                        type: Boolean
+                },
+                comment: {
+                        type: String
+                },
+        }],
+        protectiveFactors: [{
+                type: String,
+                yesNo: {
+                        type: Boolean
+                },
+                comment: {
+                        type: String
+                },
+        }],
         riskLevel: { type: String, enum: ['No Risk', 'Low Risk', 'Moderate Risk', 'High Risk'] },
         psychiatricDiagnoses: [{
                 icdCode: { type: String },
@@ -483,6 +411,9 @@ const assessmentSchema = new mongoose.Schema({
                         accidentInjury: { type: Boolean },
                         other: { type: Boolean },
                 },
+                comment: {
+                        type: String
+                },
         },
         additionalNotes: { type: String },
         staffInformation: {
@@ -490,12 +421,14 @@ const assessmentSchema = new mongoose.Schema({
                 staffTitle: { type: String },
                 staffSignature: { type: String },
                 staffDate: { type: Date, default: Date.now },
+                time: { type: String },
         },
         bhpInformation: {
                 bhpName: { type: String },
                 bhpCredentials: { type: String },
                 bhpSignature: { type: String },
                 bhpDate: { type: Date, default: Date.now },
+                time: { type: String },
         },
 });
 const Assessment = mongoose.model('initialAssessment', assessmentSchema);

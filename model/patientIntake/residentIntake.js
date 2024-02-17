@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 const consentFormSchema = new mongoose.Schema({
+        // PAGE 1
         employeeId: {
                 type: schema.Types.ObjectId,
                 ref: "User",
@@ -25,6 +26,9 @@ const consentFormSchema = new mongoose.Schema({
         residentDate: {
                 type: Date,
         },
+        residentSignatureTime: {
+                type: String
+        },
         guardianRepresentativeName: {
                 type: String
         },
@@ -33,6 +37,9 @@ const consentFormSchema = new mongoose.Schema({
         },
         guardianRepresentativeDate: {
                 type: Date,
+        },
+        guardianRepresentativeTime: {
+                type: String
         },
         staffName: {
                 type: String
@@ -43,6 +50,10 @@ const consentFormSchema = new mongoose.Schema({
         staffDate: {
                 type: Date,
         },
+        staffTime: {
+                type: String
+        },
+        // PAGE 2
         internalDisclosureList: [{
                 personName: {
                         type: String
@@ -66,6 +77,9 @@ const consentFormSchema = new mongoose.Schema({
         internalDisclosureListResidentDate: {
                 type: Date,
         },
+        internalDisclosureListResidentTime: {
+                type: String
+        },
         internalDisclosureListGuardianRepresentativeName: {
                 type: String
         },
@@ -74,6 +88,9 @@ const consentFormSchema = new mongoose.Schema({
         },
         internalDisclosureListGuardianRepresentativeDate: {
                 type: Date,
+        },
+        internalDisclosureListGuardianRepresentativeTime: {
+                type: String
         },
         internalDisclosureListStaffName: {
                 type: String
@@ -84,6 +101,9 @@ const consentFormSchema = new mongoose.Schema({
         internalDisclosureListStaffDate: {
                 type: Date,
         },
+        internalDisclosureListStaffTime: {
+                type: String
+        },
         residentRightsResidentName: {
                 type: String
         },
@@ -92,6 +112,9 @@ const consentFormSchema = new mongoose.Schema({
         },
         residentRightsResidentDate: {
                 type: Date,
+        },
+        residentRightsResidentTime: {
+                type: String
         },
         residentRightsGuardianRepresentativeName: {
                 type: String
@@ -102,6 +125,10 @@ const consentFormSchema = new mongoose.Schema({
         residentRightsGuardianRepresentativeDate: {
                 type: Date,
         },
+        residentRightsGuardianRepresentativeTime: {
+                type: String
+        },
+        // PAGE 3
         photoVideoConsentResidentName: {
                 type: String
         },
@@ -128,6 +155,9 @@ const consentFormSchema = new mongoose.Schema({
         photoVideoConsentResidentDate: {
                 type: Date,
         },
+        photoVideoConsentResidentTime: {
+                type: String
+        },
         photoVideoConsentGuardianRepresentativeName: {
                 type: String
         },
@@ -137,6 +167,11 @@ const consentFormSchema = new mongoose.Schema({
         photoVideoConsentGuardianRepresentativeDate: {
                 type: Date,
         },
+        photoVideoConsentGuardianRepresentativeTime: {
+                type: String
+        },
+
+        // PAGE 4
         advanceDirectivesResidentName: {
                 type: String
         },
@@ -158,11 +193,17 @@ const consentFormSchema = new mongoose.Schema({
         advanceDirectivesProvidedInfoDate: {
                 type: Date,
         },
+        advanceDirectivesProvidedInfoTime: {
+                type: String
+        },
         advanceDirectivesProvidedInfoRefusingInitials: {
                 type: String
         },
         advanceDirectivesProvidedInfoRefusingDate: {
                 type: Date,
+        },
+        advanceDirectivesProvidedInfoRefusingTime: {
+                type: String
         },
         advanceDirectivesDeveloped: {
                 type: Boolean,
@@ -205,6 +246,8 @@ const consentFormSchema = new mongoose.Schema({
         advanceDirectivesCoordinationOfCareAppropriatePartiesNotifiedComment: {
                 type: String
         },
+
+        // PAGE 5
         complaintProcessAcknowledgementCompany: {
                 type: String
         },
@@ -217,6 +260,9 @@ const consentFormSchema = new mongoose.Schema({
         complaintProcessAcknowledgementResidentDate: {
                 type: Date,
         },
+        complaintProcessAcknowledgementResidentTime: {
+                type: String
+        },
         complaintProcessAcknowledgementGuardianRepresentativeName: {
                 type: String
         },
@@ -226,6 +272,10 @@ const consentFormSchema = new mongoose.Schema({
         complaintProcessAcknowledgementGuardianRepresentativeDate: {
                 type: Date,
         },
+        complaintProcessAcknowledgementGuardianRepresentativeTime: {
+                type: String
+        },
+        // PAGE 6
         orientationToAgencyCompany: {
                 type: String
         },
@@ -238,6 +288,9 @@ const consentFormSchema = new mongoose.Schema({
         orientationToAgencyResidentDate: {
                 type: Date,
         },
+        orientationToAgencyResidentTime: {
+                type: String
+        },
         orientationToAgencyGuardianRepresentativeName: {
                 type: String
         },
@@ -247,6 +300,10 @@ const consentFormSchema = new mongoose.Schema({
         orientationToAgencyGuardianRepresentativeDate: {
                 type: Date,
         },
+        orientationToAgencyGuardianRepresentativeTime: {
+                type: String
+        },
+        // PAGE 7
         promotionTalkStrategicApproach: {
                 type: String
         },
@@ -277,6 +334,9 @@ const consentFormSchema = new mongoose.Schema({
         lockBoxKeyIssueReturnResidentDate: {
                 type: Date,
         },
+        lockBoxKeyIssueReturnResidentTime: {
+                type: String
+        },
         lockBoxKeyIssueReturnGuardianRepresentativeName: {
                 type: String
         },
@@ -285,6 +345,9 @@ const consentFormSchema = new mongoose.Schema({
         },
         lockBoxKeyIssueReturnGuardianRepresentativeDate: {
                 type: Date,
+        },
+        lockBoxKeyIssueReturnGuardianRepresentativeTime: {
+                type: String
         },
         lockBoxKeyIssueReturnStaffName: {
                 type: String
@@ -295,6 +358,10 @@ const consentFormSchema = new mongoose.Schema({
         lockBoxKeyIssueReturnStaffDate: {
                 type: Date,
         },
+        lockBoxKeyIssueReturnStaffTime: {
+                type: String
+        },
+        // PAGE 8
         insuranceInformationPrimaryInsurancePolicyholderName: {
                 type: String
         },
@@ -382,6 +449,9 @@ const consentFormSchema = new mongoose.Schema({
         obligationsAndAuthorizationResidentDate: {
                 type: Date,
         },
+        obligationsAndAuthorizationResidentTime: {
+                type: String
+        },
         obligationsAndAuthorizationGuardianRepresentativeName: {
                 type: String
         },
@@ -390,6 +460,9 @@ const consentFormSchema = new mongoose.Schema({
         },
         obligationsAndAuthorizationGuardianRepresentativeDate: {
                 type: Date,
+        },
+        obligationsAndAuthorizationGuardianRepresentativeTime: {
+                type: String
         },
 });
 const ConsentForm = mongoose.model('residentIntake', consentFormSchema);

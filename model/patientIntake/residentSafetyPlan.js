@@ -64,21 +64,17 @@ const adlTrackingFormSchema = new mongoose.Schema({
                         type: String,
                 },
         }],
-        suicidePrevention: {
-                type: String,
-        },
         localEmergencyHelp: {
                 type: String,
         },
         environmentSafetyMedications: {
-                type: String,
+                type: Array,
         },
-        environmentSafetyFirearmsAllowed: Boolean,
-        environmentSafetyDrugsOrAlcoholAllowed: Boolean,
-        environmentSafetyLongStringsOrRopeAllowed: Boolean,
         signature: {
                 type: String,
         },
+        signatureDate: { type: Date, default: Date.now },
+        signatureTime: { type: String },
 });
 const ADLTrackingForm = mongoose.model('residentSafetyPlan', adlTrackingFormSchema);
 module.exports = ADLTrackingForm;

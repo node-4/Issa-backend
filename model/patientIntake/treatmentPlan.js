@@ -13,6 +13,15 @@ const treatmentPlanSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
+        name: {
+                type: String,
+        },
+        address: {
+                type: String,
+        },
+        number: {
+                type: Number,
+        },
         residentName: {
                 type: String,
         },
@@ -25,14 +34,9 @@ const treatmentPlanSchema = new mongoose.Schema({
         admitDate: {
                 type: Date,
         },
-        care: {
-                physicalServices: { type: Boolean, default: false },
-                behavioralServices: { type: Boolean, default: false },
-        },
-        medicationServices: {
-                administration: { type: Boolean, default: false },
-                selfAdministration: { type: Boolean, default: false },
-        },
+        care: [{
+                type: String
+        }],
         presentingProblems: [{
                 type: String
         }],
@@ -54,14 +58,23 @@ const treatmentPlanSchema = new mongoose.Schema({
                 type: String,
                 enum: ['independent', 'personalCareLevel']
         },
+        adlsOther: {
+                type: String,
+        },
         behavioralHealthServices: {
                 type: String,
                 enum: ['receivesServices', 'prescribedMedication', 'followsHouseRules']
+        },
+        behavioralHealthServicesOther: {
+                type: String,
         },
         primaryCareProvider: {
                 type: String,
         },
         psychiatricProvider: {
+                type: String,
+        },
+        residentGoals: {
                 type: String,
         },
         allergies: {
@@ -93,113 +106,98 @@ const treatmentPlanSchema = new mongoose.Schema({
         interventions: [{
                 type: String,
         }],
-        counselingFrequency: {
-                group: {
-                        select: {
-                                type: Boolean,
-                                default: false
-                        },
-                        chosse: {
-                                type: String
-                        }
-                },
-                individual: {
-                        type: Boolean,
-                        default: false
-                },
-                individualTherapy: {
-                        type: Boolean,
-                        default: false
-                },
-                residentDeclinesIndividualTherapy: {
-                        type: Boolean,
-                        default: false
-                },
-                familyCounseling: {
-                        type: Boolean,
-                        default: false
-                },
-                aa: {
-                        type: Boolean,
-                        default: false
-                },
-                na: {
-                        type: Boolean,
-                        default: false
-                },
-                monthlyArtMeetingStaffing: {
-                        type: Boolean,
-                        default: false
-                },
-                weeklyArtMeetingStaffing: {
-                        type: Boolean,
-                        default: false
-                }
+        interventionsComment: {
+                type: String,
         },
-        treatmentGoals: [{
-                option1: {
+        counselingFrequency: [{
+                type: String,
+        }],
+        counselingFrequencyMinimum: {
+                type: Number,
+        },
+        counselingFrequencyComment: {
+                type: String,
+        },
+        maintainSobriety: {
+                type: [{
                         type: String,
-                        enum: ['maintainSobriety', 'implementCopingSkills', 'learnRelapsePreventionSkills', 'developForSobriety', 'maintainAbstinence', 'completeStep', 'reportCravingToStaff', 'knowTriggers', 'knowConsequences', 'participateClinicalTeam', 'involveFamily', 'attendSelfHelpGroup', 'identifyPositiveFriends', 'refrainFromDrugSeekingBehaviors',]
-                },
-                option2: {
-                        type: String,
-                        enum: ['learnCopingSkills', 'manageTime', 'openBankAccount', 'communicateAssertively', 'identifyTriggers', 'scheduleTransportation', 'manageBudget', 'attendScheduledAppointments', 'developStressCopingSkills', 'learnToMakeBed', 'obtainDriversLicense', 'recognizeHealthyUnhealthyBoundaries']
-                },
-                option3: {
-                        type: String,
-                        enum: ['createResume',
-                                'contactAgencies',
-                                'learnMockInterview',]
-                },
-                option4: {
-                        type: String,
-                        enum: ['showerEveryOtherDay',
-                                'prepareBasicMeal',
-                                'brushTeethEveryOtherDay',
-                                'completeLaundryIndependently',
-                                'developLaundrySkills',
-                        ]
-                },
-                option5: {
-                        type: String,
-                        enum: ['createSafetyPlan',
-                                'contractForSafety',
-                                'noElopementFor30Days',
-                                'avoidTouchingHotItems',
-                                'beAwareOfSurroundings',
-                                'identifyDangers',
-                        ]
-                },
-                option6: {
-                        type: String,
-                        enum: ['takeAllPrescribedMedications',
-                                'learnMedicationNames',
-                                'selfAdministerMedications',
-                                'takeMedicationsTimely',
-                                'learnOrderingRefills',
-                        ]
-                },
-                option7: {
-                        type: String,
-                        enum: ['utilizeCopingSkills',
-                                'utilizeEMSAppropriately',
-                                'verbalizeUnderstanding',
-                                'reduceMaladaptiveBehaviors',
-                        ]
-                },
-                option8: {
-                        type: String,
-                        enum: ['attendCourtAppointments',
-                                'attendProbationParoleAppointments',
-                        ]
-                },
-                name: String,
+                }],
                 admissionMeasure: String,
                 previousMeasure: String,
                 currentMeasure: String,
                 estimatedDateOfCompletion: Date,
                 comments: String,
-        }],
+        },
+        independentLivingSkills: {
+                type: [{
+                        type: String,
+                }],
+                admissionMeasure: String,
+                previousMeasure: String,
+                currentMeasure: String,
+                estimatedDateOfCompletion: Date,
+                comments: String,
+        },
+        employment: {
+                type: [{
+                        type: String,
+                }],
+                admissionMeasure: String,
+                previousMeasure: String,
+                currentMeasure: String,
+                estimatedDateOfCompletion: Date,
+                comments: String,
+        },
+        adlsSecond: {
+                type: [{
+                        type: String,
+                }],
+                admissionMeasure: String,
+                previousMeasure: String,
+                currentMeasure: String,
+                estimatedDateOfCompletion: Date,
+                comments: String,
+        },
+        safety: {
+                type: [{
+                        type: String,
+                }],
+                admissionMeasure: String,
+                previousMeasure: String,
+                currentMeasure: String,
+                estimatedDateOfCompletion: Date,
+                comments: String,
+        },
+        medicationEducation: {
+                type: [{
+                        type: String,
+                }],
+                admissionMeasure: String,
+                previousMeasure: String,
+                currentMeasure: String,
+                estimatedDateOfCompletion: Date,
+                comments: String,
+        },
+        managingMentalHealth: {
+                type: [{
+                        type: String,
+                }],
+                admissionMeasure: String,
+                previousMeasure: String,
+                currentMeasure: String,
+                estimatedDateOfCompletion: Date,
+                comments: String,
+        },
+        legal: {
+                type: [{
+                        type: String,
+                }],
+                admissionMeasure: String,
+                previousMeasure: String,
+                currentMeasure: String,
+                estimatedDateOfCompletion: Date,
+                comments: String,
+        },
         residentParticipation: {
                 type: String,
         },
@@ -217,7 +215,7 @@ const treatmentPlanSchema = new mongoose.Schema({
                 type: String,
         },
         nutritionAndWellnessPlanning: {
-                type: String,
+                type: Array,
         },
         recommendationToExtendResidentialTreatment: {
                 type: String,
@@ -238,7 +236,7 @@ const treatmentPlanSchema = new mongoose.Schema({
                 type: String
         }],
         clinicalSummary: {
-                type: String,
+                type: Array,
         },
         treatmentPlanReviewDate: {
                 type: Date,
@@ -257,6 +255,9 @@ const treatmentPlanSchema = new mongoose.Schema({
                         type: String,
                 },
                 bhp: {
+                        type: String,
+                },
+                comment: {
                         type: String,
                 },
         },
@@ -282,6 +283,9 @@ const treatmentPlanSchema = new mongoose.Schema({
                 date: {
                         type: Date,
                 },
+                time: {
+                        type: String,
+                },
         },
         signaturesFacilityRep: {
                 name: {
@@ -294,6 +298,9 @@ const treatmentPlanSchema = new mongoose.Schema({
                         type: String,
                 },
                 date: Date,
+                time: {
+                        type: String,
+                },
         },
         signaturesBhp: {
                 name: {
@@ -307,6 +314,9 @@ const treatmentPlanSchema = new mongoose.Schema({
                 },
                 date: {
                         type: Date,
+                },
+                time: {
+                        type: String,
                 },
         },
 });
