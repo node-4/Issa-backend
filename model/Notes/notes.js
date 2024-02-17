@@ -135,7 +135,7 @@ const addressSchema = new mongoose.Schema({
                 type: Boolean,
         },
         was911Called: {
-                type: Boolean,
+                type: String,
         },
         extinguisherTaken: {
                 type: Boolean,
@@ -1514,6 +1514,14 @@ const addressSchema = new mongoose.Schema({
         savedSignedPartB: {
                 type: String,
         },
+        moreData: [{
+                count: {
+                        type: String,
+                },
+                text: {
+                        type: String,
+                }
+        }],
         partTypeB: {
                 type: Boolean,
                 default: false
