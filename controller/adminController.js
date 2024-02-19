@@ -1406,7 +1406,7 @@ exports.addMedicationEmployee = async (req, res) => {
                 if (!user2) {
                         return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                 }
-                let findData = await medicationEmployee.findOne({ patientId: user2._id, name: req.body.name });
+                let findData = await medicationEmployee.findOne({ patientId: user2._id, name: req.body.name, medication: req.body.medication });
                 if (findData) {
                         return res.status(409).send({ status: 409, message: "Medication employee already exit.", data: {} });
                 } else {
