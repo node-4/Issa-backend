@@ -1308,6 +1308,27 @@ exports.getAllPatientTracking = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+exports.updateDueDateInPatientTracking = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findPatientTracking = await patientTracking.findOne({ _id: req.params.id });
+                if (findPatientTracking) {
+                        let obj = { dueDate: req.body.dueDate || findPatientTracking.dueDate };
+                        let newEmployee = await patientTracking.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: obj }, { new: true });
+                        if (newEmployee) {
+                                return res.status(200).send({ status: 200, message: "Patient Tracking add successfully.", data: newEmployee });
+                        }
+                } else {
+                        return res.status(404).send({ status: 404, message: "Patient Tracking not found.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
 exports.getPatientVitalsByPatientId = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });

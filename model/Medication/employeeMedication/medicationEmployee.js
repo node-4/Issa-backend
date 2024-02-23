@@ -15,7 +15,15 @@ const informedConsentSchema = new mongoose.Schema({
         medication: [{
                 name: {
                         type: String,
-                }
+                },
+                instruction: [{
+                        instruction: {
+                                type: String,
+                        }
+                }],
+                other: {
+                        type: String,
+                },
         }],
         instruction: [{
                 instruction: {

@@ -72,6 +72,9 @@ const addressSchema = new mongoose.Schema({
         additionalDocument: {
                 type: String,
         },
+        dueDate: {
+                type: Date,
+        },
 }, { timestamps: true });
 addressSchema.plugin(mongoosePaginate);
 addressSchema.plugin(mongooseAggregatePaginate);
