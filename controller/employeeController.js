@@ -1187,7 +1187,7 @@ exports.getStaffScheduleByEmployeeId = async (req, res) => {
                 }
                 let filter = {};
                 if (req.query.employeeId != (null || undefined)) {
-                        filter = { employeeId: req.query.employeeId };
+                        filter = { employees: { $in: req.query.employeeId } };
                 }
                 const year = req.query.year || moment().format('YYYY');
                 const month = req.query.month || moment().format('MM');
