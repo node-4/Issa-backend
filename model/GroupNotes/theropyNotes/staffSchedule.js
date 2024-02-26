@@ -34,18 +34,9 @@ const addressSchema = new mongoose.Schema({
                         type: schema.Types.ObjectId,
                         ref: "User",
                 },
-                start: {
-                        type: String
-                },
-                end: {
-                        type: String
-                },
-                type: {
-                        type: String,
-                        enum: ["amToAm", "amToPm", "pmToAm"]
-                },
-                timeTaken: {
-                        type: String
+                shiftId: {
+                        type: schema.Types.ObjectId,
+                        ref: "shift",
                 },
         }],
         timeTaken: {

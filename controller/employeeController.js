@@ -1039,11 +1039,7 @@ exports.addStaffSchedule = async (req, res) => {
                         if (findEmployee) {
                                 let ob1 = {
                                         employeeId: req.body.schedule[i].employeeId,
-                                        // shiftId: req.body.schedule[i].shiftId,
-                                        start: req.body.schedule[i].start,
-                                        end: req.body.schedule[i].end,
-                                        type: req.body.schedule[i].type,
-                                        timeTaken: timeTakenObj.totalTime
+                                        shiftId: req.body.schedule[i].shiftId,
                                 };
                                 employees.push(req.body.schedule[i].employeeId)
                                 schedule.push(ob1);
