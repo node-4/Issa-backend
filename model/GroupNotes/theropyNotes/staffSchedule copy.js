@@ -7,10 +7,10 @@ const addressSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
-        employees: [{
+        employeeId: {
                 type: schema.Types.ObjectId,
                 ref: "User",
-        }],
+        },
         currentDate: {
                 type: Number
         },

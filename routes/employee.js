@@ -41,7 +41,14 @@ module.exports = (app) => {
         app.get('/api/v1/employee/getMileageLogById/:id', authJwt.verifyToken, auth.getMileageLogById);
         app.put('/api/v1/employee/updateMileageLog/:id', authJwt.verifyToken, auth.updateMileageLog);
         app.delete('/api/v1/employee/deleteMileageLog/:id', authJwt.verifyToken, auth.deleteMileageLog);
+        app.post('/api/v1/Shift/add', authJwt.verifyToken, auth.addShift);
+        app.get('/api/v1/Shift/getAll', authJwt.verifyToken, auth.getAllShift);
+        app.get('/api/v1/Shift/getById/:id', auth.getShiftById);
+        app.delete('/api/v1/Shift/delete/:id', authJwt.verifyToken, auth.deleteShift);
+
+
         app.post('/api/v1/StaffSchedule/add', authJwt.verifyToken, auth.addStaffSchedule);
+        app.get('/api/v1/StaffSchedule/getStaffScheduleForAdmins', authJwt.verifyToken, auth.getStaffScheduleForAdmin);
         app.get('/api/v1/StaffSchedule/getStaffSchedule', authJwt.verifyToken, auth.getStaffSchedule);
         app.get('/api/v1/StaffSchedule/getStaffScheduleByEmployeeId', authJwt.verifyToken, auth.getStaffScheduleByEmployeeId);
         app.post('/api/v1/employee/createEmployeeInServiceLog', authJwt.verifyToken, auth.createEmployeeInServiceLog);

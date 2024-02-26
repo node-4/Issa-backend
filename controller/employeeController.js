@@ -72,6 +72,7 @@ const notification = require('../model/notification');
 const timeSheet = require('../model/GroupNotes/theropyNotes/timeSheet');
 const timeWorkSheet = require('../model/GroupNotes/theropyNotes/timeWorkSheet');
 const attendanceModel = require('../model/attendance');
+const shift = require("../model/GroupNotes/theropyNotes/shift")
 exports.updateImage = async (req, res) => {
         try {
                 let image = "";
@@ -938,17 +939,95 @@ exports.deleteMileageLog = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+exports.addShift = async (req, res) => {
+        try {
+                const user = await User.findById(req.user);
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                let schedule = [];
+                for (let i = 0; i < req.body.schedule.length; i++) {
+                        let timeTakenObj = await totalTime1(req.body.schedule[i].start, req.body.schedule[i].end);
+                        let ob1 = {
+                                adminId: user._id,
+                                start: req.body.schedule[i].start,
+                                end: req.body.schedule[i].end,
+                                type: req.body.schedule[i].type,
+                                timeTaken: timeTakenObj.totalTime
+                        };
+                        schedule.push(ob1);
+                        let findStaffSchedule = await shift.findOne(ob1);
+                        if (findStaffSchedule) {
+                                let findStaffSchedule1 = await shift.findOneAndUpdate({ _id: findStaffSchedule._id }, { $set: ob1 }, { upsert: true, new: true });
+                        } else {
+                                let newEmployee = await shift.create(ob1);
+                        }
+                }
+                return res.status(200).send({ status: 200, message: "Shift added successfully.", data: schedule });
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getShiftById = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await shift.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "Shift not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Shift found.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllShift = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user, userType: "Admin" });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                let findEmployee = await shift.find({ adminId: user._id });
+                if (findEmployee.length == 0) {
+                        return res.status(404).send({ status: 404, message: "shift not found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "shift found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteShift = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await shift.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "shift  not found", data: {} });
+                } else {
+                        await shift.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "shift delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
 exports.addStaffSchedule = async (req, res) => {
         try {
                 const user = await User.findById(req.user);
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
-                const findEmployee = await User.findById(req.body.employeeId);
-                if (!findEmployee) {
-                        return res.status(404).send({ status: 404, message: "Employee not found.", data: {} });
-                }
-                let schedule = [];
+                let schedule = [], employees = [];
                 let year = req.body.year;
                 let month = req.body.month;
                 let date = req.body.currentDate;
@@ -956,22 +1035,26 @@ exports.addStaffSchedule = async (req, res) => {
                 var currDate = new Date(`${year}-${month}-${date}T00:00:00.000Z`);
                 let day = weekday[currDate.getDay()];
                 for (let i = 0; i < req.body.schedule.length; i++) {
-                        let timeTakenObj = await totalTime1(req.body.schedule[i].start, req.body.schedule[i].end);
-                        let ob1 = {
-                                start: req.body.schedule[i].start,
-                                end: req.body.schedule[i].end,
-                                type: req.body.schedule[i].type,
-                                timeTaken: timeTakenObj.totalTime
-                        };
-                        schedule.push(ob1);
+                        const findEmployee = await User.findById({ _id: req.body.schedule[i].employeeId });
+                        if (findEmployee) {
+                                let ob1 = {
+                                        employeeId: req.body.schedule[i].employeeId,
+                                        // shiftId: req.body.schedule[i].shiftId,
+                                        start: req.body.schedule[i].start,
+                                        end: req.body.schedule[i].end,
+                                        type: req.body.schedule[i].type,
+                                        timeTaken: timeTakenObj.totalTime
+                                };
+                                employees.push(req.body.schedule[i].employeeId)
+                                schedule.push(ob1);
+                        }
                 }
-                let findStaffSchedule = await staffSchedule.findOne({ employeeId: findEmployee._id, currentDate: req.body.currentDate, year: req.body.year, month: req.body.month });
+                let findStaffSchedule = await staffSchedule.findOne({ adminId: user._id, currentDate: req.body.currentDate, year: req.body.year, month: req.body.month });
                 if (findStaffSchedule) {
-                        let findStaffSchedule1 = await staffSchedule.findOneAndUpdate({ employeeId: findEmployee._id, currentDate: req.body.currentDate, year: req.body.year, month: req.body.month }, { employeeId: findEmployee._id, adminId: user._id, year: req.body.year, month: req.body.month, currentDate: req.body.currentDate, date: `${year}-${month}-${date}`, dateCreated: `${year}-${month}-${date}`, day: day, schedule: schedule, administratorAndNumber: req.body.administratorAndNumber, registeredNurseAndNumber: req.body.registeredNurseAndNumber, bhtNameAndNumber: req.body.bhtNameAndNumber, savedSigned: req.body.savedSigned, }, { upsert: true, new: true });
+                        let findStaffSchedule1 = await staffSchedule.findOneAndUpdate({ adminId: user._id, currentDate: req.body.currentDate, employees: employees, year: req.body.year, month: req.body.month }, { employeeId: findEmployee._id, adminId: user._id, year: req.body.year, month: req.body.month, currentDate: req.body.currentDate, date: `${year}-${month}-${date}`, dateCreated: `${year}-${month}-${date}`, day: day, schedule: schedule, administratorAndNumber: req.body.administratorAndNumber, registeredNurseAndNumber: req.body.registeredNurseAndNumber, bhtNameAndNumber: req.body.bhtNameAndNumber, savedSigned: req.body.savedSigned, }, { upsert: true, new: true });
                         return res.status(200).send({ status: 200, message: "Staff Schedule added successfully.", data: findStaffSchedule1 });
                 } else {
                         let obj = {
-                                employeeId: findEmployee._id,
                                 adminId: user._id,
                                 year: req.body.year,
                                 month: req.body.month,
@@ -980,6 +1063,7 @@ exports.addStaffSchedule = async (req, res) => {
                                 dateCreated: `${year}-${month}-${date}`,
                                 day: day,
                                 schedule: schedule,
+                                employees: employees,
                                 administratorAndNumber: req.body.administratorAndNumber,
                                 registeredNurseAndNumber: req.body.registeredNurseAndNumber,
                                 bhtNameAndNumber: req.body.bhtNameAndNumber,
@@ -993,6 +1077,32 @@ exports.addStaffSchedule = async (req, res) => {
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getStaffScheduleForAdmin = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).json({ status: 404, message: "User not found! Not registered", data: {} });
+                }
+                console.log(user._id)
+                let filter = { adminId: user._id };
+                if (req.query.employeeId != (null || undefined)) {
+                        filter = { employees: { $in: req.query.employeeId } };
+                }
+                const year = req.query.year || moment().format('YYYY');
+                const month = req.query.month || moment().format('MM');
+                filter.year = year;
+                filter.month = month;
+                let findEmployee = await staffSchedule.find(filter).populate('schedule.shiftId schedule.employeeId');
+                if (findEmployee.length == 0) {
+                        return res.status(404).json({ status: 404, message: "Staff schedule not found.", data: {} });
+                } else {
+                        return res.status(200).json({ status: 200, message: "Staff schedule found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).json({ status: 500, message: "Server error" + error.message });
         }
 };
 // exports.addStaffSchedule = async (req, res) => {
