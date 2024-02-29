@@ -1334,11 +1334,25 @@ exports.updateEmployeePerformanceReview = async (req, res) => {
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Employee performance review  not found", data: {} });
                 } else {
-                        let employeeSignature = `${user.firstName} ${user.lastName}`
                         let obj = {
                                 administratorName: user.fullName || `${user.firstName} ${user.lastName}`,
-                                administratorSignature: req.body.administratorSignature,
-                                administratorDate: req.body.administratorDate,
+                                administratorSignature: req.body.administratorSignature || user1.administratorSignature,
+                                administratorDate: req.body.administratorDate || user1.administratorDate,
+                                name: req.body.name || user1.name,
+                                date: req.body.date || user1.date,
+                                employeeJobTitle: req.body.employeeJobTitle || user1.employeeJobTitle,
+                                employeeManager: req.body.employeeManager || user1.employeeManager,
+                                typeOfReview: req.body.typeOfReview || user1.typeOfReview,
+                                employeeHireDate: req.body.employeeHireDate || user1.employeeHireDate,
+                                ratingsPerformanceAndQualityOfWork: req.body.ratingsPerformanceAndQualityOfWork || user1.ratingsPerformanceAndQualityOfWork,
+                                ratingsCommunication: req.body.ratingsCommunication || user1.ratingsCommunication,
+                                ratingsProfessionalism: req.body.ratingsProfessionalism || user1.ratingsProfessionalism,
+                                ratingsAttendanceAndPunctuality: req.body.ratingsAttendanceAndPunctuality || user1.ratingsAttendanceAndPunctuality,
+                                ratingsTimeManagement: req.body.ratingsTimeManagement || user1.ratingsTimeManagement,
+                                ratingsReliabilityDependability: req.body.ratingsReliabilityDependability || user1.ratingsReliabilityDependability,
+                                overallRating: req.body.overallRating || user1.overallRating,
+                                evaluation: req.body.evaluation || user1.evaluation,
+                                additionalComments: req.body.additionalComments || user1.additionalComments,
                         }
                         let update = await employeePerformanceReview.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
