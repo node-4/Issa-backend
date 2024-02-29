@@ -1051,7 +1051,7 @@ exports.addStaffSchedule = async (req, res) => {
                                         } else {
                                                 let obj = {
                                                         employeeId: null,
-                                                        shiftId: req.body.shiftId
+                                                        shiftId: findShift[i]._id
                                                 }
                                                 schedule.push(obj)
                                         }
