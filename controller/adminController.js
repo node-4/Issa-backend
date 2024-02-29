@@ -46,8 +46,6 @@ exports.addStaffScheduleAdministrator = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
                 }
-                let year = req.body.year;
-                let month = req.body.month;
                 let findStaffSchedule = await staffScheduleAdministrator.findOne({ adminId: user._id, year: req.body.year, month: req.body.month });
                 if (findStaffSchedule) {
                         let findStaffSchedule1 = await staffScheduleAdministrator.findOneAndUpdate({ _id: findStaffSchedule._id }, {
