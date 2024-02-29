@@ -13,6 +13,9 @@ const DocumentSchema = schema({
         supportText: {
                 type: String
         },
+        supportImage: {
+                type: String
+        },
         supportFax: {
                 type: String
         },
@@ -31,19 +34,37 @@ const DocumentSchema = schema({
         instagram: {
                 type: String
         },
-        saleEmail: {
-                type: String
-        },
         supportTrainingPhone: {
                 type: String
         },
         teamEmail: {
                 type: String
         },
+        saleEmail: {
+                type: String
+        },
         salePhone: {
                 type: String
         },
         saleFax: {
+                type: String
+        },
+        saleDescription: {
+                type: String
+        },
+        saleImage: {
+                type: String
+        },
+        phoneTitle: {
+                type: String
+        },
+        phone: {
+                type: String
+        },
+        fax: {
+                type: String
+        },
+        map: {
                 type: String
         },
         address: {

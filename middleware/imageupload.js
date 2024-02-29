@@ -9,6 +9,7 @@ const productUpload = upload.fields([{ name: 'images', maxCount: 20 }, { name: '
 const brandUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'logo', maxCount: 1 }]);
 const guideUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'bannerImage', maxCount: 1 }]);
 
+const contactUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'saleImage', maxCount: 1 }, { name: 'supportImage', maxCount: 1 }]);
 
 const employeeTrackingUpload = upload.fields([
         { name: "CPRFirstAid", maxCount: 1 },
@@ -23,4 +24,4 @@ const employeeTrackingUpload = upload.fields([
         { name: "Annualabuseandneglecttraining", maxCount: 1 },
         { name: "vacationPersonalTimeUsed", maxCount: 1 },
 ]);
-module.exports = { upload, FranchiseUpload, productUpload, employeeTrackingUpload, brandUpload, guideUpload };
+module.exports = { upload, FranchiseUpload, productUpload, contactUpload, employeeTrackingUpload, brandUpload, guideUpload };

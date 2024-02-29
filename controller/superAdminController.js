@@ -784,12 +784,8 @@ exports.addContactDetails = async (req, res) => {
                 } else {
                         let findContact = await contact.findOne();
                         if (findContact) {
-                                let image;
-                                if (req.file) {
-                                        image = req.file.path
-                                }
                                 obj = {
-                                        image: image,
+                                        image: req.body.image || findContact.image,
                                         supportPhone: req.body.supportPhone || findContact.supportPhone,
                                         supportEmail: req.body.supportEmail || findContact.supportEmail,
                                         supportText: req.body.supportText || findContact.supportText,
@@ -799,7 +795,6 @@ exports.addContactDetails = async (req, res) => {
                                         instagram: req.body.instagram || findContact.instagram,
                                         linkedIn: req.body.linkedIn || findContact.linkedIn,
                                         youtube: req.body.youtube || findContact.youtube,
-                                        saleEmail: req.body.saleEmail || findContact.saleEmail,
                                         supportTrainingPhone: req.body.supportTrainingPhone || findContact.supportTrainingPhone,
                                         teamEmail: req.body.teamEmail || findContact.teamEmail,
                                         salePhone: req.body.salePhone || findContact.salePhone,
@@ -810,7 +805,15 @@ exports.addContactDetails = async (req, res) => {
                                         hours: req.body.hours || findContact.hours,
                                         technicalSupport: req.body.technicalSupport || findContact.technicalSupport,
                                         scheduleTraining: req.body.scheduleTraining || findContact.scheduleTraining,
-                                        emergencyPhone: req.body.emergencyPhone || findContact.emergencyPhone
+                                        emergencyPhone: req.body.emergencyPhone || findContact.emergencyPhone,
+                                        supportImage: req.body.supportImage || findContact.supportImage,
+                                        saleEmail: req.body.saleEmail || findContact.saleEmail,
+                                        saleDescription: req.body.saleDescription || findContact.saleDescription,
+                                        saleImage: req.body.saleImage || findContact.saleImage,
+                                        phoneTitle: req.body.phoneTitle || findContact.phoneTitle,
+                                        phone: req.body.phone || findContact.phone,
+                                        fax: req.body.fax || findContact.fax,
+                                        map: req.body.map || findContact.map,
                                 };
                                 let updateContact = await contact.findByIdAndUpdate({ _id: findContact._id }, { $set: obj }, { new: true });
                                 if (updateContact) {

@@ -1,6 +1,6 @@
 const auth = require("../controller/superAdminController");
 const authJwt = require("../middleware/authJwt");
-const { upload, FranchiseUpload, productUpload } = require('../middleware/imageupload')
+const { upload, FranchiseUpload, productUpload, contactUpload } = require('../middleware/imageupload')
 module.exports = (app) => {
         app.post('/api/v1/superAdmin/registration', auth.registration);
         app.post('/api/v1/superAdmin/signin', auth.signin);
@@ -36,7 +36,7 @@ module.exports = (app) => {
         app.get("/api/v1/News/getIdNews/:id", auth.getIdNews);
         app.put("/api/v1/News/updateNews/:id", [authJwt.verifyToken], upload.single('image'), auth.updateNews);
         app.delete("/api/v1/News/deleteNews/:id", [authJwt.verifyToken], auth.deleteNews);
-        app.post("/api/v1/ContactDetails/addContactDetails", [authJwt.verifyToken], upload.single('image'), auth.addContactDetails);
+        app.post("/api/v1/ContactDetails/addContactDetails", [authJwt.verifyToken], auth.addContactDetails);
         app.get("/api/v1/ContactDetails/viewContactDetails", auth.viewContactDetails);
         app.post('/api/v1/superAdmin/addFaq', authJwt.verifyToken, auth.addFaq);
         app.get('/api/v1/superAdmin/getFaqById/:id', auth.getFaqById);
