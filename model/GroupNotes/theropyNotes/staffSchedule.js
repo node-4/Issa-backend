@@ -42,18 +42,6 @@ const addressSchema = new mongoose.Schema({
         timeTaken: {
                 type: String
         },
-        administratorAndNumber: {
-                type: String,
-        },
-        registeredNurseAndNumber: {
-                type: String,
-        },
-        bhtNameAndNumber: {
-                type: String,
-        },
-        savedSigned: {
-                type: String,
-        },
 }, { timestamps: true });
 addressSchema.plugin(mongoosePaginate);
 addressSchema.plugin(mongooseAggregatePaginate);

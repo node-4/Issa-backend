@@ -22,6 +22,7 @@ const appointment = require('../model/appointment');
 const notes = require('../model/Notes/notes');
 const package = require('../model/package');
 const staffSchedule = require('../model/GroupNotes/theropyNotes/staffSchedule');
+const staffScheduleAdministrator = require('../model/GroupNotes/theropyNotes/staffScheduleAdministrator');
 const bhrfTherapy = require('../model/GroupNotes/NotesLiabrary/bhrfTherapy');
 const bhrfTherapyTopic = require('../model/GroupNotes/NotesLiabrary/bhrfTherapyTopic');
 const timeOffRequest = require('../model/timeOffRequest/timeOffrequest');
@@ -38,6 +39,65 @@ const transactionModel = require("../model/transactionModel")
 // const stripe1 = require("stripe")('sk_test_51Kr67EJsxpRH9smipLQrIzDFv69P1b1pPk96ba1A4HJGYJEaR7cpAaU4pkCeAIMT9B46D7amC77I3eNEBTIRF2e800Y7zIPNTS'); // shahina test
 const stripe1 = require("stripe")('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');
 const stripe = require("stripe")('pk_live_51OVyc9JE613RQzRwA6tXmVD8oOGgCkgB2m8fl8N8vkQ18wcrMvAhDCXA9CdmKllvqvqnlGHZ8SrRDlJtk6tf3k9w00wq5liSG5');
+
+exports.addStaffScheduleAdministrator = async (req, res) => {
+        try {
+                const user = await User.findById(req.user);
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                let year = req.body.year;
+                let month = req.body.month;
+                let findStaffSchedule = await staffScheduleAdministrator.findOne({ adminId: user._id, year: req.body.year, month: req.body.month });
+                if (findStaffSchedule) {
+                        let findStaffSchedule1 = await staffScheduleAdministrator.findOneAndUpdate({ _id: findStaffSchedule._id }, {
+                                registeredNurseAndNumber: req.body.registeredNurseAndNumber,
+                                administratorAndNumber: req.body.administratorAndNumber,
+                                bhtNameAndNumber: req.body.bhtNameAndNumber,
+                        }, { upsert: true, new: true });
+                        return res.status(200).send({ status: 200, message: "staff Schedule Administrator added successfully.", data: findStaffSchedule1 });
+                } else {
+                        let obj = {
+                                adminId: user._id,
+                                year: req.body.year,
+                                month: req.body.month,
+                                administratorAndNumber: req.body.administratorAndNumber,
+                                registeredNurseAndNumber: req.body.registeredNurseAndNumber,
+                                bhtNameAndNumber: req.body.bhtNameAndNumber,
+                        };
+                        let newEmployee = await staffScheduleAdministrator.create(obj);
+                        if (newEmployee) {
+                                return res.status(200).send({ status: 200, message: "staff Schedule Administrator added successfully.", data: newEmployee });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.getStaffScheduleAdministratorForAdmin = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).json({ status: 404, message: "User not found! Not registered", data: {} });
+                }
+                let filter = { adminId: user._id };
+                const year = req.query.year || moment().format('YYYY');
+                const month = req.query.month || moment().format('MM');
+                filter.year = year;
+                filter.month = month;
+                let findEmployee = await staffScheduleAdministrator.find(filter);
+                if (findEmployee.length == 0) {
+                        return res.status(404).json({ status: 404, message: "staff Schedule Administrator not found.", data: {} });
+                } else {
+                        return res.status(200).json({ status: 200, message: "staff Schedule Administrator found.", data: findEmployee });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).json({ status: 500, message: "Server error" + error.message });
+        }
+};
+
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;

@@ -2,6 +2,8 @@ const auth = require("../controller/adminController");
 const authJwt = require("../middleware/authJwt");
 const { upload, FranchiseUpload, productUpload } = require('../middleware/imageupload')
 module.exports = (app) => {
+        app.post('/api/v1/admin/addStaffScheduleAdministrator', authJwt.verifyToken, auth.addStaffScheduleAdministrator);
+        app.get('/api/v1/admin/getStaffScheduleAdministratorForAdmin', authJwt.verifyToken, auth.getStaffScheduleAdministratorForAdmin);
         app.post('/api/v1/admin/signin', auth.signin);
         app.get('/api/v1/admin/getProfile', authJwt.verifyToken, auth.getProfile);
         app.put('/api/v1/admin/updateProfile', authJwt.verifyToken, upload.single('image'), auth.updateProfile);
