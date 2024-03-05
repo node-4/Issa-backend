@@ -31,24 +31,32 @@ module.exports = (app) => {
         app.get('/api/v1/admin/getRecieptById/:id', auth.getRecieptById);
         app.get('/api/v1/admin/getAllReceipt', authJwt.verifyToken, auth.getAllReceipt);
         app.post('/api/v1/admin/addFirstAidChecklist', authJwt.verifyToken, auth.addFirstAidChecklist);
+
         app.post('/api/v1/admin/addFireEquipementMonitoring', authJwt.verifyToken, auth.addFireEquipementMonitoring);
         app.put('/api/v1/admin/editFireEquipementMonitoring/:id', authJwt.verifyToken, auth.editFireEquipementMonitoring);
-
-
         app.post('/api/v1/admin/addEvacuationAndFireDrill', authJwt.verifyToken, auth.addEvacuationAndFireDrill);
+        app.put('/api/v1/admin/editEvacuationAndFireDrill/:id', authJwt.verifyToken, auth.editEvacuationAndFireDrill);
         app.post('/api/v1/admin/addDisasterDrill', authJwt.verifyToken, auth.addDisasterDrill);
+        app.put('/api/v1/admin/editDisasterDrill/:id', authJwt.verifyToken, auth.editDisasterDrill);
         app.post('/api/v1/admin/addWeeklyVehicleInspectionChecklist', authJwt.verifyToken, auth.addWeeklyVehicleInspectionChecklist);
+        app.put('/api/v1/admin/editWeeklyVehicleInspectionChecklist/:id', authJwt.verifyToken, auth.editWeeklyVehicleInspectionChecklist);
         app.post('/api/v1/admin/addClinicalOversight', authJwt.verifyToken, auth.addClinicalOversight);
+        app.put('/api/v1/admin/editClinicalOversight/:id', authJwt.verifyToken, auth.editClinicalOversight);
         app.post('/api/v1/admin/addMonthlyVehicleInspection', authJwt.verifyToken, auth.addMonthlyVehicleInspection);
+        app.put('/api/v1/admin/editMonthlyVehicleInspection/:id', authJwt.verifyToken, auth.editMonthlyVehicleInspection);
         app.post('/api/v1/admin/addVanEmergencyInformationForm', authJwt.verifyToken, auth.addVanEmergencyInformationForm);
+        app.put('/api/v1/admin/editVanEmergencyInformationForm/:id', authJwt.verifyToken, auth.editVanEmergencyInformationForm);
         app.post('/api/v1/admin/addQualityManagement', authJwt.verifyToken, auth.addQualityManagement);
+        app.put('/api/v1/admin/editQualityManagement/:id', authJwt.verifyToken, auth.editQualityManagement);
         app.post('/api/v1/admin/addInfectiousData', authJwt.verifyToken, auth.addInfectiousData);
+        app.put('/api/v1/admin/editInfectiousData/:id', authJwt.verifyToken, auth.editInfectiousData);
         app.post('/api/v1/admin/addIncidentReport', authJwt.verifyToken, auth.addIncidentReport);
+        app.put('/api/v1/admin/editIncidentReport/:id', authJwt.verifyToken, auth.editIncidentReport);
         app.post('/api/v1/admin/addDisasterPlanReview', authJwt.verifyToken, auth.addDisasterPlanReview);
+        app.put('/api/v1/admin/editDisasterPlanReview/:id', authJwt.verifyToken, auth.editDisasterPlanReview);
         app.get('/api/v1/admin/getAllNotes', authJwt.verifyToken, auth.getAllNotes);
         app.get('/api/v1/admin/getNotesById/:id', auth.getNotesById);
         app.delete('/api/v1/admin/deleteNotes/:id', authJwt.verifyToken, auth.deleteNotes);
-
         app.post('/api/v1/admin/addBhrfTherapyTopic', authJwt.verifyToken, auth.addBhrfTherapyTopic);
         app.put('/api/v1/admin/editBhrfTherapyTopic/:id', authJwt.verifyToken, auth.editBhrfTherapyTopic)
         app.get('/api/v1/admin/getBhrfTherapyTopicById/id', auth.getBhrfTherapyTopicById)

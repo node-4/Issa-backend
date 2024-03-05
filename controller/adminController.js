@@ -863,7 +863,7 @@ exports.editFireEquipementMonitoring = async (req, res) => {
                                 location: req.body.location || user1.location,
                                 alaramDate: req.body.alaramDate || user1.alaramDate,
                                 alaram: req.body.alaram || user1.alaram,
-                                extinguisher1: req.body.extinguisher1 || user1.extinguisher1,
+                                extinguisher: req.body.extinguisher || user1.extinguisher,
                                 staff: req.body.staff || user1.staff
                         }
                         const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
@@ -893,24 +893,40 @@ exports.addEvacuationAndFireDrill = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
-// exports.editEvacuationAndFireDrill = async (req, res) => {
-//         try {
-//                 const user = await User.findOne({ _id: req.user });
-//                 if (!user) {
-//                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
-//                 }
-//                 req.body.adminId = user._id;
-//                 req.body.name = "evacuationAndFireDrill";
-//                 const checklist = await notes.create(req.body);
-//                 if (checklist) {
-//                         return res.status(200).send({ status: 200, message: "Evacuation And Fire Drill added successfully.", data: checklist });
-//                 }
-//         } catch (error) {
-//                 console.error(error);
-//                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
-//         }
-// };
-
+exports.editEvacuationAndFireDrill = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        let obj = {
+                                date: req.body.date || user1.date,
+                                facititAddress: req.body.facititAddress || user1.facititAddress,
+                                startTime: req.body.startTime || user1.startTime,
+                                endTime: req.body.endTime || user1.endTime,
+                                shift: req.body.shift || user1.shift,
+                                evacuationPersonConduct: req.body.evacuationPersonConduct || user1.evacuationPersonConduct,
+                                evacuationParticipatingEmployee: req.body.evacuationParticipatingEmployee || user1.evacuationParticipatingEmployee,
+                                residentsAssistanceEmployee: req.body.residentsAssistanceEmployee || user1.residentsAssistanceEmployee,
+                                noOfOccupantsEvacuated: req.body.noOfOccupantsEvacuated || user1.noOfOccupantsEvacuated,
+                                fireAlaramActivationMethod: req.body.fireAlaramActivationMethod || user1.fireAlaramActivationMethod,
+                                totalTimeOfEvacuationDrill: req.body.totalTimeOfEvacuationDrill || user1.totalTimeOfEvacuationDrill,
+                                condition: req.body.condition || user1.condition,
+                                problemEncounteredDuringEvacuationDrill: req.body.problemEncounteredDuringEvacuationDrill || user1.problemEncounteredDuringEvacuationDrill,
+                                recommendations: req.body.recommendations || user1.recommendations,
+                                planAction: req.body.planAction || user1.planAction,
+                                signatureofPersonCompletingDrill: req.body.signatureofPersonCompletingDrill || user1.signatureofPersonCompletingDrill,
+                        }
+                        const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Evacuation and fire Drill update successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
 exports.addDisasterDrill = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -922,6 +938,51 @@ exports.addDisasterDrill = async (req, res) => {
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Disaster drill added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.editDisasterDrill = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        let obj = {
+                                date: req.body.date || user1.date,
+                                facititAddress: req.body.facititAddress || user1.facititAddress,
+                                tornado: req.body.tornado || user1.tornado,
+                                structureDamage: req.body.structureDamage || user1.structureDamage,
+                                fire: req.body.fire || user1.fire,
+                                storm: req.body.storm || user1.storm,
+                                earthQuake: req.body.earthQuake || user1.earthQuake,
+                                bombThreat: req.body.bombThreat || user1.bombThreat,
+                                terroristAct: req.body.terroristAct || user1.terroristAct,
+                                other: req.body.other || user1.other,
+                                beginTime: req.body.beginTime || user1.beginTime,
+                                endTime: req.body.endTime || user1.endTime,
+                                totalTime: req.body.totalTime || user1.totalTime,
+                                staffPresent: req.body.staffPresent || user1.staffPresent,
+                                contactManagerCoordinator: req.body.contactManagerCoordinator || user1.contactManagerCoordinator,
+                                was911Called: req.body.was911Called || user1.was911Called,
+                                extinguisherTaken: req.body.extinguisherTaken || user1.extinguisherTaken,
+                                relocatedTheResidents: req.body.relocatedTheResidents || user1.relocatedTheResidents,
+                                recommendations: req.body.recommendations || user1.recommendations,
+                                residentMedication: req.body.residentMedication || user1.residentMedication,
+                                waterFoodAccessible: req.body.waterFoodAccessible || user1.waterFoodAccessible,
+                                residentsAccounted: req.body.residentsAccounted || user1.residentsAccounted,
+                                handleTheDisaster: req.body.handleTheDisaster || user1.handleTheDisaster,
+                                commentsConcerns: req.body.commentsConcerns || user1.commentsConcerns,
+                                title: req.body.title || user1.title,
+                                personConductingTheDisasterDrill: req.body.personConductingTheDisasterDrill || user1.personConductingTheDisasterDrill,
+                                conducatingDate: req.body.conducatingDate || user1.conducatingDate,
+                        }
+                        const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Evacuation and fire Drill update successfully.", data: checklist });
+                        }
                 }
         } catch (error) {
                 console.error(error);
@@ -945,6 +1006,40 @@ exports.addWeeklyVehicleInspectionChecklist = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.editWeeklyVehicleInspectionChecklist = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        let obj = {
+                                date: req.body.date || user1.date,
+                                site: req.body.site || user1.site,
+                                year: req.body.year || user1.year,
+                                make: req.body.make || user1.make,
+                                model: req.body.model || user1.model,
+                                vehicleLicensePlate: req.body.vehicleLicensePlate || user1.vehicleLicensePlate,
+                                lights: req.body.lights || user1.lights,
+                                glass: req.body.glass || user1.glass,
+                                fluidsAndLubricants: req.body.fluidsAndLubricants || user1.fluidsAndLubricants,
+                                tires: req.body.tires || user1.tires,
+                                mirrors: req.body.mirrors || user1.mirrors,
+                                emergencyEquipment: req.body.emergencyEquipment || user1.emergencyEquipment,
+                                general: req.body.general || user1.general,
+                                staffName: req.body.staffName || user1.staffName,
+                                staffSignature: req.body.staffSignature || user1.staffSignature,
+                                inspectionDate: req.body.inspectionDate || user1.inspectionDate,
+                        }
+                        const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Evacuation and fire Drill update successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
 exports.addClinicalOversight = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -956,6 +1051,44 @@ exports.addClinicalOversight = async (req, res) => {
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Clinical Over sight added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+}
+exports.editClinicalOversight = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        let obj = {
+                                date: req.body.date || user1.date,
+                                beginTime: req.body.beginTime || user1.beginTime,
+                                endTime: req.body.endTime || user1.endTime,
+                                lengthOfTime: req.body.lengthOfTime || user1.lengthOfTime,
+                                conductedViaRemoteTeleConferenceWithAudioVideo: req.body.conductedViaRemoteTeleConferenceWithAudioVideo || user1.conductedViaRemoteTeleConferenceWithAudioVideo,
+                                conductedViaInPerson: req.body.conductedViaInPerson || user1.conductedViaInPerson,
+                                clinicalOversightTypeIndividual: req.body.clinicalOversightTypeIndividual || user1.clinicalOversightTypeIndividual,
+                                clinicalOversightTypeGroup: req.body.clinicalOversightTypeGroup || user1.clinicalOversightTypeGroup,
+                                participants: req.body.participants || user1.participants,
+                                topicsAddressedUniqueTreatmentNeeds: req.body.topicsAddressedUniqueTreatmentNeeds || user1.topicsAddressedUniqueTreatmentNeeds,
+                                topicsAddressedEnhancingSkills: req.body.topicsAddressedEnhancingSkills || user1.topicsAddressedEnhancingSkills,
+                                topicsAddressedAssessmentOrTreatmentPlan: req.body.topicsAddressedAssessmentOrTreatmentPlan || user1.topicsAddressedAssessmentOrTreatmentPlan,
+                                topicsAddressedStaffTrainingPlan: req.body.topicsAddressedStaffTrainingPlan || user1.topicsAddressedStaffTrainingPlan,
+                                topicsAddressedJobDutiesDirection: req.body.topicsAddressedJobDutiesDirection || user1.topicsAddressedJobDutiesDirection,
+                                additionalComments: req.body.additionalComments || user1.additionalComments,
+                                opportunitiesForTraining: req.body.opportunitiesForTraining || user1.opportunitiesForTraining,
+                                bhpNameAndCredentials: req.body.bhpNameAndCredentials || user1.bhpNameAndCredentials,
+                                bhpSignature: req.body.bhpSignature || user1.bhpSignature,
+                                administratorName: req.body.administratorName || user1.administratorName,
+                                administratorSignature: req.body.administratorSignature || user1.administratorSignature,
+                        }
+                        const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Evacuation and fire Drill update successfully.", data: checklist });
+                        }
                 }
         } catch (error) {
                 console.error(error);
@@ -979,6 +1112,63 @@ exports.addMonthlyVehicleInspection = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.editMonthlyVehicleInspection = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        let obj = {
+                                date: req.body.date || user1.date,
+                                vehicle: req.body.vehicle || user1.vehicle,
+                                dateOfLastService: req.body.dateOfLastService || user1.dateOfLastService,
+                                dateOfNextService: req.body.dateOfNextService || user1.dateOfNextService,
+                                itemsLights: req.body.itemsLights || user1.itemsLights,
+                                itemsLightsComment: req.body.itemsLightsComment || user1.itemsLightsComment,
+                                itemsTurnSignals: req.body.itemsTurnSignals || user1.itemsTurnSignals,
+                                itemsTurnSignalsComment: req.body.itemsTurnSignalsComment || user1.itemsTurnSignalsComment,
+                                itemsHorn: req.body.itemsHorn || user1.itemsHorn,
+                                itemsHornComment: req.body.itemsHornComment || user1.itemsHornComment,
+                                itemsWipers: req.body.itemsWipers || user1.itemsWipers,
+                                itemsWipersComment: req.body.itemsWipersComment || user1.itemsWipersComment,
+                                itemsAC: req.body.itemsAC || user1.itemsAC,
+                                itemsACComment: req.body.itemsACComment || user1.itemsACComment,
+                                itemsTires: req.body.itemsTires || user1.itemsTires,
+                                itemsTiresComment: req.body.itemsTiresComment || user1.itemsTiresComment,
+                                itemsSteering: req.body.itemsSteering || user1.itemsSteering,
+                                itemsSteeringComment: req.body.itemsSteeringComment || user1.itemsSteeringComment,
+                                itemsFluidLeaksGasOdor: req.body.itemsFluidLeaksGasOdor || user1.itemsFluidLeaksGasOdor,
+                                itemsFluidLeaksGasOdorComment: req.body.itemsFluidLeaksGasOdorComment || user1.itemsFluidLeaksGasOdorComment,
+                                itemsBodyDents: req.body.itemsBodyDents || user1.itemsBodyDents,
+                                itemsBodyDentsComment: req.body.itemsBodyDentsComment || user1.itemsBodyDentsComment,
+                                itemsMirrors: req.body.itemsMirrors || user1.itemsMirrors,
+                                itemsMirrorsComment: req.body.itemsMirrorsComment || user1.itemsMirrorsComment,
+                                itemsExternalCleanliness: req.body.itemsExternalCleanliness || user1.itemsExternalCleanliness,
+                                itemsExternalCleanlinessComment: req.body.itemsExternalCleanlinessComment || user1.itemsExternalCleanlinessComment,
+                                itemsInteriorCleanliness: req.body.itemsInteriorCleanliness || user1.itemsInteriorCleanliness,
+                                itemsInteriorCleanlinessComment: req.body.itemsInteriorCleanlinessComment || user1.itemsInteriorCleanlinessComment,
+                                itemsFirstAidKit: req.body.itemsFirstAidKit || user1.itemsFirstAidKit,
+                                itemsFirstAidKitComment: req.body.itemsFirstAidKitComment || user1.itemsFirstAidKitComment,
+                                itemsWater: req.body.itemsWater || user1.itemsWater,
+                                itemsWaterComment: req.body.itemsWaterComment || user1.itemsWaterComment,
+                                itemsFireExtinguisher: req.body.itemsFireExtinguisher || user1.itemsFireExtinguisher,
+                                itemsBrakes: req.body.itemsBrakes || user1.itemsBrakes,
+                                itemsFluidLeaksGasOdor: req.body.itemsFluidLeaksGasOdor || user1.itemsFluidLeaksGasOdor,
+                                itemsBrakesComment: req.body.itemsBrakesComment || user1.itemsBrakesComment,
+                                comments: req.body.comments || user1.comments,
+                                inspectorSignature: req.body.inspectorSignature || user1.inspectorSignature,
+                                inspectorDate: req.body.inspectorDate || user1.inspectorDate,
+                        }
+                        const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Evacuation and fire Drill update successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
 exports.addVanEmergencyInformationForm = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -996,6 +1186,36 @@ exports.addVanEmergencyInformationForm = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.editVanEmergencyInformationForm = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        let obj = {
+                                residentName: req.body.residentName || user1.residentName,
+                                dateOfBirth: req.body.dateOfBirth || user1.dateOfBirth,
+                                facilityAddress: req.body.facilityAddress || user1.facilityAddress,
+                                facilityPhoneNumber: req.body.facilityPhoneNumber || user1.facilityPhoneNumber,
+                                guardianInformation: req.body.guardianInformation || user1.guardianInformation,
+                                caseManagerInformation: req.body.caseManagerInformation || user1.caseManagerInformation,
+                                BHRFAdministratorInformation: req.body.BHRFAdministratorInformation || user1.BHRFAdministratorInformation,
+                                pharmacyHospital: req.body.pharmacyHospital || user1.pharmacyHospital,
+                                preferredHospital: req.body.preferredHospital || user1.preferredHospital,
+                                allergies: req.body.allergies || user1.allergies,
+                                staffMemberName: req.body.staffMemberName || user1.staffMemberName,
+                                staffMemberPhoneNumber: req.body.staffMemberPhoneNumber || user1.staffMemberPhoneNumber,
+                        }
+                        const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Evacuation and fire Drill update successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+}
 exports.addQualityManagement = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -1013,6 +1233,42 @@ exports.addQualityManagement = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.editQualityManagement = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        let obj = {
+                                dateOfBirth: req.body.dateOfBirth || user1.dateOfBirth,
+                                areasImproved: req.body.areasImproved || user1.areasImproved,
+                                dataCollectionPatientChart: req.body.dataCollectionPatientChart || user1.dataCollectionPatientChart,
+                                dataCollectionIncidentReports: req.body.dataCollectionIncidentReports || user1.dataCollectionIncidentReports,
+                                dataCollectionAdmissions: req.body.dataCollectionAdmissions || user1.dataCollectionAdmissions,
+                                dataCollectionDischarges: req.body.dataCollectionDischarges || user1.dataCollectionDischarges,
+                                dataCollectionClientsVisitedHospital: req.body.dataCollectionClientsVisitedHospital || user1.dataCollectionClientsVisitedHospital,
+                                dataCollectionFalls: req.body.dataCollectionFalls || user1.dataCollectionFalls,
+                                dataCollectionMedicationErrors: req.body.dataCollectionMedicationErrors || user1.dataCollectionMedicationErrors,
+                                dataCollectionInfectiousDisease: req.body.dataCollectionInfectiousDisease || user1.dataCollectionInfectiousDisease,
+                                dataCollectionClientsRefusingMedications: req.body.dataCollectionClientsRefusingMedications || user1.dataCollectionClientsRefusingMedications,
+                                dataCollectionClientsRefusingAppointments: req.body.dataCollectionClientsRefusingAppointments || user1.dataCollectionClientsRefusingAppointments,
+                                areasNonCompliance: req.body.areasNonCompliance || user1.areasNonCompliance,
+                                trends: req.body.trends || user1.trends,
+                                staffName: req.body.staffName || user1.staffName,
+                                staffSignature: req.body.staffSignature || user1.staffSignature,
+                                type: req.body.type || user1.type,
+                                moreData: req.body.moreData || user1.moreData,
+                        }
+                        const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Evacuation and fire Drill update successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
 exports.addInfectiousData = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -1024,6 +1280,25 @@ exports.addInfectiousData = async (req, res) => {
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Infectious Data added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.editInfectiousData = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        let obj = {
+                                data: req.body.data || user1.data,
+                        }
+                        const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Evacuation and fire Drill update successfully.", data: checklist });
+                        }
                 }
         } catch (error) {
                 console.error(error);
@@ -1095,6 +1370,71 @@ exports.addIncidentReport = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+exports.editIncidentReport = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        let obj = {
+                                residentsInvolved: req.body.residentsInvolved || user1.residentsInvolved,
+                                adminId: user1.adminId,
+                                employeesInvolved: req.body.employeesInvolved || user1.employeesInvolved,
+                                dateOfIncident: req.body.dateOfIncident || user1.dateOfIncident,
+                                timeOfIncident: req.body.timeOfIncident || user1.timeOfIncident,
+                                personObservingReporting: req.body.personObservingReporting || user1.personObservingReporting,
+                                levelOfSeverity: req.body.levelOfSeverity || user1.levelOfSeverity,
+                                incidents: req.body.incidents || user1.incidents,
+                                eventDetails: req.body.eventDetails || user1.eventDetails,
+                                medicationErrorsMissedDose: req.body.medicationErrorsMissedDose || user1.medicationErrorsMissedDose,
+                                medicationErrorsRefusedMedication: req.body.medicationErrorsRefusedMedication || user1.medicationErrorsRefusedMedication,
+                                medicationErrorsWrongClient: req.body.medicationErrorsWrongClient || user1.medicationErrorsWrongClient,
+                                medicationErrorsWrongTime: req.body.medicationErrorsWrongTime || user1.medicationErrorsWrongTime,
+                                medicationErrorsWrongMed: req.body.medicationErrorsWrongMed || user1.medicationErrorsWrongMed,
+                                medicationErrorsNone: req.body.medicationErrorsNone || user1.medicationErrorsNone,
+                                actionsTakenSenttoERHospital: req.body.actionsTakenSenttoERHospital || user1.actionsTakenSenttoERHospital,
+                                actionsTakenFirstAid: req.body.actionsTakenFirstAid || user1.actionsTakenFirstAid,
+                                actionsTakenNoMedicalCareRequired: req.body.actionsTakenNoMedicalCareRequired || user1.actionsTakenNoMedicalCareRequired,
+                                CareRefused: req.body.CareRefused || user1.CareRefused,
+                                actionsTakenFireDepartmentCalled: req.body.actionsTakenFireDepartmentCalled || user1.actionsTakenFireDepartmentCalled,
+                                actionsTakenPoliceCalled: req.body.actionsTakenPoliceCalled || user1.actionsTakenPoliceCalled,
+                                actionsTakenReferredtoAdministratorRiskManagement: req.body.actionsTakenReferredtoAdministratorRiskManagement || user1.actionsTakenReferredtoAdministratorRiskManagement,
+                                actionsTakenMaintenanceCalledWorkOrderCompleted: req.body.actionsTakenMaintenanceCalledWorkOrderCompleted || user1.actionsTakenMaintenanceCalledWorkOrderCompleted,
+                                actionsTakenOther: req.body.actionsTakenOther || user1.actionsTakenOther,
+                                actionsTakenOtherComment: req.body.actionsTakenOtherComment || user1.actionsTakenOtherComment,
+                                abuseNeglectInvolved: req.body.abuseNeglectInvolved || user1.abuseNeglectInvolved,
+                                abuseNeglectInvolvedifYes: req.body.abuseNeglectInvolvedifYes || user1.abuseNeglectInvolvedifYes,
+                                notificationsFamily: req.body.notificationsFamily || user1.notificationsFamily,
+                                notificationsGuardian: req.body.notificationsGuardian || user1.notificationsGuardian,
+                                notificationsCaseManager: req.body.notificationsCaseManager || user1.notificationsCaseManager,
+                                notificationsOther: req.body.notificationsOther || user1.notificationsOther,
+                                notificationIfOther: req.body.notificationIfOther || user1.notificationIfOther,
+                                notificationDate: req.body.notificationDate || user1.notificationDate,
+                                notificationTime: req.body.notificationTime || user1.notificationTime,
+                                modeEmail: req.body.modeEmail || user1.modeEmail,
+                                modePhoneCall: req.body.modePhoneCall || user1.modePhoneCall,
+                                modeInPerson: req.body.modeInPerson || user1.modeInPerson,
+                                modeOther: req.body.modeOther || user1.modeOther,
+                                savedSignedPartA: req.body.savedSignedPartA || user1.savedSignedPartA,
+                                reportCompletedBy: req.body.reportCompletedBy || user1.reportCompletedBy,
+                                investigationDetails: req.body.investigationDetails || user1.investigationDetails,
+                                investigationRecommendationsAndActions: req.body.investigationRecommendationsAndActions || user1.investigationRecommendationsAndActions,
+                                investigationFollowUp: req.body.investigationFollowUp || user1.investigationFollowUp,
+                                investigationCompletedBy: req.body.investigationCompletedBy || user1.investigationCompletedBy,
+                                investigationCompletionDate: req.body.investigationCompletionDate || user1.investigationCompletionDate,
+                                savedSignedPartB: req.body.savedSignedPartB || user1.savedSignedPartB,
+                                partTypeB: true,
+                        };
+                        const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Evacuation and fire Drill update successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
 exports.addDisasterPlanReview = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -1106,6 +1446,36 @@ exports.addDisasterPlanReview = async (req, res) => {
                 const checklist = await notes.create(req.body);
                 if (checklist) {
                         return res.status(200).send({ status: 200, message: "Disaster Plan Review added successfully.", data: checklist });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
+exports.editDisasterPlanReview = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        let obj = {
+                                adminId: user1.adminId,
+                                facilityAddress: req.body.facilityAddress || user1.facilityAddress,
+                                date: req.body.date || user1.date,
+                                shiftTime: req.body.shiftTime || user1.shiftTime,
+                                shift: req.body.shift || user1.shift,
+                                participants: req.body.participants || user1.participants,
+                                critiqueProblemsIdentified: req.body.critiqueProblemsIdentified || user1.critiqueProblemsIdentified,
+                                recommendationsForImprovement: req.body.recommendationsForImprovement || user1.recommendationsForImprovement,
+                                nextReviewDate: req.body.nextReviewDate || user1.nextReviewDate,
+                                reviewCompletedByName: req.body.reviewCompletedByName || user1.reviewCompletedByName,
+                                reviewCompletedBySignature: req.body.reviewCompletedBySignature || user1.reviewCompletedBySignature,
+                                reviewCompletedByDate: req.body.reviewCompletedByDate || user1.reviewCompletedByDate,
+                        };
+                        const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Evacuation and fire Drill update successfully.", data: checklist });
+                        }
                 }
         } catch (error) {
                 console.error(error);
