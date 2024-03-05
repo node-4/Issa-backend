@@ -852,6 +852,30 @@ exports.addFireEquipementMonitoring = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.editFireEquipementMonitoring = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        let obj = {
+                                date: req.body.date || user1.date,
+                                location: req.body.location || user1.location,
+                                alaramDate: req.body.alaramDate || user1.alaramDate,
+                                alaram: req.body.alaram || user1.alaram,
+                                extinguisher1: req.body.extinguisher1 || user1.extinguisher1,
+                                staff: req.body.staff || user1.staff
+                        }
+                        const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Fire equipement monitoring update successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
 exports.addEvacuationAndFireDrill = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -869,6 +893,24 @@ exports.addEvacuationAndFireDrill = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+// exports.editEvacuationAndFireDrill = async (req, res) => {
+//         try {
+//                 const user = await User.findOne({ _id: req.user });
+//                 if (!user) {
+//                         return res.status(404).send({ status: 404, message: "User not found", data: {} });
+//                 }
+//                 req.body.adminId = user._id;
+//                 req.body.name = "evacuationAndFireDrill";
+//                 const checklist = await notes.create(req.body);
+//                 if (checklist) {
+//                         return res.status(200).send({ status: 200, message: "Evacuation And Fire Drill added successfully.", data: checklist });
+//                 }
+//         } catch (error) {
+//                 console.error(error);
+//                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+//         }
+// };
+
 exports.addDisasterDrill = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
