@@ -1070,6 +1070,19 @@ exports.addDisasterPlanReview = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.getNotesById = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get notes fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
 // exports.getAllNotes = async (req, res) => {
 //         try {
 //                 const user = await User.findOne({ _id: req.user });
