@@ -835,6 +835,37 @@ exports.addFirstAidChecklist = async (req, res) => {
                 return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };
+exports.editFirstAidChecklist = async (req, res) => {
+        try {
+                const user1 = await notes.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "notes not found", data: {} });
+                } else {
+                        let obj = {
+                                date: req.body.date || user1.date,
+                                location: req.body.location || user1.location,
+                                AdhesiveStripBandages: req.body.AdhesiveStripBandages || user1.AdhesiveStripBandages,
+                                AdhesiveTap: req.body.AdhesiveTap || user1.AdhesiveTap,
+                                CPRMouthGuardShield: req.body.CPRMouthGuardShield || user1.CPRMouthGuardShield,
+                                DisposableLatexGloves: req.body.DisposableLatexGloves || user1.DisposableLatexGloves,
+                                NonStickSterilePads: req.body.NonStickSterilePads || user1.NonStickSterilePads,
+                                RollerGauze: req.body.RollerGauze || user1.RollerGauze,
+                                Scissors: req.body.Scissors || user1.Scissors,
+                                SterileGuazeSquares: req.body.SterileGuazeSquares || user1.SterileGuazeSquares,
+                                TriangularBandages: req.body.TriangularBandages || user1.TriangularBandages,
+                                Tweezers: req.body.Tweezers || user1.Tweezers,
+                                staff: req.body.staff || user1.staff
+                        };
+                        const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
+                        if (checklist) {
+                                return res.status(200).send({ status: 200, message: "Fire equipement monitoring update successfully.", data: checklist });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
+        }
+};
 exports.addFireEquipementMonitoring = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -1978,7 +2009,7 @@ exports.updateMedicationEmployee = async (req, res) => {
                                 adminId: user._id,
                                 name: req.body.name || user1.name,
                                 patientId: patientId,
-                                instruction: req.body.instruction || user1.instruction,
+                                medication: req.body.medication || user1.medication,
                         }
                         let update = await medicationEmployee.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
@@ -2041,6 +2072,39 @@ exports.addInstructionInMedicationEmployee = async (req, res) => {
         } catch (error) {
                 console.error(error);
                 return res.status(500).json({ error: 'Failed to create medication Employee' });
+        }
+};
+exports.updateStatusInInstructionInMedicationEmployee = async (req, res) => {
+        try {
+                let findCart = await medicationEmployee.findOne({ _id: req.params.id });
+                if (findCart) {
+                        for (let i = 0; i < findCart.medication.length; i++) {
+                                if (findCart.medication.length > 1) {
+                                        if (((findCart.medication[i]._id).toString() == req.params.medicationId) == true) {
+                                                let updateCart = await medicationEmployee.findByIdAndUpdate({ _id: findCart._id, 'medication._id': req.params.medicationId }, {
+                                                        $set: {
+                                                                'medication':
+                                                                {
+                                                                        _id: req.params.medicationId,
+                                                                        status: req.body.status,
+                                                                }
+                                                        }
+                                                }, { new: true })
+                                                if (updateCart) {
+                                                        return res.status(200).send({ message: "Instruction delete from medication Employee.", data: updateCart, });
+                                                }
+                                        }
+                                } else {
+                                        return res.status(200).send({ status: 200, message: "No Data Found ", data: [] });
+                                }
+                        }
+                } else {
+                        return res.status(200).send({ status: 200, message: "No Data Found ", cart: [] });
+                }
+
+        } catch (error) {
+                console.log("353====================>", error)
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
 };
 exports.deleteInstructionInMedicationEmployee = async (req, res) => {

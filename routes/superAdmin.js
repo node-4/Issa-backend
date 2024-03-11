@@ -140,4 +140,8 @@ module.exports = (app) => {
         app.delete('/api/v1/static/terms/:id', auth.deleteTerms);
         app.get('/api/v1/static/getTerms', auth.getTerms);
         app.get('/api/v1/static/terms/:id', auth.getTermsbyId);
+        app.post('/api/v1/superAdmin/addJobDescription', authJwt.verifyToken, auth.addJobDescription);
+        app.get('/api/v1/superAdmin/getJobDescriptionById/:id', authJwt.verifyToken, auth.getJobDescriptionById);
+        app.get('/api/v1/superAdmin/getAllJobDescription', authJwt.verifyToken, auth.getAllJobDescription);
+        app.delete('/api/v1/superAdmin/deleteJobDescription/:id', authJwt.verifyToken, auth.deleteJobDescription);
 }

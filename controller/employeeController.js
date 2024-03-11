@@ -4356,6 +4356,8 @@ exports.deleteAppendix = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+
+
 exports.createForms2023 = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user, userType: "Employee" });
@@ -4366,23 +4368,27 @@ exports.createForms2023 = async (req, res) => {
                         if (!findEmployee) {
                                 req.body.employeeId = user._id;
                                 req.body.adminId = user.adminId;
+                                if (req.file) {
+                                        req.body.document = req.file.path;
+                                } else {
+                                        return res.status(404).send({ status: 404, message: "Image not select.", data: update })
+                                }
                                 let newEmployee = await forms2023.create(req.body);
                                 if (newEmployee) {
                                         return res.status(200).send({ status: 200, message: "Forms2023 add successfully.", data: newEmployee });
                                 }
                         } else {
+                                let document;
+                                if (req.file) {
+                                        document = req.file.path;
+                                } else {
+                                        document = findEmployee.document;
+                                }
                                 let obj = {
                                         employeeId: user._id,
                                         adminId: user.adminId,
-                                        fullName: req.body.fullName || findEmployee.fullName,
-                                        socialSecurityNumber: req.body.socialSecurityNumber || findEmployee.socialSecurityNumber,
-                                        numberAndStreet: req.body.numberAndStreet || findEmployee.numberAndStreet,
-                                        cityOrTown: req.body.cityOrTown || findEmployee.cityOrTown,
-                                        state: req.body.state || findEmployee.state,
-                                        zipCode: req.body.zipCode || findEmployee.zipCode,
-                                        withholdingOption: req.body.withholdingOption || findEmployee.withholdingOption,
-                                        signature: req.body.signature || findEmployee.signature,
-                                        date: req.body.date || findEmployee.date,
+                                        document: document || findEmployee.document,
+                                        type: req.body.type || findEmployee.type,
                                 };
                                 let update = await forms2023.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
                                 if (update) {
@@ -4395,6 +4401,45 @@ exports.createForms2023 = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+// exports.createForms2023 = async (req, res) => {
+//         try {
+//                 const user = await User.findOne({ _id: req.user, userType: "Employee" });
+//                 if (!user) {
+//                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+//                 } else {
+//                         let findEmployee = await forms2023.findOne({ employeeId: user._id });
+//                         if (!findEmployee) {
+//                                 req.body.employeeId = user._id;
+//                                 req.body.adminId = user.adminId;
+//                                 let newEmployee = await forms2023.create(req.body);
+//                                 if (newEmployee) {
+//                                         return res.status(200).send({ status: 200, message: "Forms2023 add successfully.", data: newEmployee });
+//                                 }
+//                         } else {
+//                                 let obj = {
+//                                         employeeId: user._id,
+//                                         adminId: user.adminId,
+//                                         fullName: req.body.fullName || findEmployee.fullName,
+//                                         socialSecurityNumber: req.body.socialSecurityNumber || findEmployee.socialSecurityNumber,
+//                                         numberAndStreet: req.body.numberAndStreet || findEmployee.numberAndStreet,
+//                                         cityOrTown: req.body.cityOrTown || findEmployee.cityOrTown,
+//                                         state: req.body.state || findEmployee.state,
+//                                         zipCode: req.body.zipCode || findEmployee.zipCode,
+//                                         withholdingOption: req.body.withholdingOption || findEmployee.withholdingOption,
+//                                         signature: req.body.signature || findEmployee.signature,
+//                                         date: req.body.date || findEmployee.date,
+//                                 };
+//                                 let update = await forms2023.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
+//                                 if (update) {
+//                                         return res.status(200).send({ status: 200, message: "Forms2023 add successfully.", data: update })
+//                                 }
+//                         }
+//                 }
+//         } catch (error) {
+//                 console.error(error);
+//                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
+//         }
+// };
 exports.getForms2023 = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -4474,9 +4519,7 @@ exports.editReferenceCheckById = async (req, res) => {
                                 employeeId: user._id,
                                 adminId: user.adminId,
                                 date: req.body.date || user1.date,
-                                referenceName: req.body.referenceName || user1.referenceName,
-                                referenceRecommendation: req.body.referenceRecommendation || user1.referenceRecommendation,
-                                savedSigned: req.body.savedSigned || user1.savedSigned,
+                                data: req.body.data || user1.data,
                         };
                         let update = await referenceCheck.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
@@ -4780,36 +4823,27 @@ exports.createFw9 = async (req, res) => {
                         if (!findEmployee) {
                                 req.body.employeeId = user._id;
                                 req.body.adminId = user.adminId;
+                                if (req.file) {
+                                        req.body.document = req.file.path;
+                                } else {
+                                        return res.status(404).send({ status: 404, message: "Image not select.", data: update })
+                                }
                                 let newEmployee = await fw9.create(req.body);
                                 if (newEmployee) {
                                         return res.status(200).send({ status: 200, message: "Fw9 add successfully.", data: newEmployee });
                                 }
                         } else {
+                                let document;
+                                if (req.file) {
+                                        document = req.file.path;
+                                } else {
+                                        document = findEmployee.document;
+                                }
                                 let obj = {
                                         employeeId: user._id,
                                         adminId: user.adminId,
-                                        name: req.body.name || findEmployee.name,
-                                        businessName: req.body.businessName || findEmployee.businessName,
-                                        taxClassification: req.body.taxClassification || findEmployee.taxClassification,
-                                        llcTaxClassification: req.body.llcTaxClassification || findEmployee.llcTaxClassification,
-                                        other: req.body.other || findEmployee.other,
-                                        exemptionsPayeeCode: req.body.exemptionsPayeeCode || findEmployee.exemptionsPayeeCode,
-                                        exemptionsFatCaExemptionCode: req.body.exemptionsFatCaExemptionCode || findEmployee.exemptionsFatCaExemptionCode,
-                                        street: req.body.street || findEmployee.street,
-                                        city: req.body.city || findEmployee.city,
-                                        state: req.body.state || findEmployee.state,
-                                        zipCode: req.body.zipCode || findEmployee.zipCode,
-                                        requesterName: req.body.requesterName || findEmployee.requesterName,
-                                        requesterAddress: req.body.requesterAddress || findEmployee.requesterAddress,
-                                        accountNumbers: req.body.accountNumbers || findEmployee.accountNumbers,
-                                        tinSsn: req.body.tinSsn || findEmployee.tinSsn,
-                                        tinEin: req.body.tinEin || findEmployee.tinEin,
-                                        certificationIsCorrectTIN: req.body.certificationIsCorrectTIN || findEmployee.certificationIsCorrectTIN,
-                                        certificationIsExemptFromBackupWithholding: req.body.certificationIsExemptFromBackupWithholding || findEmployee.certificationIsExemptFromBackupWithholding,
-                                        certificationIsUSPerson: req.body.certificationIsUSPerson || findEmployee.certificationIsUSPerson,
-                                        certificationFatCaCodes: req.body.certificationFatCaCodes || findEmployee.certificationFatCaCodes,
-                                        signature: req.body.signature || findEmployee.signature,
-                                        date: req.body.date || findEmployee.date,
+                                        document: document || findEmployee.document,
+                                        type: req.body.type || findEmployee.type,
                                 };
                                 let update = await fw9.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
                                 if (update) {
@@ -4822,6 +4856,58 @@ exports.createFw9 = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+// exports.createFw9 = async (req, res) => {
+//         try {
+//                 const user = await User.findOne({ _id: req.user, userType: "Employee" });
+//                 if (!user) {
+//                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+//                 } else {
+//                         let findEmployee = await fw9.findOne({ employeeId: user._id });
+//                         if (!findEmployee) {
+//                                 req.body.employeeId = user._id;
+//                                 req.body.adminId = user.adminId;
+//                                 let newEmployee = await fw9.create(req.body);
+//                                 if (newEmployee) {
+//                                         return res.status(200).send({ status: 200, message: "Fw9 add successfully.", data: newEmployee });
+//                                 }
+//                         } else {
+//                                 let obj = {
+//                                         employeeId: user._id,
+//                                         adminId: user.adminId,
+//                                         name: req.body.name || findEmployee.name,
+//                                         businessName: req.body.businessName || findEmployee.businessName,
+//                                         taxClassification: req.body.taxClassification || findEmployee.taxClassification,
+//                                         llcTaxClassification: req.body.llcTaxClassification || findEmployee.llcTaxClassification,
+//                                         other: req.body.other || findEmployee.other,
+//                                         exemptionsPayeeCode: req.body.exemptionsPayeeCode || findEmployee.exemptionsPayeeCode,
+//                                         exemptionsFatCaExemptionCode: req.body.exemptionsFatCaExemptionCode || findEmployee.exemptionsFatCaExemptionCode,
+//                                         street: req.body.street || findEmployee.street,
+//                                         city: req.body.city || findEmployee.city,
+//                                         state: req.body.state || findEmployee.state,
+//                                         zipCode: req.body.zipCode || findEmployee.zipCode,
+//                                         requesterName: req.body.requesterName || findEmployee.requesterName,
+//                                         requesterAddress: req.body.requesterAddress || findEmployee.requesterAddress,
+//                                         accountNumbers: req.body.accountNumbers || findEmployee.accountNumbers,
+//                                         tinSsn: req.body.tinSsn || findEmployee.tinSsn,
+//                                         tinEin: req.body.tinEin || findEmployee.tinEin,
+//                                         certificationIsCorrectTIN: req.body.certificationIsCorrectTIN || findEmployee.certificationIsCorrectTIN,
+//                                         certificationIsExemptFromBackupWithholding: req.body.certificationIsExemptFromBackupWithholding || findEmployee.certificationIsExemptFromBackupWithholding,
+//                                         certificationIsUSPerson: req.body.certificationIsUSPerson || findEmployee.certificationIsUSPerson,
+//                                         certificationFatCaCodes: req.body.certificationFatCaCodes || findEmployee.certificationFatCaCodes,
+//                                         signature: req.body.signature || findEmployee.signature,
+//                                         date: req.body.date || findEmployee.date,
+//                                 };
+//                                 let update = await fw9.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
+//                                 if (update) {
+//                                         return res.status(200).send({ status: 200, message: "Fw9 add successfully.", data: update })
+//                                 }
+//                         }
+//                 }
+//         } catch (error) {
+//                 console.error(error);
+//                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
+//         }
+// };
 exports.getFw9 = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -4866,46 +4952,28 @@ exports.createI9 = async (req, res) => {
                         if (!findEmployee) {
                                 req.body.employeeId = user._id;
                                 req.body.adminId = user.adminId;
+                                if (req.file) {
+                                        req.body.document = req.file.path;
+                                } else {
+                                        return res.status(404).send({ status: 404, message: "Image not select.", data: update })
+                                }
                                 let newEmployee = await i9.create(req.body);
                                 if (newEmployee) {
                                         return res.status(200).send({ status: 200, message: "I9 add successfully.", data: newEmployee });
                                 }
                         } else {
+                                let document;
+                                if (req.file) {
+                                        document = req.file.path;
+                                } else {
+                                        document = findEmployee.document;
+                                }
                                 let obj = {
                                         employeeId: user._id,
                                         adminId: user.adminId,
-                                        lastName: req.body.lastName || findEmployee.lastName,
-                                        firstName: req.body.firstName || findEmployee.firstName,
-                                        middleInitial: req.body.middleInitial || findEmployee.middleInitial,
-                                        otherLastNames: req.body.otherLastNames || findEmployee.otherLastNames,
-                                        address: req.body.address || findEmployee.address,
-                                        aptNumber: req.body.aptNumber || findEmployee.aptNumber,
-                                        city: req.body.city || findEmployee.city,
-                                        state: req.body.state || findEmployee.state,
-                                        zipCode: req.body.zipCode || findEmployee.zipCode,
-                                        dateOfBirth: req.body.dateOfBirth || findEmployee.dateOfBirth,
-                                        socialSecurityNumber: req.body.socialSecurityNumber || findEmployee.socialSecurityNumber,
-                                        email: req.body.email || findEmployee.email,
-                                        telephoneNumber: req.body.telephoneNumber || findEmployee.telephoneNumber,
-                                        citizenshipStatus: req.body.citizenshipStatus || findEmployee.citizenshipStatus,
-                                        lawfulPermanentResidentText: req.body.lawfulPermanentResidentText || findEmployee.lawfulPermanentResidentText,
-                                        NoncitizenAuthorizedToWorExDate: req.body.NoncitizenAuthorizedToWorExDate || findEmployee.NoncitizenAuthorizedToWorExDate,
-                                        citizenshipDetails: req.body.citizenshipDetails || findEmployee.citizenshipDetails,
-                                        signature: req.body.signature || findEmployee.signature,
-                                        attestationDate: req.body.attestationDate || findEmployee.attestationDate,
-                                        listA: req.body.listA || findEmployee.listA,
-                                        listB: req.body.listB || findEmployee.listB,
-                                        listC: req.body.listC || findEmployee.listC,
-                                        additionInfo: req.body.additionInfo || findEmployee.additionInfo,
-                                        alternativeProcedureUsed: req.body.alternativeProcedureUsed || findEmployee.alternativeProcedureUsed,
-                                        certification: req.body.certification || findEmployee.certification,
-                                        SupplementASection1: req.body.SupplementASection1 || findEmployee.SupplementASection1,
-                                        SupplementAAttest: req.body.SupplementAAttest || findEmployee.SupplementAAttest,
-                                        SupplementBSection1: req.body.SupplementBSection1 || findEmployee.SupplementBSection1,
-                                        SupplementBAttest: req.body.SupplementBAttest || findEmployee.SupplementBAttest,
+                                        document: document || findEmployee.document,
+                                        type: req.body.type || findEmployee.type,
                                 };
-
-
                                 let update = await i9.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
                                 if (update) {
                                         return res.status(200).send({ status: 200, message: "I9 add successfully.", data: update })
@@ -4917,6 +4985,65 @@ exports.createI9 = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+// exports.createI9 = async (req, res) => {
+//         try {
+//                 const user = await User.findOne({ _id: req.user, userType: "Employee" });
+//                 if (!user) {
+//                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+//                 } else {
+//                         let findEmployee = await i9.findOne({ employeeId: user._id });
+//                         if (!findEmployee) {
+//                                 req.body.employeeId = user._id;
+//                                 req.body.adminId = user.adminId;
+//                                 let newEmployee = await i9.create(req.body);
+//                                 if (newEmployee) {
+//                                         return res.status(200).send({ status: 200, message: "I9 add successfully.", data: newEmployee });
+//                                 }
+//                         } else {
+//                                 let obj = {
+//                                         employeeId: user._id,
+//                                         adminId: user.adminId,
+//                                         lastName: req.body.lastName || findEmployee.lastName,
+//                                         firstName: req.body.firstName || findEmployee.firstName,
+//                                         middleInitial: req.body.middleInitial || findEmployee.middleInitial,
+//                                         otherLastNames: req.body.otherLastNames || findEmployee.otherLastNames,
+//                                         address: req.body.address || findEmployee.address,
+//                                         aptNumber: req.body.aptNumber || findEmployee.aptNumber,
+//                                         city: req.body.city || findEmployee.city,
+//                                         state: req.body.state || findEmployee.state,
+//                                         zipCode: req.body.zipCode || findEmployee.zipCode,
+//                                         dateOfBirth: req.body.dateOfBirth || findEmployee.dateOfBirth,
+//                                         socialSecurityNumber: req.body.socialSecurityNumber || findEmployee.socialSecurityNumber,
+//                                         email: req.body.email || findEmployee.email,
+//                                         telephoneNumber: req.body.telephoneNumber || findEmployee.telephoneNumber,
+//                                         citizenshipStatus: req.body.citizenshipStatus || findEmployee.citizenshipStatus,
+//                                         lawfulPermanentResidentText: req.body.lawfulPermanentResidentText || findEmployee.lawfulPermanentResidentText,
+//                                         NoncitizenAuthorizedToWorExDate: req.body.NoncitizenAuthorizedToWorExDate || findEmployee.NoncitizenAuthorizedToWorExDate,
+//                                         citizenshipDetails: req.body.citizenshipDetails || findEmployee.citizenshipDetails,
+//                                         signature: req.body.signature || findEmployee.signature,
+//                                         attestationDate: req.body.attestationDate || findEmployee.attestationDate,
+//                                         listA: req.body.listA || findEmployee.listA,
+//                                         listB: req.body.listB || findEmployee.listB,
+//                                         listC: req.body.listC || findEmployee.listC,
+//                                         additionInfo: req.body.additionInfo || findEmployee.additionInfo,
+//                                         alternativeProcedureUsed: req.body.alternativeProcedureUsed || findEmployee.alternativeProcedureUsed,
+//                                         certification: req.body.certification || findEmployee.certification,
+//                                         SupplementASection1: req.body.SupplementASection1 || findEmployee.SupplementASection1,
+//                                         SupplementAAttest: req.body.SupplementAAttest || findEmployee.SupplementAAttest,
+//                                         SupplementBSection1: req.body.SupplementBSection1 || findEmployee.SupplementBSection1,
+//                                         SupplementBAttest: req.body.SupplementBAttest || findEmployee.SupplementBAttest,
+//                                 };
+//                                 let update = await i9.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
+//                                 if (update) {
+//                                         return res.status(200).send({ status: 200, message: "I9 add successfully.", data: update })
+//                                 }
+//                         }
+//                 }
+//         } catch (error) {
+//                 console.error(error);
+//                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
+//         }
+// };
 exports.getI9 = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });
@@ -4961,50 +5088,67 @@ exports.createFW4 = async (req, res) => {
                         if (!findEmployee) {
                                 req.body.employeeId = user._id;
                                 req.body.adminId = user.adminId;
+                                if (req.file) {
+                                        req.body.document = req.file.path;
+                                } else {
+                                        return res.status(404).send({ status: 404, message: "Image not select.", data: update })
+                                }
                                 let newEmployee = await fw4.create(req.body);
                                 if (newEmployee) {
                                         return res.status(200).send({ status: 200, message: "FW4 add successfully.", data: newEmployee });
                                 }
                         } else {
+                                let document;
+                                if (req.file) {
+                                        document = req.file.path;
+                                } else {
+                                        document = findEmployee.document;
+                                }
                                 let obj = {
                                         employeeId: user._id,
                                         adminId: user.adminId,
-                                        step1FirstName: req.body.step1FirstName || findEmployee.step1FirstName,
-                                        step1LastName: req.body.step1LastName || findEmployee.step1LastName,
-                                        step1Address: req.body.step1Address || findEmployee.step1Address,
-                                        step1City: req.body.step1City || findEmployee.step1City,
-                                        step1State: req.body.step1State || findEmployee.step1State,
-                                        step1ZipCode: req.body.step1ZipCode || findEmployee.step1ZipCode,
-                                        step1SocialSecurityNumber: req.body.step1SocialSecurityNumber || findEmployee.step1SocialSecurityNumber,
-                                        step1IsNameMatched: req.body.step1IsNameMatched || findEmployee.step1IsNameMatched,
-                                        step1FilingStatus: req.body.step1FilingStatus || findEmployee.step1FilingStatus,
-                                        step2Choose: req.body.step2Choose || findEmployee.step2Choose,
-                                        step2Ca: req.body.step2Ca || findEmployee.step2Ca,
-                                        step2Cb: req.body.step2Cb || findEmployee.step2Cb,
-                                        step3QualifyingChildrenCredit: req.body.step3QualifyingChildrenCredit || findEmployee.step3QualifyingChildrenCredit,
-                                        step3OtherDependentsCredit: req.body.step3OtherDependentsCredit || findEmployee.step3OtherDependentsCredit,
-                                        step3TotalCredits: req.body.step3TotalCredits || findEmployee.step3TotalCredits,
-                                        step4OtherIncome: req.body.step4OtherIncome || findEmployee.step4OtherIncome,
-                                        step4Deductions: req.body.step4Deductions || findEmployee.step4Deductions,
-                                        step4ExtraWithholding: req.body.step4ExtraWithholding || findEmployee.step4ExtraWithholding,
-                                        step5EmployeeSignature: req.body.step5EmployeeSignature || findEmployee.step5EmployeeSignature,
-                                        step5Date: req.body.step5Date || findEmployee.step5Date,
-                                        employerName: req.body.employerName || findEmployee.employerName,
-                                        employerAddress: req.body.employerAddress || findEmployee.employerAddress,
-                                        firstDateOfEmployment: req.body.firstDateOfEmployment || findEmployee.firstDateOfEmployment,
-                                        employerEIN: req.body.employerEIN || findEmployee.employerEIN,
-                                        step2bLine1: req.body.step2bLine1 || findEmployee.step2bLine1,
-                                        step2bLine2a: req.body.step2bLine2a || findEmployee.step2bLine2a,
-                                        step2bLine2b: req.body.step2bLine2b || findEmployee.step2bLine2b,
-                                        step2bLine2c: req.body.step2bLine2c || findEmployee.step2bLine2c,
-                                        step2bLine3: req.body.step2bLine3 || findEmployee.step2bLine3,
-                                        step2bLine4: req.body.step2bLine4 || findEmployee.step2bLine4,
-                                        step4bLine1: req.body.step4bLine1 || findEmployee.step4bLine1,
-                                        step4bLine2: req.body.step4bLine2 || findEmployee.step4bLine2,
-                                        step4bLine3: req.body.step4bLine3 || findEmployee.step4bLine3,
-                                        step4bLine4: req.body.step4bLine4 || findEmployee.step4bLine4,
-                                        step4bLine5: req.body.step4bLine5 || findEmployee.step4bLine5,
+                                        document: document || findEmployee.document,
+                                        type: req.body.type || findEmployee.type,
                                 };
+                                // let obj = {
+                                //         employeeId: user._id,
+                                //         adminId: user.adminId,
+                                //         step1FirstName: req.body.step1FirstName || findEmployee.step1FirstName,
+                                //         step1LastName: req.body.step1LastName || findEmployee.step1LastName,
+                                //         step1Address: req.body.step1Address || findEmployee.step1Address,
+                                //         step1City: req.body.step1City || findEmployee.step1City,
+                                //         step1State: req.body.step1State || findEmployee.step1State,
+                                //         step1ZipCode: req.body.step1ZipCode || findEmployee.step1ZipCode,
+                                //         step1SocialSecurityNumber: req.body.step1SocialSecurityNumber || findEmployee.step1SocialSecurityNumber,
+                                //         step1IsNameMatched: req.body.step1IsNameMatched || findEmployee.step1IsNameMatched,
+                                //         step1FilingStatus: req.body.step1FilingStatus || findEmployee.step1FilingStatus,
+                                //         step2Choose: req.body.step2Choose || findEmployee.step2Choose,
+                                //         step2Ca: req.body.step2Ca || findEmployee.step2Ca,
+                                //         step2Cb: req.body.step2Cb || findEmployee.step2Cb,
+                                //         step3QualifyingChildrenCredit: req.body.step3QualifyingChildrenCredit || findEmployee.step3QualifyingChildrenCredit,
+                                //         step3OtherDependentsCredit: req.body.step3OtherDependentsCredit || findEmployee.step3OtherDependentsCredit,
+                                //         step3TotalCredits: req.body.step3TotalCredits || findEmployee.step3TotalCredits,
+                                //         step4OtherIncome: req.body.step4OtherIncome || findEmployee.step4OtherIncome,
+                                //         step4Deductions: req.body.step4Deductions || findEmployee.step4Deductions,
+                                //         step4ExtraWithholding: req.body.step4ExtraWithholding || findEmployee.step4ExtraWithholding,
+                                //         step5EmployeeSignature: req.body.step5EmployeeSignature || findEmployee.step5EmployeeSignature,
+                                //         step5Date: req.body.step5Date || findEmployee.step5Date,
+                                //         employerName: req.body.employerName || findEmployee.employerName,
+                                //         employerAddress: req.body.employerAddress || findEmployee.employerAddress,
+                                //         firstDateOfEmployment: req.body.firstDateOfEmployment || findEmployee.firstDateOfEmployment,
+                                //         employerEIN: req.body.employerEIN || findEmployee.employerEIN,
+                                //         step2bLine1: req.body.step2bLine1 || findEmployee.step2bLine1,
+                                //         step2bLine2a: req.body.step2bLine2a || findEmployee.step2bLine2a,
+                                //         step2bLine2b: req.body.step2bLine2b || findEmployee.step2bLine2b,
+                                //         step2bLine2c: req.body.step2bLine2c || findEmployee.step2bLine2c,
+                                //         step2bLine3: req.body.step2bLine3 || findEmployee.step2bLine3,
+                                //         step2bLine4: req.body.step2bLine4 || findEmployee.step2bLine4,
+                                //         step4bLine1: req.body.step4bLine1 || findEmployee.step4bLine1,
+                                //         step4bLine2: req.body.step4bLine2 || findEmployee.step4bLine2,
+                                //         step4bLine3: req.body.step4bLine3 || findEmployee.step4bLine3,
+                                //         step4bLine4: req.body.step4bLine4 || findEmployee.step4bLine4,
+                                //         step4bLine5: req.body.step4bLine5 || findEmployee.step4bLine5,
+                                // };
                                 let update = await fw4.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
                                 if (update) {
                                         return res.status(200).send({ status: 200, message: "FW4 add successfully.", data: update })
@@ -5016,6 +5160,71 @@ exports.createFW4 = async (req, res) => {
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
         }
 };
+// exports.createFW4 = async (req, res) => {
+//         try {
+//                 const user = await User.findOne({ _id: req.user, userType: "Employee" });
+//                 if (!user) {
+//                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+//                 } else {
+//                         let findEmployee = await fw4.findOne({ employeeId: user._id });
+//                         if (!findEmployee) {
+//                                 req.body.employeeId = user._id;
+//                                 req.body.adminId = user.adminId;
+//                                 let newEmployee = await fw4.create(req.body);
+//                                 if (newEmployee) {
+//                                         return res.status(200).send({ status: 200, message: "FW4 add successfully.", data: newEmployee });
+//                                 }
+//                         } else {
+//                                 let obj = {
+//                                         employeeId: user._id,
+//                                         adminId: user.adminId,
+//                                         step1FirstName: req.body.step1FirstName || findEmployee.step1FirstName,
+//                                         step1LastName: req.body.step1LastName || findEmployee.step1LastName,
+//                                         step1Address: req.body.step1Address || findEmployee.step1Address,
+//                                         step1City: req.body.step1City || findEmployee.step1City,
+//                                         step1State: req.body.step1State || findEmployee.step1State,
+//                                         step1ZipCode: req.body.step1ZipCode || findEmployee.step1ZipCode,
+//                                         step1SocialSecurityNumber: req.body.step1SocialSecurityNumber || findEmployee.step1SocialSecurityNumber,
+//                                         step1IsNameMatched: req.body.step1IsNameMatched || findEmployee.step1IsNameMatched,
+//                                         step1FilingStatus: req.body.step1FilingStatus || findEmployee.step1FilingStatus,
+//                                         step2Choose: req.body.step2Choose || findEmployee.step2Choose,
+//                                         step2Ca: req.body.step2Ca || findEmployee.step2Ca,
+//                                         step2Cb: req.body.step2Cb || findEmployee.step2Cb,
+//                                         step3QualifyingChildrenCredit: req.body.step3QualifyingChildrenCredit || findEmployee.step3QualifyingChildrenCredit,
+//                                         step3OtherDependentsCredit: req.body.step3OtherDependentsCredit || findEmployee.step3OtherDependentsCredit,
+//                                         step3TotalCredits: req.body.step3TotalCredits || findEmployee.step3TotalCredits,
+//                                         step4OtherIncome: req.body.step4OtherIncome || findEmployee.step4OtherIncome,
+//                                         step4Deductions: req.body.step4Deductions || findEmployee.step4Deductions,
+//                                         step4ExtraWithholding: req.body.step4ExtraWithholding || findEmployee.step4ExtraWithholding,
+//                                         step5EmployeeSignature: req.body.step5EmployeeSignature || findEmployee.step5EmployeeSignature,
+//                                         step5Date: req.body.step5Date || findEmployee.step5Date,
+//                                         employerName: req.body.employerName || findEmployee.employerName,
+//                                         employerAddress: req.body.employerAddress || findEmployee.employerAddress,
+//                                         firstDateOfEmployment: req.body.firstDateOfEmployment || findEmployee.firstDateOfEmployment,
+//                                         employerEIN: req.body.employerEIN || findEmployee.employerEIN,
+//                                         step2bLine1: req.body.step2bLine1 || findEmployee.step2bLine1,
+//                                         step2bLine2a: req.body.step2bLine2a || findEmployee.step2bLine2a,
+//                                         step2bLine2b: req.body.step2bLine2b || findEmployee.step2bLine2b,
+//                                         step2bLine2c: req.body.step2bLine2c || findEmployee.step2bLine2c,
+//                                         step2bLine3: req.body.step2bLine3 || findEmployee.step2bLine3,
+//                                         step2bLine4: req.body.step2bLine4 || findEmployee.step2bLine4,
+//                                         step4bLine1: req.body.step4bLine1 || findEmployee.step4bLine1,
+//                                         step4bLine2: req.body.step4bLine2 || findEmployee.step4bLine2,
+//                                         step4bLine3: req.body.step4bLine3 || findEmployee.step4bLine3,
+//                                         step4bLine4: req.body.step4bLine4 || findEmployee.step4bLine4,
+//                                         step4bLine5: req.body.step4bLine5 || findEmployee.step4bLine5,
+//                                 };
+//                                 let update = await fw4.findOneAndUpdate({ employeeId: user._id }, { $set: obj }, { new: true });
+//                                 if (update) {
+//                                         return res.status(200).send({ status: 200, message: "FW4 add successfully.", data: update })
+//                                 }
+//                         }
+//                 }
+//         } catch (error) {
+//                 console.error(error);
+//                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
+//         }
+// };
 exports.getFW4 = async (req, res) => {
         try {
                 const user = await User.findOne({ _id: req.user });

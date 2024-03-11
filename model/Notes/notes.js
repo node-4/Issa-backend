@@ -357,7 +357,43 @@ const addressSchema = new mongoose.Schema({
                 Dec: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
-                }
+                },
+                janDate: {
+                        type: Date
+                },
+                febDate: {
+                        type: Date
+                },
+                marDate: {
+                        type: Date
+                },
+                AprDate: {
+                        type: Date
+                },
+                MayDate: {
+                        type: Date
+                },
+                JunDate: {
+                        type: Date
+                },
+                JulDate: {
+                        type: Date
+                },
+                AugDate: {
+                        type: Date
+                },
+                SeptDate: {
+                        type: Date
+                },
+                OctDate: {
+                        type: Date
+                },
+                NovDate: {
+                        type: Date
+                },
+                DecDate: {
+                        type: Date
+                },
         },
         AdhesiveTap: {
                 name: {
@@ -414,7 +450,43 @@ const addressSchema = new mongoose.Schema({
                 Dec: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
-                }
+                },
+                janDate: {
+                        type: Date
+                },
+                febDate: {
+                        type: Date
+                },
+                marDate: {
+                        type: Date
+                },
+                AprDate: {
+                        type: Date
+                },
+                MayDate: {
+                        type: Date
+                },
+                JunDate: {
+                        type: Date
+                },
+                JulDate: {
+                        type: Date
+                },
+                AugDate: {
+                        type: Date
+                },
+                SeptDate: {
+                        type: Date
+                },
+                OctDate: {
+                        type: Date
+                },
+                NovDate: {
+                        type: Date
+                },
+                DecDate: {
+                        type: Date
+                },
         },
         CPRMouthGuardShield: {
                 name: {
@@ -471,7 +543,43 @@ const addressSchema = new mongoose.Schema({
                 Dec: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
-                }
+                },
+                janDate: {
+                        type: Date
+                },
+                febDate: {
+                        type: Date
+                },
+                marDate: {
+                        type: Date
+                },
+                AprDate: {
+                        type: Date
+                },
+                MayDate: {
+                        type: Date
+                },
+                JunDate: {
+                        type: Date
+                },
+                JulDate: {
+                        type: Date
+                },
+                AugDate: {
+                        type: Date
+                },
+                SeptDate: {
+                        type: Date
+                },
+                OctDate: {
+                        type: Date
+                },
+                NovDate: {
+                        type: Date
+                },
+                DecDate: {
+                        type: Date
+                },
         },
         DisposableLatexGloves: {
                 name: {
@@ -528,7 +636,43 @@ const addressSchema = new mongoose.Schema({
                 Dec: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
-                }
+                },
+                janDate: {
+                        type: Date
+                },
+                febDate: {
+                        type: Date
+                },
+                marDate: {
+                        type: Date
+                },
+                AprDate: {
+                        type: Date
+                },
+                MayDate: {
+                        type: Date
+                },
+                JunDate: {
+                        type: Date
+                },
+                JulDate: {
+                        type: Date
+                },
+                AugDate: {
+                        type: Date
+                },
+                SeptDate: {
+                        type: Date
+                },
+                OctDate: {
+                        type: Date
+                },
+                NovDate: {
+                        type: Date
+                },
+                DecDate: {
+                        type: Date
+                },
         },
         NonStickSterilePads: {
                 name: {
@@ -585,7 +729,43 @@ const addressSchema = new mongoose.Schema({
                 Dec: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
-                }
+                },
+                janDate: {
+                        type: Date
+                },
+                febDate: {
+                        type: Date
+                },
+                marDate: {
+                        type: Date
+                },
+                AprDate: {
+                        type: Date
+                },
+                MayDate: {
+                        type: Date
+                },
+                JunDate: {
+                        type: Date
+                },
+                JulDate: {
+                        type: Date
+                },
+                AugDate: {
+                        type: Date
+                },
+                SeptDate: {
+                        type: Date
+                },
+                OctDate: {
+                        type: Date
+                },
+                NovDate: {
+                        type: Date
+                },
+                DecDate: {
+                        type: Date
+                },
         },
         RollerGauze: {
                 name: {
@@ -642,7 +822,43 @@ const addressSchema = new mongoose.Schema({
                 Dec: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
-                }
+                },
+                janDate: {
+                        type: Date
+                },
+                febDate: {
+                        type: Date
+                },
+                marDate: {
+                        type: Date
+                },
+                AprDate: {
+                        type: Date
+                },
+                MayDate: {
+                        type: Date
+                },
+                JunDate: {
+                        type: Date
+                },
+                JulDate: {
+                        type: Date
+                },
+                AugDate: {
+                        type: Date
+                },
+                SeptDate: {
+                        type: Date
+                },
+                OctDate: {
+                        type: Date
+                },
+                NovDate: {
+                        type: Date
+                },
+                DecDate: {
+                        type: Date
+                },
         },
         Scissors: {
                 name: {
@@ -699,7 +915,43 @@ const addressSchema = new mongoose.Schema({
                 Dec: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
-                }
+                },
+                janDate: {
+                        type: Date
+                },
+                febDate: {
+                        type: Date
+                },
+                marDate: {
+                        type: Date
+                },
+                AprDate: {
+                        type: Date
+                },
+                MayDate: {
+                        type: Date
+                },
+                JunDate: {
+                        type: Date
+                },
+                JulDate: {
+                        type: Date
+                },
+                AugDate: {
+                        type: Date
+                },
+                SeptDate: {
+                        type: Date
+                },
+                OctDate: {
+                        type: Date
+                },
+                NovDate: {
+                        type: Date
+                },
+                DecDate: {
+                        type: Date
+                },
         },
         SterileGuazeSquares: {
                 name: {
@@ -756,7 +1008,43 @@ const addressSchema = new mongoose.Schema({
                 Dec: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
-                }
+                },
+                janDate: {
+                        type: Date
+                },
+                febDate: {
+                        type: Date
+                },
+                marDate: {
+                        type: Date
+                },
+                AprDate: {
+                        type: Date
+                },
+                MayDate: {
+                        type: Date
+                },
+                JunDate: {
+                        type: Date
+                },
+                JulDate: {
+                        type: Date
+                },
+                AugDate: {
+                        type: Date
+                },
+                SeptDate: {
+                        type: Date
+                },
+                OctDate: {
+                        type: Date
+                },
+                NovDate: {
+                        type: Date
+                },
+                DecDate: {
+                        type: Date
+                },
         },
         TriangularBandages: {
                 name: {
@@ -813,7 +1101,43 @@ const addressSchema = new mongoose.Schema({
                 Dec: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
-                }
+                },
+                janDate: {
+                        type: Date
+                },
+                febDate: {
+                        type: Date
+                },
+                marDate: {
+                        type: Date
+                },
+                AprDate: {
+                        type: Date
+                },
+                MayDate: {
+                        type: Date
+                },
+                JunDate: {
+                        type: Date
+                },
+                JulDate: {
+                        type: Date
+                },
+                AugDate: {
+                        type: Date
+                },
+                SeptDate: {
+                        type: Date
+                },
+                OctDate: {
+                        type: Date
+                },
+                NovDate: {
+                        type: Date
+                },
+                DecDate: {
+                        type: Date
+                },
         },
         Tweezers: {
                 name: {
@@ -870,7 +1194,43 @@ const addressSchema = new mongoose.Schema({
                 Dec: {
                         type: String,
                         enum: ["Present", "Absent", "None"]
-                }
+                },
+                janDate: {
+                        type: Date
+                },
+                febDate: {
+                        type: Date
+                },
+                marDate: {
+                        type: Date
+                },
+                AprDate: {
+                        type: Date
+                },
+                MayDate: {
+                        type: Date
+                },
+                JunDate: {
+                        type: Date
+                },
+                JulDate: {
+                        type: Date
+                },
+                AugDate: {
+                        type: Date
+                },
+                SeptDate: {
+                        type: Date
+                },
+                OctDate: {
+                        type: Date
+                },
+                NovDate: {
+                        type: Date
+                },
+                DecDate: {
+                        type: Date
+                },
         },
         staff: [{
                 staffName: {

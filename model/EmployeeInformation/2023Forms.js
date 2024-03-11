@@ -9,6 +9,12 @@ const withholdingFormSchema = new mongoose.Schema({
     type: schema.Types.ObjectId,
     ref: "User",
   },
+  document: {
+    type: String
+  },
+  type: {
+    type: String
+  },
   fullName: {
     type: String,
   },

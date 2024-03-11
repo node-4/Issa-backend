@@ -12,15 +12,17 @@ const employeeSchema = new mongoose.Schema({
         date: {
                 type: Date,
         },
-        referenceName: {
-                type: String,
-        },
-        referenceRecommendation: {
-                type: String,
-        },
-        savedSigned: {
-                type: String,
-        },
+        data: [{
+                referenceName: {
+                        type: String,
+                },
+                referenceRecommendation: {
+                        type: String,
+                },
+                savedSigned: {
+                        type: String,
+                },
+        }]
 });
 const Employee = mongoose.model('referenceCheck', employeeSchema);
 module.exports = Employee;

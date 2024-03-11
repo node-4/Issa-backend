@@ -9,6 +9,23 @@ const formW9Schema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
+
+        document: {
+                type: String
+        },
+        type: {
+                type: String
+        },
+
+
+
+
+
+
+
+
+
+
         name: {
                 type: String,
         },

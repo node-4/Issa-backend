@@ -167,7 +167,7 @@ module.exports = (app) => {
         app.post('/api/v1/employee/createAppendix', authJwt.verifyToken, auth.createAppendix);
         app.get('/api/v1/employee/getAppendix', authJwt.verifyToken, auth.getAppendix);
         app.delete('/api/v1/employee/deleteAppendix', authJwt.verifyToken, auth.deleteAppendix);
-        app.post('/api/v1/employee/createForms2023', authJwt.verifyToken, auth.createForms2023);
+        app.post('/api/v1/employee/createForms2023', authJwt.verifyToken, upload.single('image'), auth.createForms2023);
         app.get('/api/v1/employee/getForms2023', authJwt.verifyToken, auth.getForms2023);
         app.delete('/api/v1/employee/deleteForms2023', authJwt.verifyToken, auth.deleteForms2023);
         app.post('/api/v1/employee/createReferenceCheck', authJwt.verifyToken, auth.createReferenceCheck);
@@ -185,13 +185,13 @@ module.exports = (app) => {
         app.post('/api/v1/employee/createTermination', authJwt.verifyToken, auth.createTermination);
         app.get('/api/v1/employee/getTermination', authJwt.verifyToken, auth.getTermination);
         app.delete('/api/v1/employee/deleteTermination', authJwt.verifyToken, auth.deleteTermination);
-        app.post('/api/v1/employee/createFw9', authJwt.verifyToken, auth.createFw9);
+        app.post('/api/v1/employee/createFw9', authJwt.verifyToken, upload.single('image'), auth.createFw9);
         app.get('/api/v1/employee/getFw9', authJwt.verifyToken, auth.getFw9);
         app.delete('/api/v1/employee/deleteFw9', authJwt.verifyToken, auth.deleteFw9);
-        app.post('/api/v1/employee/createI9', authJwt.verifyToken, auth.createI9);
+        app.post('/api/v1/employee/createI9', authJwt.verifyToken, upload.single('image'), auth.createI9);
         app.get('/api/v1/employee/getI9', authJwt.verifyToken, auth.getI9);
         app.delete('/api/v1/employee/deleteI9', authJwt.verifyToken, auth.deleteI9);
-        app.post('/api/v1/employee/createFW4', authJwt.verifyToken, auth.createFW4);
+        app.post('/api/v1/employee/createFW4', authJwt.verifyToken, upload.single('image'), auth.createFW4);
         app.get('/api/v1/employee/getFW4', authJwt.verifyToken, auth.getFW4);
         app.delete('/api/v1/employee/deleteFW4', authJwt.verifyToken, auth.deleteFW4);
         app.post('/api/v1/employee/createLrc1031A', authJwt.verifyToken, auth.createLrc1031A);

@@ -9,6 +9,13 @@ const i9Schema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
+        document: {
+                type: String
+        },
+        type: {
+                type: String
+        },
+
         lastName: {
                 type: String,
         },

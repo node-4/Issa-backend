@@ -31,6 +31,7 @@ module.exports = (app) => {
         app.get('/api/v1/admin/getRecieptById/:id', auth.getRecieptById);
         app.get('/api/v1/admin/getAllReceipt', authJwt.verifyToken, auth.getAllReceipt);
         app.post('/api/v1/admin/addFirstAidChecklist', authJwt.verifyToken, auth.addFirstAidChecklist);
+        app.put('/api/v1/admin/editFirstAidChecklist/:id', authJwt.verifyToken, auth.editFirstAidChecklist);
 
         app.post('/api/v1/admin/addFireEquipementMonitoring', authJwt.verifyToken, auth.addFireEquipementMonitoring);
         app.put('/api/v1/admin/editFireEquipementMonitoring/:id', authJwt.verifyToken, auth.editFireEquipementMonitoring);
@@ -77,6 +78,9 @@ module.exports = (app) => {
         app.put('/api/v1/admin/updateMedicationEmployee/:id', authJwt.verifyToken, auth.updateMedicationEmployee);
         app.delete('/api/v1/admin/deleteMedicationEmployee/:id', authJwt.verifyToken, auth.deleteMedicationEmployee);
         app.get('/api/v1/admin/getAllMedicationEmployee', authJwt.verifyToken, auth.getAllMedicationEmployee);
+
+        app.put("/api/v1/admin/updateStatusInInstructionInMedicationEmployee/:id/:medicationId", authJwt.verifyToken, auth.updateStatusInInstructionInMedicationEmployee);
+
         app.put("/api/v1/admin/addInstructionInMedicationEmployee/:id", authJwt.verifyToken, auth.addInstructionInMedicationEmployee);
         app.delete("/api/v1/admin/deleteInstructionInMedicationEmployee/:id/:instructionId", authJwt.verifyToken, auth.deleteInstructionInMedicationEmployee);
         app.post('/api/v1/admin/createPatientMedication', authJwt.verifyToken, upload.single('file'), auth.createPatientMedication);

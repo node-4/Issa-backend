@@ -40,6 +40,7 @@ const partner = require("../model/website/partner");
 const downloadPage = require("../model/website/downloadPage");
 const aboutUsOasisNotesSupport = require("../model/website/aboutUsOasisNotesSupport");
 const staticContent = require('../model/website/staticContent');
+const jobDescriptionFromSuperAdmin = require('../model/EmployeeInformation/jobDescriptionFromSuperAdmin');
 exports.registration = async (req, res) => {
         const { mobileNumber, email } = req.body;
         try {
@@ -2662,5 +2663,79 @@ exports.deletePrivacy = async (req, res) => {
         } catch (err) {
                 console.log(err.message);
                 return res.status(500).send({ msg: "internal server error", error: err.message });
+        }
+};
+exports.addJobDescription = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                } else {
+                        let findData = await jobDescriptionFromSuperAdmin.findOne({});
+                        if (findData) {
+                                let obj = {
+                                        jobDescription: req.body.jobDescription || findData.jobDescription,
+                                }
+                                const userCreate = await jobDescriptionFromSuperAdmin.findByIdAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
+                                return res.status(200).send({ status: 200, message: "Offer Letter add successfully ", data: userCreate, });
+                        } else {
+                                let obj = {
+                                        jobDescription: req.body.jobDescription,
+                                }
+                                const userCreate = await jobDescriptionFromSuperAdmin.create(obj);
+                                return res.status(200).send({ status: 200, message: "Offer Letter add successfully ", data: userCreate, });
+                        }
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getJobDescriptionById = async (req, res) => {
+        try {
+                const user1 = await jobDescriptionFromSuperAdmin.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "JobDescription not found", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "Get JobDescription fetch successfully.", data: user1 });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.deleteJobDescription = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
+                }
+                const user1 = await jobDescriptionFromSuperAdmin.findOne({ _id: req.params.id });
+                if (!user1) {
+                        return res.status(404).send({ status: 404, message: "JobDescription not found", data: {} });
+                } else {
+                        await jobDescriptionFromSuperAdmin.findByIdAndDelete({ _id: user1._id })
+                        return res.status(200).send({ status: 200, message: "JobDescription delete successfully.", data: {} });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 200, message: "Server error" + error.message });
+        }
+};
+exports.getAllJobDescription = async (req, res) => {
+        try {
+                const user = await User.findOne({ _id: req.user });
+                if (!user) {
+                        return res.status(404).send({ status: 404, message: "User not found", data: {} });
+                }
+                const filteredTasks = await jobDescriptionFromSuperAdmin.find({}).sort({ createdAt: -1 })
+                if (filteredTasks.length === 0) {
+                        return res.status(404).send({ status: 404, message: "No JobDescription found.", data: {} });
+                } else {
+                        return res.status(200).send({ status: 200, message: "JobDescription found successfully.", data: filteredTasks });
+                }
+        } catch (error) {
+                console.error(error);
+                return res.status(500).send({ status: 500, message: "Server error: " + error.message, data: {} });
         }
 };

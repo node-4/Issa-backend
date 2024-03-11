@@ -24,6 +24,11 @@ const informedConsentSchema = new mongoose.Schema({
                 other: {
                         type: String,
                 },
+                status: {
+                        type: String,
+                        enum: ["Continue", "DisContinue"],
+                        default: "Continue",
+                }
         }],
         instruction: [{
                 instruction: {
