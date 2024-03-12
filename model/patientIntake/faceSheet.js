@@ -34,6 +34,9 @@ const assessmentSchema = new mongoose.Schema({
         eyeColor: {
                 type: String
         },
+        race: {
+                type: String
+        },
         height: {
                 type: String
         },
@@ -80,6 +83,15 @@ const assessmentSchema = new mongoose.Schema({
                 OtherSpecialists: {
                         type: String
                 },
+                preferredHospitalName: {
+                        type: String
+                },
+                preferredHospitalPhone: {
+                        type: String
+                },
+                preferredHospitalAddress: {
+                        type: String
+                },
         }],
         psychiatricProvider: [{
                 name: {
@@ -94,22 +106,13 @@ const assessmentSchema = new mongoose.Schema({
                 OtherSpecialists: {
                         type: String
                 },
+                healthPlan: {
+                        type: String
+                },
+                healthPlanId: {
+                        type: String
+                },
         }],
-        preferredHospitalName: {
-                type: String
-        },
-        preferredHospitalPhone: {
-                type: String
-        },
-        preferredHospitalAddress: {
-                type: String
-        },
-        healthPlan: {
-                type: String
-        },
-        healthPlanId: {
-                type: String
-        },
         caseManagerName: {
                 type: String
         },

@@ -17,6 +17,9 @@ const consentFormSchema = new mongoose.Schema({
         companyName: {
                 type: String
         },
+        iAgree: {
+                type: Boolean
+        },
         residentName: {
                 type: String
         },
@@ -246,7 +249,6 @@ const consentFormSchema = new mongoose.Schema({
         advanceDirectivesCoordinationOfCareAppropriatePartiesNotifiedComment: {
                 type: String
         },
-
         // PAGE 5
         complaintProcessAcknowledgementCompany: {
                 type: String
@@ -278,6 +280,9 @@ const consentFormSchema = new mongoose.Schema({
         // PAGE 6
         orientationToAgencyCompany: {
                 type: String
+        },
+        orientationToAgencyCompanyFollowing: {
+                type: Array
         },
         orientationToAgencyResidentName: {
                 type: String

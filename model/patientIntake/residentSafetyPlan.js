@@ -20,10 +20,10 @@ const adlTrackingFormSchema = new mongoose.Schema({
                 type: Date,
         },
         warningSigns: {
-                type: String,
+                type: Array,
         },
         internalCopingStrategies: {
-                type: String,
+                type: Array,
         },
         distractionsPeople: [{
                 name: {
@@ -53,6 +53,15 @@ const adlTrackingFormSchema = new mongoose.Schema({
                         type: String,
                 },
         }],
+        professionalsClinicianName: {
+                type: String,
+        },
+        professionalsPhone: {
+                type: String,
+        },
+        professionalsRelationship: {
+                type: String,
+        },
         professionals: [{
                 clinicianName: {
                         type: String,

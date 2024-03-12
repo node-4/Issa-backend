@@ -37,9 +37,15 @@ const treatmentPlanSchema = new mongoose.Schema({
         care: [{
                 type: String
         }],
+        medicationService: [{
+                type: String
+        }],
         presentingProblems: [{
                 type: String
         }],
+        diagonsis: {
+                type: String
+        },
         mentalStatus: {
                 type: String,
                 enum: ['oriented', 'disoriented', 'unstable', 'other']
@@ -198,6 +204,14 @@ const treatmentPlanSchema = new mongoose.Schema({
                 estimatedDateOfCompletion: Date,
                 comments: String,
         },
+        other: [{
+                type: String,
+                admissionMeasure: String,
+                previousMeasure: String,
+                currentMeasure: String,
+                estimatedDateOfCompletion: Date,
+                comments: String,
+        }],
         residentParticipation: {
                 type: String,
         },
@@ -207,7 +221,10 @@ const treatmentPlanSchema = new mongoose.Schema({
         residentProgress: {
                 type: String,
         },
-        supportSystem: [String],
+        supportSystem: [{ type: String }],
+        supportSystemPhoneNumber: {
+                type: String,
+        },
         currentMedications: {
                 type: String,
         },
@@ -221,7 +238,8 @@ const treatmentPlanSchema = new mongoose.Schema({
                 type: String,
         },
         personalFinances: {
-                type: Boolean, default: false
+                type: Boolean,
+                default: false
         },
         dischargePlanning: {
                 type: String,
@@ -261,14 +279,12 @@ const treatmentPlanSchema = new mongoose.Schema({
                         type: String,
                 },
         },
-        residentAgreement: {
-                isReason: {
-                        type: String,
-                        enum: ['yes', 'no'],
-                },
-                refusalReason: {
-                        type: String,
-                },
+        residentAgreementIsReason: {
+                type: String,
+                enum: ['yes', 'no'],
+        },
+        residentAgreementRefusalReason: {
+                type: String,
         },
         signaturesResident: {
                 name: {

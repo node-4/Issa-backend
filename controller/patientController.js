@@ -253,6 +253,9 @@ exports.createResidentSafetyPlan = async (req, res) => {
                                 distractionsPeople: req.body.distractionsPeople || findPatientTracking.distractionsPeople,
                                 distractionsPlace: req.body.distractionsPlace || findPatientTracking.distractionsPlace,
                                 distractionsPlane: req.body.distractionsPlane || findPatientTracking.distractionsPlane,
+                                professionalsClinicianName: req.body.professionalsClinicianName || findPatientTracking.professionalsClinicianName,
+                                professionalsPhone: req.body.professionalsPhone || findPatientTracking.professionalsPhone,
+                                professionalsRelationship: req.body.professionalsRelationship || findPatientTracking.professionalsRelationship,
                                 helpContactsPeople: req.body.helpContactsPeople || findPatientTracking.helpContactsPeople,
                                 professionals: req.body.professionals || findPatientTracking.professionals,
                                 suicidePrevention: req.body.suicidePrevention || findPatientTracking.suicidePrevention,
@@ -278,6 +281,9 @@ exports.createResidentSafetyPlan = async (req, res) => {
                                 distractionsPlace: req.body.distractionsPlace,
                                 distractionsPlane: req.body.distractionsPlane,
                                 helpContactsPeople: req.body.helpContactsPeople,
+                                professionalsClinicianName: req.body.professionalsClinicianName,
+                                professionalsPhone: req.body.professionalsPhone,
+                                professionalsRelationship: req.body.professionalsRelationship,
                                 professionals: req.body.professionals,
                                 suicidePrevention: req.body.suicidePrevention,
                                 localEmergencyHelp: req.body.localEmergencyHelp,
@@ -330,7 +336,9 @@ exports.createTreatmentPlan = async (req, res) => {
                         date: req.body.date,
                         admitDate: req.body.admitDate,
                         care: req.body.care,
+                        medicationService: req.body.medicationService,
                         presentingProblems: req.body.presentingProblems,
+                        diagonsis: req.body.diagonsis,
                         mentalStatus: req.body.mentalStatus,
                         mentalStatusOther: req.body.mentalStatusOther,
                         moodLevel: req.body.moodLevel,
@@ -416,10 +424,19 @@ exports.createTreatmentPlan = async (req, res) => {
                                 estimatedDateOfCompletion: req.body.estimatedDateOfCompletion,
                                 comments: req.body.comments,
                         },
+                        other: [{
+                                type: req.body.type,
+                                admissionMeasure: req.body.admissionMeasure,
+                                previousMeasure: req.body.previousMeasure,
+                                currentMeasure: req.body.currentMeasure,
+                                estimatedDateOfCompletion: req.body.estimatedDateOfCompletion,
+                                comments: req.body.comments,
+                        }],
                         residentParticipation: req.body.residentParticipation,
                         residentAttitude: req.body.residentAttitude,
                         residentProgress: req.body.residentProgress,
                         supportSystem: req.body.supportSystem,
+                        supportSystemPhoneNumber: req.body.supportSystemPhoneNumber,
                         currentMedications: req.body.currentMedications,
                         religiousPreference: req.body.religiousPreference,
                         nutritionAndWellnessPlanning: req.body.nutritionAndWellnessPlanning,
@@ -433,7 +450,8 @@ exports.createTreatmentPlan = async (req, res) => {
                         treatmentPlanReviewDate: req.body.treatmentPlanReviewDate,
                         dischargePlanDate: req.body.dischargePlanDate,
                         individualsParticipatingInServicePlan: req.body.individualsParticipatingInServicePlan,
-                        residentAgreement: req.body.residentAgreement,
+                        residentAgreementIsReason: req.body.residentAgreementIsReason,
+                        residentAgreementRefusalReason: req.body.residentAgreementRefusalReason,
                         signaturesResident: req.body.signaturesResident,
                         signaturesFacilityRep: req.body.signaturesFacilityRep,
                         signaturesBhp: req.body.signaturesBhp,
@@ -494,17 +512,17 @@ exports.createNursingAssessment = async (req, res) => {
                         vitalsHeightFeet: req.body.vitalsHeightFeet,
                         vitalsHeightInches: req.body.vitalsHeightInches,
                         allergies: req.body.allergies,
-                        covid19ScreeningSymptomsFeverOrChills: req.body.covid19ScreeningSymptomsFeverOrChills,
-                        covid19ScreeningSymptomsShortnessOfBreath: req.body.covid19ScreeningSymptomsShortnessOfBreath,
-                        covid19ScreeningSymptomsSoreThroat: req.body.covid19ScreeningSymptomsSoreThroat,
-                        covid19ScreeningSymptomsDiarrhea: req.body.covid19ScreeningSymptomsDiarrhea,
-                        covid19ScreeningSymptomsCough: req.body.covid19ScreeningSymptomsCough,
-                        covid19ScreeningSymptomsBodyAches: req.body.covid19ScreeningSymptomsBodyAches,
-                        covid19ScreeningSymptomsCongestionOrRunnyNose: req.body.covid19ScreeningSymptomsCongestionOrRunnyNose,
-                        covid19ScreeningSymptomsLossOfTasteOrSmell: req.body.covid19ScreeningSymptomsLossOfTasteOrSmell,
-                        covid19ScreeningSymptomsFatigue: req.body.covid19ScreeningSymptomsFatigue,
-                        covid19ScreeningSymptomsHeadache: req.body.covid19ScreeningSymptomsHeadache,
-                        covid19ScreeningSymptomsNauseaOrVomiting: req.body.covid19ScreeningSymptomsNauseaOrVomiting,
+                        // covid19ScreeningSymptomsFeverOrChills: req.body.covid19ScreeningSymptomsFeverOrChills,
+                        // covid19ScreeningSymptomsShortnessOfBreath: req.body.covid19ScreeningSymptomsShortnessOfBreath,
+                        // covid19ScreeningSymptomsSoreThroat: req.body.covid19ScreeningSymptomsSoreThroat,
+                        // covid19ScreeningSymptomsDiarrhea: req.body.covid19ScreeningSymptomsDiarrhea,
+                        // covid19ScreeningSymptomsCough: req.body.covid19ScreeningSymptomsCough,
+                        // covid19ScreeningSymptomsBodyAches: req.body.covid19ScreeningSymptomsBodyAches,
+                        // covid19ScreeningSymptomsCongestionOrRunnyNose: req.body.covid19ScreeningSymptomsCongestionOrRunnyNose,
+                        // covid19ScreeningSymptomsLossOfTasteOrSmell: req.body.covid19ScreeningSymptomsLossOfTasteOrSmell,
+                        // covid19ScreeningSymptomsFatigue: req.body.covid19ScreeningSymptomsFatigue,
+                        // covid19ScreeningSymptomsHeadache: req.body.covid19ScreeningSymptomsHeadache,
+                        // covid19ScreeningSymptomsNauseaOrVomiting: req.body.covid19ScreeningSymptomsNauseaOrVomiting,
                         reviewOfSystemsConstitutional: req.body.reviewOfSystemsConstitutional,
                         reviewOfSystemsConstitutionalComment: req.body.reviewOfSystemsConstitutionalComment,
                         reviewOfSystemsCardiovascular: req.body.reviewOfSystemsCardiovascular,
@@ -596,6 +614,7 @@ exports.createResidentIntake = async (req, res) => {
                         adminId: patient.adminId,
                         patientId: patient._id,
                         companyName: patient.companyName,
+                        iAgree: req.body.iAgree,
                         residentName: req.body.residentName,
                         residentSignature: req.body.residentSignature,
                         residentDate: req.body.residentDate,
@@ -673,6 +692,7 @@ exports.createResidentIntake = async (req, res) => {
                         complaintProcessAcknowledgementGuardianRepresentativeSignature: req.body.complaintProcessAcknowledgementGuardianRepresentativeSignature,
                         complaintProcessAcknowledgementGuardianRepresentativeDate: req.body.complaintProcessAcknowledgementGuardianRepresentativeDate,
                         complaintProcessAcknowledgementGuardianRepresentativeTime: req.body.complaintProcessAcknowledgementGuardianRepresentativeTime,
+                        orientationToAgencyCompanyFollowing: req.body.orientationToAgencyCompanyFollowing,
                         orientationToAgencyCompany: req.body.orientationToAgencyCompany,
                         orientationToAgencyResidentName: req.body.orientationToAgencyResidentName,
                         orientationToAgencyResidentSignature: req.body.orientationToAgencyResidentSignature,
@@ -870,11 +890,15 @@ exports.createInitialAssessment = async (req, res) => {
                                         consistent: req.body.consistent,
                                         younger: req.body.younger,
                                         older: req.body.older,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 height: {
                                         average: req.body.average,
                                         short: req.body.short,
                                         tall: req.body.tall,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 weight: {
                                         average: req.body.average,
@@ -882,18 +906,24 @@ exports.createInitialAssessment = async (req, res) => {
                                         overweight: req.body.overweight,
                                         thin: req.body.thin,
                                         emaciated: req.body.emaciated,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 attire: {
                                         Casual: req.body.Casual,
                                         Neat: req.body.Neat,
                                         Tattered: req.body.Tattered,
                                         Dirty: req.body.Dirty,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 grooming: {
                                         wellGroomed: req.body.wellGroomed,
                                         adequate: req.body.adequate,
                                         unkempt: req.body.unkempt,
                                         disheveled: req.body.disheveled,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 Mood: {
                                         Euthymic: req.body.Euthymic,
@@ -901,6 +931,8 @@ exports.createInitialAssessment = async (req, res) => {
                                         Elevated: req.body.Elevated,
                                         Depressed: req.body.Depressed,
                                         Anxious: req.body.Anxious,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 Affect: {
                                         normalRange: req.body.normalRange,
@@ -908,12 +940,16 @@ exports.createInitialAssessment = async (req, res) => {
                                         Labile: req.body.Labile,
                                         Constricted: req.body.Constricted,
                                         Other: req.body.Other,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 EyeContact: {
                                         Appropriate: req.body.eyeContactAppropriate,
                                         Minimal: req.body.eyeContactMinimal,
                                         Poor: req.body.eyeContactPoor,
                                         Adequate: req.body.eyeContactAdequate,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 Cooperation: {
                                         Appropriate: req.body.Appropriate,
@@ -921,6 +957,8 @@ exports.createInitialAssessment = async (req, res) => {
                                         Evasive: req.body.Evasive,
                                         Defensive: req.body.Defensive,
                                         Indifferent: req.body.Indifferent,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 Articulation: {
                                         Normal: req.body.Normal,
@@ -928,47 +966,61 @@ exports.createInitialAssessment = async (req, res) => {
                                         Mumbled: req.body.Mumbled,
                                         Slurred: req.body.Slurred,
                                         Stuttered: req.body.Stuttered,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 Tone: {
                                         Normal: req.body.Normal,
                                         Soft: req.body.Soft,
                                         Loud: req.body.Loud,
                                         Pressured: req.body.Pressured,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 Rate: {
                                         Normal: req.body.Normal,
                                         Slow: req.body.Slow,
                                         Fast: req.body.Fast,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 Quantity: {
                                         Normal: req.body.Normal,
                                         Verbose: req.body.Verbose,
                                         Mutism: req.body.Mutism,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 responseLatency: {
                                         Normal: req.body.responseLatencyNormal,
                                         Delayed: req.body.responseLatencyDelayed,
                                         Shortened: req.body.responseLatencyShortened,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 thoughtContent: {
                                         Unremarkable: req.body.Unremarkable,
                                         Suspicious: req.body.Suspicious,
                                         Negative: req.body.Negative,
                                         Concrete: req.body.Concrete,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 thoughtProcesses: {
                                         logicalCoherent: req.body.logicalCoherent,
                                         Tangential: req.body.Tangential,
                                         Circumstantial: req.body.Circumstantial,
                                         Vague: req.body.Vague,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 Delusions: {
                                         No: req.body.No,
                                         YesPersecutory: req.body.YesPersecutory,
                                         YesSomatic: req.body.YesSomatic,
                                         YesGrandiose: req.body.YesGrandiose,
-                                        YesOther: req.body.YesOther,
-
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 Hallucinations: {
                                         Unremarkable: req.body.Unremarkable,
@@ -976,6 +1028,8 @@ exports.createInitialAssessment = async (req, res) => {
                                         AuditoryHallucinations: req.body.AuditoryHallucinations,
                                         TactileHallucinations: req.body.TactileHallucinations,
                                         YesOther: req.body.YesOther,
+                                        other: req.body.other,
+                                        otherComment: req.body.otherComment
                                 },
                                 Gait: {
                                         Normal: req.body.Normal,
@@ -1033,6 +1087,7 @@ exports.createInitialAssessment = async (req, res) => {
                         },
                         significantSocialDevelopmentalHistory: req.body.significantSocialDevelopmentalHistory,
                         personalInformation: {
+                                educationalHistory: req.body.educationalHistory,
                                 highestEducation: req.body.highestEducation,
                                 specialEducation: req.body.specialEducation,
                                 currentStudent: req.body.currentStudent,
@@ -1087,18 +1142,12 @@ exports.createInitialAssessment = async (req, res) => {
                         psychiatricDiagnoses: [{
                                 icdCode: req.body.icdCode,
                                 description: req.body.description,
-                                primary: req.body.primary,
-                                secondary: req.body.secondary,
-                                tertiary: req.body.tertiary,
-                                additional: req.body.additional,
+                                name: req.body.name
                         }],
                         medicalDiagnoses: [{
                                 icdCode: req.body.icdCode,
                                 description: req.body.description,
-                                primary: req.body.primary,
-                                secondary: req.body.secondary,
-                                tertiary: req.body.tertiary,
-                                additional: req.body.additional,
+                                name: req.body.name
                         }],
                         additionalDiagnoses: req.body.additionalDiagnoses,
                         psychosocialStressors: {
@@ -1131,6 +1180,13 @@ exports.createInitialAssessment = async (req, res) => {
                                 comment: req.body.comment
                         },
                         additionalNotes: req.body.additionalNotes,
+                        residentInformation: {
+                                ResidentName: req.body.ResidentName,
+                                ResidentTitle: req.body.ResidentTitle,
+                                ResidentSignature: req.body.ResidentSignature,
+                                ResidentDate: { type: Date, default: Date.now },
+                                time: req.body.time,
+                        },
                         staffInformation: {
                                 staffName: req.body.staffName,
                                 staffTitle: req.body.staffTitle,

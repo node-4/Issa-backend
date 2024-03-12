@@ -13,6 +13,7 @@ const nursingAssessmentSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
+        /////////////////////////////////////// first box//////////////////////
         todayDate: { type: Date, },
         admissionDate: { type: Date, },
         residentFullName: { type: String, },
@@ -30,6 +31,7 @@ const nursingAssessmentSchema = new mongoose.Schema({
                 type: String,
                 enum: ['PhysicalServices', 'BehavioralHealthServices'],
         }],
+        //////////////////////////////////////////////////// vitals box ///////////////////////
         vitalsBloodPressure: { type: String },
         vitalsPulse: { type: String },
         vitalsRespiratoryRate: { type: String },
@@ -39,17 +41,7 @@ const nursingAssessmentSchema = new mongoose.Schema({
         vitalsHeightFeet: { type: Number },
         vitalsHeightInches: { type: Number },
         allergies: { type: String },
-        covid19ScreeningSymptomsFeverOrChills: { type: Boolean },
-        covid19ScreeningSymptomsShortnessOfBreath: { type: Boolean },
-        covid19ScreeningSymptomsSoreThroat: { type: Boolean },
-        covid19ScreeningSymptomsDiarrhea: { type: Boolean },
-        covid19ScreeningSymptomsCough: { type: Boolean },
-        covid19ScreeningSymptomsBodyAches: { type: Boolean },
-        covid19ScreeningSymptomsCongestionOrRunnyNose: { type: Boolean },
-        covid19ScreeningSymptomsLossOfTasteOrSmell: { type: Boolean },
-        covid19ScreeningSymptomsFatigue: { type: Boolean },
-        covid19ScreeningSymptomsHeadache: { type: Boolean },
-        covid19ScreeningSymptomsNauseaOrVomiting: { type: Boolean },
+        /////////////////////////////////////////////////////////////
         reviewOfSystemsConstitutional: {
                 type: String,
                 enum: ['DENIES', 'Fever', 'Poor appetite', 'Unexplained weight gain', 'Fatigue', 'Chills', 'Change in appetite', 'Night Sweats', 'Unexplained weight loss'],
@@ -139,6 +131,19 @@ const nursingAssessmentSchema = new mongoose.Schema({
         rnSignature: { type: String },
         rnDate: { type: Date, default: Date.now },
         rnTime: { type: String },
+
+        // covid19ScreeningSymptomsFeverOrChills: { type: Boolean },
+        // covid19ScreeningSymptomsShortnessOfBreath: { type: Boolean },
+        // covid19ScreeningSymptomsSoreThroat: { type: Boolean },
+        // covid19ScreeningSymptomsDiarrhea: { type: Boolean },
+        // covid19ScreeningSymptomsCough: { type: Boolean },
+        // covid19ScreeningSymptomsBodyAches: { type: Boolean },
+        // covid19ScreeningSymptomsCongestionOrRunnyNose: { type: Boolean },
+        // covid19ScreeningSymptomsLossOfTasteOrSmell: { type: Boolean },
+        // covid19ScreeningSymptomsFatigue: { type: Boolean },
+        // covid19ScreeningSymptomsHeadache: { type: Boolean },
+        // covid19ScreeningSymptomsNauseaOrVomiting: { type: Boolean },
+
 });
 
 const NursingAssessment = mongoose.model('nursingAssessment', nursingAssessmentSchema);
