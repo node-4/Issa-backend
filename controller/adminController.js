@@ -2008,7 +2008,7 @@ exports.updateMedicationEmployee = async (req, res) => {
                 } else {
                         let patientId;
                         if (req.body.patientId != (null || undefined)) {
-                                const user2 = await patientMedication.findOne({ _id: req.body.patientId });
+                                const user2 = await User.findOne({ _id: req.body.patientId });
                                 if (!user2) {
                                         return res.status(404).send({ status: 404, message: "Patient not found", data: {} });
                                 } else {
