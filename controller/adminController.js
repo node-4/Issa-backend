@@ -95,7 +95,6 @@ exports.getStaffScheduleAdministratorForAdmin = async (req, res) => {
                 return res.status(500).json({ status: 500, message: "Server error" + error.message });
         }
 };
-
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -141,8 +140,16 @@ exports.updateProfile = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                if (req.file) {
-                        req.body.profilePic = req.file.path
+                let profilePic, logo;
+                if (req.files['logo']) {
+                        logo = req.files['logo'];
+                        req.body.logo = logo[0].path;
+                } else {
+                        req.body.logo = user.logo
+                }
+                if (req.files['image']) {
+                        profilePic = req.files['image'];
+                        req.body.profilePic = profilePic[0].path;
                 } else {
                         req.body.profilePic = user.profilePic
                 }
@@ -168,6 +175,7 @@ exports.updateProfile = async (req, res) => {
                         address: req.body.address || user.address,
                         proffession: req.body.proffession || user.proffession,
                         profilePic: req.body.profilePic,
+                        logo: req.body.logo,
                         dateOfBirth: req.body.dateOfBirth,
                         age: req.body.age
                 }

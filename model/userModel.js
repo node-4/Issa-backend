@@ -68,6 +68,10 @@ const userSchema = new mongoose.Schema({
                 type: Number,
                 default: 0,
         },
+        logo: {
+                type: String,
+                default: "",
+        },
         profilePic: {
                 type: String,
                 default: "",
