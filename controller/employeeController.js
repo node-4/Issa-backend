@@ -1201,7 +1201,7 @@ exports.getStaffScheduleByEmployeeId = async (req, res) => {
                 const month = req.query.month || moment().format('MM');
                 filter.year = year;
                 filter.month = month;
-                let findEmployee = await staffSchedule.find(filter);
+                let findEmployee = await staffSchedule.find(filter).populate('schedule.shiftId schedule.employeeId');
                 if (findEmployee.length == 0) {
                         return res.status(404).json({ status: 404, message: "Staff schedule not found.", data: {} });
                 } else {
