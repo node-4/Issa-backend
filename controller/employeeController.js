@@ -1195,8 +1195,12 @@ exports.getStaffScheduleByEmployeeId = async (req, res) => {
                 }
                 let filter = {};
                 if (req.query.employeeId != (null || undefined)) {
-                        filter = { employees: { $in: req.query.employeeId } };
-                }
+                        const employee = await User.findOne({ _id: req.query.employeeId });
+                        if (!employee) {
+                                return res.status(404).json({ status: 404, message: "Employee not found! Not registered", data: {} });
+                        }
+                        filter = { adminId: employee.adminId }
+                };
                 const year = req.query.year || moment().format('YYYY');
                 const month = req.query.month || moment().format('MM');
                 filter.year = year;
