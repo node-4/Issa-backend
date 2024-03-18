@@ -39,6 +39,7 @@ const timeOffRequest = require('../model/timeOffRequest/timeOffrequest');
 const employeePerformanceReview = require('../model/EmployeePerformanceReview/employeePerformanceReview');
 const patientTracking = require('../model/Tracking/patientTracking');
 const employeeTracking = require('../model/Tracking/employeeTracking');
+const staffScheduleAdministrator = require('../model/GroupNotes/theropyNotes/staffScheduleAdministrator');
 const patientVitals = require('../model/patientVitals/patientVitals');
 const PrnMedicationLog = require('../model/Medication/employeeMedication/PrnMedicationLog');
 const informedConsentForMedication = require('../model/Medication/employeeMedication/informedConsentForMedication');
@@ -1205,11 +1206,12 @@ exports.getStaffScheduleByEmployeeId = async (req, res) => {
                 const month = req.query.month || moment().format('MM');
                 filter.year = year;
                 filter.month = month;
+                let findEmployeeAdministrator = await staffScheduleAdministrator.findOne(filter);
                 let findEmployee = await staffSchedule.find(filter).populate('schedule.shiftId schedule.employeeId');
                 if (findEmployee.length == 0) {
                         return res.status(404).json({ status: 404, message: "Staff schedule not found.", data: {} });
                 } else {
-                        return res.status(200).json({ status: 200, message: "Staff schedule found.", data: findEmployee });
+                        return res.status(200).json({ status: 200, message: "Staff schedule found.", data: findEmployee, administratorData: findEmployeeAdministrator });
                 }
         } catch (error) {
                 console.error(error);
@@ -1855,6 +1857,7 @@ exports.createEmployeePerformanceReview = async (req, res) => {
                         employeeName: req.body.employeeName,
                         employeeSignature: req.body.employeeSignature,
                         employeeDate: req.body.employeeDate,
+                        employeeTime: req.body.employeeTime
                 }
                 let newEmployee = await employeePerformanceReview.create(obj);
                 if (newEmployee) {

@@ -64,6 +64,9 @@ const performanceReviewSchema = new mongoose.Schema({
         employeeDate: {
                 type: Date
         },
+        employeeTime: {
+                type: String
+        },
         administratorName: {
                 type: String
         },
@@ -72,6 +75,9 @@ const performanceReviewSchema = new mongoose.Schema({
         },
         administratorDate: {
                 type: Date
+        },
+        administratorTime: {
+                type: String
         },
 });
 const PerformanceReview = mongoose.model('PerformanceReview', performanceReviewSchema);

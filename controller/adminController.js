@@ -94,7 +94,7 @@ exports.getStaffScheduleAdministratorForAdmin = async (req, res) => {
                 console.error(error);
                 return res.status(500).json({ status: 500, message: "Server error" + error.message });
         }
-};
+}
 exports.signin = async (req, res) => {
         try {
                 const { email, password } = req.body;
@@ -1814,6 +1814,7 @@ exports.updateEmployeePerformanceReview = async (req, res) => {
                                 administratorName: user.fullName || `${user.firstName} ${user.lastName}`,
                                 administratorSignature: req.body.administratorSignature || user1.administratorSignature,
                                 administratorDate: req.body.administratorDate || user1.administratorDate,
+                                administratorTime: req.body.administratorTime || user1.administratorTime,
                                 name: req.body.name || user1.name,
                                 date: req.body.date || user1.date,
                                 employeeJobTitle: req.body.employeeJobTitle || user1.employeeJobTitle,
