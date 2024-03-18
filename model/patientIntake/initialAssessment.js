@@ -9,6 +9,7 @@ const assessmentSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
+        assessmentType: { type: String },
         // SECTION I
         companyName: { type: String, required: true },
         hasNotified: {

@@ -864,6 +864,7 @@ exports.editFirstAidChecklist = async (req, res) => {
                                 OctDate: req.body.OctDate || user1.OctDate,
                                 NovDate: req.body.NovDate || user1.NovDate,
                                 DecDate: req.body.DecDate || user1.DecDate,
+                                firstAidChecklistData: req.body.firstAidChecklistData || user1.firstAidChecklistData,
                                 AdhesiveStripBandages: req.body.AdhesiveStripBandages || user1.AdhesiveStripBandages,
                                 AdhesiveTap: req.body.AdhesiveTap || user1.AdhesiveTap,
                                 CPRMouthGuardShield: req.body.CPRMouthGuardShield || user1.CPRMouthGuardShield,
@@ -1018,6 +1019,7 @@ exports.editDisasterDrill = async (req, res) => {
                                 staffPresent: req.body.staffPresent || user1.staffPresent,
                                 contactManagerCoordinator: req.body.contactManagerCoordinator || user1.contactManagerCoordinator,
                                 was911Called: req.body.was911Called || user1.was911Called,
+                                anyInjuries: req.body.anyInjuries || user1.anyInjuries,
                                 extinguisherTaken: req.body.extinguisherTaken || user1.extinguisherTaken,
                                 relocatedTheResidents: req.body.relocatedTheResidents || user1.relocatedTheResidents,
                                 recommendations: req.body.recommendations || user1.recommendations,
@@ -1029,6 +1031,7 @@ exports.editDisasterDrill = async (req, res) => {
                                 title: req.body.title || user1.title,
                                 personConductingTheDisasterDrill: req.body.personConductingTheDisasterDrill || user1.personConductingTheDisasterDrill,
                                 conducatingDate: req.body.conducatingDate || user1.conducatingDate,
+                                conducatingName: req.body.conducatingName || user1.conducatingName,
                         }
                         const checklist = await notes.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (checklist) {

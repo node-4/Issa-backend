@@ -131,6 +131,9 @@ const addressSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "user",
         }],
+        anyInjuries: {
+                type: Boolean,
+        },
         contactManagerCoordinator: {
                 type: Boolean,
         },
@@ -162,6 +165,9 @@ const addressSchema = new mongoose.Schema({
                 type: String,
         },
         title: {
+                type: String,
+        },
+        conducatingName: {
                 type: String,
         },
         personConductingTheDisasterDrill: {
@@ -338,6 +344,62 @@ const addressSchema = new mongoose.Schema({
         DecDate: {
                 type: Date
         },
+        firstAidChecklistData: [{
+                name: {
+                        type: String,
+                },
+                item: {
+                        type: Number,
+                },
+                jan: {
+                        type: String,
+                        enum: ["Present", "Absent", "None"]
+                },
+                feb: {
+                        type: String,
+                        enum: ["Present", "Absent", "None"]
+                },
+                mar: {
+                        type: String,
+                        enum: ["Present", "Absent", "None"]
+                },
+                Apr: {
+                        type: String,
+                        enum: ["Present", "Absent", "None"]
+                },
+                May: {
+                        type: String,
+                        enum: ["Present", "Absent", "None"]
+                },
+                Jun: {
+                        type: String,
+                        enum: ["Present", "Absent", "None"]
+                },
+                Jul: {
+                        type: String,
+                        enum: ["Present", "Absent", "None"]
+                },
+                Aug: {
+                        type: String,
+                        enum: ["Present", "Absent", "None"]
+                },
+                Sept: {
+                        type: String,
+                        enum: ["Present", "Absent", "None"]
+                },
+                Oct: {
+                        type: String,
+                        enum: ["Present", "Absent", "None"]
+                },
+                Nov: {
+                        type: String,
+                        enum: ["Present", "Absent", "None"]
+                },
+                Dec: {
+                        type: String,
+                        enum: ["Present", "Absent", "None"]
+                },
+        }],
         AdhesiveStripBandages: {
                 name: {
                         type: String,
