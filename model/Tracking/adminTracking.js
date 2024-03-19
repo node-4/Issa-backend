@@ -17,6 +17,9 @@ const addressSchema = new mongoose.Schema({
         dueDate: {
                 type: Date,
         },
+        location: {
+                type: String,
+        },
         adminId: {
                 type: schema.Types.ObjectId,
                 ref: "User",

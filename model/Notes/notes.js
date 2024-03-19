@@ -1588,6 +1588,9 @@ const addressSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false
         },
+        modeOtherText: {
+                type: String,
+        },
         savedSignedPartA: {
                 type: String,
         },

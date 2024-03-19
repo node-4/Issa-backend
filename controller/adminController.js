@@ -174,6 +174,8 @@ exports.updateProfile = async (req, res) => {
                         companyName: req.body.companyName || user.companyName,
                         address: req.body.address || user.address,
                         proffession: req.body.proffession || user.proffession,
+                        site1: req.body.site1 || user.site1,
+                        site2: req.body.site2 || user.site2,
                         profilePic: req.body.profilePic,
                         logo: req.body.logo,
                         dateOfBirth: req.body.dateOfBirth,
@@ -346,18 +348,14 @@ exports.addAdminTracking = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let user1 = await AdminTracking.findOne({ name: req.body.name, adminId: user._id, });
-                if (!user1) {
-                        let obj = {
-                                name: req.body.name,
-                                dueDate: req.body.dueDate,
-                                adminId: user._id,
-                        };
-                        const userCreate = await AdminTracking.create(obj);
-                        return res.status(200).send({ status: 200, message: "Admin tracking add successfully ", data: userCreate, });
-                } else {
-                        return res.status(409).send({ status: 409, message: "Admin tracking already exit.", data: {}, });
-                }
+                let obj = {
+                        name: req.body.name,
+                        dueDate: req.body.dueDate,
+                        adminId: user._id,
+                        location: req.body.location
+                };
+                const userCreate = await AdminTracking.create(obj);
+                return res.status(200).send({ status: 200, message: "Admin tracking add successfully ", data: userCreate, });
         } catch (error) {
                 console.error(error);
                 return res.status(500).send({ status: 200, message: "Server error" + error.message });
@@ -386,14 +384,11 @@ exports.updateAdminTracking = async (req, res) => {
                 if (!adminTracking) {
                         return res.status(404).send({ status: 404, message: "Admin tracking not found", data: {} });
                 }
-                let adminTracking1 = await AdminTracking.findOne({ _id: { $ne: adminTracking._id }, name: req.body.name, user: user._id });
-                if (adminTracking1) {
-                        return res.status(404).send({ status: 404, message: "Admin tracking already exit", data: {} });
-                }
                 adminTracking.name = req.body.Name || adminTracking.name;
                 adminTracking.dueDate = req.body.DueDate || adminTracking.dueDate;
                 adminTracking.completePer = req.body.completePer || adminTracking.completePer;
                 adminTracking.complete = req.body.complete || adminTracking.complete;
+                adminTracking.location = req.body.location || adminTracking.location;
                 let getDate = new Date();
                 let options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true };
                 let formattedDate = getDate.toLocaleDateString('en-IN', options)
@@ -1405,6 +1400,7 @@ exports.addIncidentReport = async (req, res) => {
                         modePhoneCall: req.body.modePhoneCall,
                         modeInPerson: req.body.modeInPerson,
                         modeOther: req.body.modeOther,
+                        modeOtherText: req.body.modeOtherText,
                         savedSignedPartA: req.body.savedSignedPartA,
                         reportCompletedBy: req.body.reportCompletedBy,
                         investigationDetails: req.body.investigationDetails,
@@ -1469,6 +1465,7 @@ exports.editIncidentReport = async (req, res) => {
                                 modePhoneCall: req.body.modePhoneCall || user1.modePhoneCall,
                                 modeInPerson: req.body.modeInPerson || user1.modeInPerson,
                                 modeOther: req.body.modeOther || user1.modeOther,
+                                modeOtherText: req.body.modeOtherText || user1.modeOtherText,
                                 savedSignedPartA: req.body.savedSignedPartA || user1.savedSignedPartA,
                                 reportCompletedBy: req.body.reportCompletedBy || user1.reportCompletedBy,
                                 investigationDetails: req.body.investigationDetails || user1.investigationDetails,

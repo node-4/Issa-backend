@@ -30,6 +30,12 @@ const userSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false,
         },
+        site1: {
+                type: String
+        },
+        site2: {
+                type: String
+        },
         companyName: {
                 type: String
         },
