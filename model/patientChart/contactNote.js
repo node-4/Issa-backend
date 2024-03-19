@@ -61,6 +61,13 @@ const contactNoteSchema = new mongoose.Schema({
         savedSigned: {
                 type: String,
         },
+        savedDate: {
+                type: Date,
+                default: Date.now,
+        },
+        savedTime: {
+                type: String,
+        },
 });
 const ContactNote = mongoose.model('ContactNote', contactNoteSchema);
 module.exports = ContactNote;

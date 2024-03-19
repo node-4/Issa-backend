@@ -3643,6 +3643,8 @@ exports.createIncidentReportPartA = async (req, res) => {
                         modeInPerson: req.body.modeInPerson,
                         modeOther: req.body.modeOther,
                         savedSignedPartA: req.body.savedSignedPartA,
+                        signedDatePartA: req.body.signedDatePartA,
+                        signedTimePartA: req.body.signedTimePartA,
                         reportCompletedBy: req.body.reportCompletedBy,
                 };
                 let newEmployee = await notes.create(obj);
@@ -3672,6 +3674,8 @@ exports.createIncidentReportPartB = async (req, res) => {
                                 investigationCompletedBy: req.body.investigationCompletedBy,
                                 investigationCompletionDate: req.body.investigationCompletionDate,
                                 savedSignedPartB: req.body.savedSignedPartB,
+                                signedDatePartB: req.body.signedDatePartB,
+                                signedTimePartB: req.body.signedTimePartB,
                                 partTypeB: true,
                         };
                         const checklist1 = await notes.findByIdAndUpdate({ _id: checklist._id }, { $set: obj1 }, { new: true });
@@ -3764,6 +3768,8 @@ exports.editIncidentReportPartA = async (req, res) => {
                         modeInPerson: req.body.modeInPerson || user2.modeInPerson,
                         modeOther: req.body.modeOther || user2.modeOther,
                         savedSignedPartA: req.body.savedSignedPartA || user2.savedSignedPartA,
+                        signedDatePartA: req.body.signedDatePartA || user2.signedDatePartA,
+                        signedTimePartA: req.body.signedTimePartA || user2.signedTimePartA,
                         partTypeB: user2.partTypeB,
                 };
                 let update = await notes.findByIdAndUpdate({ _id: user2._id }, { $set: obj }, { new: true });
@@ -3795,6 +3801,8 @@ exports.editIncidentReportPartB = async (req, res) => {
                         investigationCompletedBy: req.body.investigationCompletedBy || user2.investigationCompletedBy,
                         investigationCompletionDate: req.body.investigationCompletionDate || user2.investigationCompletionDate,
                         savedSignedPartB: req.body.savedSignedPartB || user2.savedSignedPartB,
+                        signedDatePartB: req.body.signedDatePartB || user2.signedDatePartB,
+                        signedTimePartB: req.body.signedTimePartB || user2.signedTimePartB,
                         partTypeB: true,
                 };
                 let update = await notes.findByIdAndUpdate({ _id: user2._id }, { $set: obj1 }, { new: true });
@@ -3874,7 +3882,9 @@ exports.createContactNote = async (req, res) => {
                         modeOfContactOther: req.body.modeOfContactOther,
                         contactSummaryNote: req.body.contactSummaryNote,
                         emergencyIssue: req.body.emergencyIssue,
-                        savedSigned: req.body.savedSigned
+                        savedSigned: req.body.savedSigned,
+                        savedTime: req.body.savedTime,
+                        savedDate: req.body.savedDate,
                 };
                 let newEmployee = await contactNote.create(obj);
                 if (newEmployee) {

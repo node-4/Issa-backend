@@ -18,7 +18,7 @@ const addressSchema = new mongoose.Schema({
         },
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         date: {
                 type: Date,
@@ -52,7 +52,7 @@ const addressSchema = new mongoose.Schema({
         },
         participants: [{
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         }],
         topicsAddressedUniqueTreatmentNeeds: {
                 type: Boolean
@@ -89,7 +89,7 @@ const addressSchema = new mongoose.Schema({
         },
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         facititAddress: {
                 type: String,
@@ -129,7 +129,7 @@ const addressSchema = new mongoose.Schema({
         },
         staffPresent: [{
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         }],
         anyInjuries: {
                 type: Boolean,
@@ -178,7 +178,7 @@ const addressSchema = new mongoose.Schema({
         },
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         facilityAddress: {
                 type: String,
@@ -194,7 +194,7 @@ const addressSchema = new mongoose.Schema({
         },
         participants: [{
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         }],
         critiqueProblemsIdentified: {
                 type: String,
@@ -216,7 +216,7 @@ const addressSchema = new mongoose.Schema({
         },
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         facititAddress: {
                 type: String,
@@ -235,11 +235,11 @@ const addressSchema = new mongoose.Schema({
         },
         evacuationParticipatingEmployee: [{
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         }],
         residentsAssistanceEmployee: [{
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         }],
         noOfOccupantsEvacuated: {
                 type: Number,
@@ -267,7 +267,7 @@ const addressSchema = new mongoose.Schema({
         },
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         location: {
                 type: String,
@@ -303,7 +303,7 @@ const addressSchema = new mongoose.Schema({
         }],
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         location: {
                 type: String,
@@ -980,7 +980,7 @@ const addressSchema = new mongoose.Schema({
         }],
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         dateOfIncident: {
                 type: Date
@@ -990,11 +990,11 @@ const addressSchema = new mongoose.Schema({
         },
         employeesInvolved: [{
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         }],
         residentsInvolved: [{
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         }],
         personObservingReporting: {
                 type: String,
@@ -1060,7 +1060,7 @@ const addressSchema = new mongoose.Schema({
         },
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         data: [{
                 employeeName: {
@@ -1081,7 +1081,7 @@ const addressSchema = new mongoose.Schema({
         }],
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         date: {
                 type: String, // Assuming mm/yy forma
@@ -1219,7 +1219,7 @@ const addressSchema = new mongoose.Schema({
         },
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         dateOfBirth: {
                 type: Date,
@@ -1279,7 +1279,7 @@ const addressSchema = new mongoose.Schema({
         },
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         residentName: {
                 type: String
@@ -1319,7 +1319,7 @@ const addressSchema = new mongoose.Schema({
         },
         adminId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         site: {
                 type: String,
@@ -1487,7 +1487,7 @@ const addressSchema = new mongoose.Schema({
         },
         patientId: {
                 type: schema.Types.ObjectId,
-                ref: "user",
+                ref: "User",
         },
         incidents: {
                 type: Array
@@ -1594,6 +1594,13 @@ const addressSchema = new mongoose.Schema({
         savedSignedPartA: {
                 type: String,
         },
+        signedTimePartA: {
+                type: String,
+        },
+        signedDatePartA: {
+                type: Date,
+                default: Date.now,
+        },
         reportCompletedBy: {
                 type: String,
         },
@@ -1614,6 +1621,13 @@ const addressSchema = new mongoose.Schema({
         },
         savedSignedPartB: {
                 type: String,
+        },
+        signedTimePartB: {
+                type: String,
+        },
+        signedDatePartB: {
+                type: Date,
+                default: Date.now,
         },
         moreData: [{
                 count: {
