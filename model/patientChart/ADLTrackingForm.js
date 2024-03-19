@@ -396,9 +396,16 @@ const adlTrackingFormSchema = new mongoose.Schema({
         staffInitials: {
             type: String,
         },
-        savedSigned: {
-            type: String,
-        },
+    },
+    savedSigned: {
+        type: String,
+    },
+    dateSigned: {
+        type: Date,
+        default: Date.now,
+    },
+    signedTime: {
+        type: String
     },
 });
 

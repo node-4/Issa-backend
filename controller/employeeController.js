@@ -3031,7 +3031,9 @@ exports.createADLTrackingForm = async (req, res) => {
                         overnightBowelMovement: req.body.overnightBowelMovement,
                         handAndFootNailCare: req.body.handAndFootNailCare,
                         bedMobility: req.body.bedMobility,
-                        savedSigned: req.body.savedSigned
+                        savedSigned: req.body.savedSigned,
+                        dateSigned: req.body.dateSigned,
+                        signedTime: req.body.signedTime
                 };
                 let newEmployee = await ADLTrackingForm.create(obj);
                 if (newEmployee) {
@@ -3104,6 +3106,8 @@ exports.editADLTrackingFormById = async (req, res) => {
                                 handAndFootNailCare: req.body.handAndFootNailCare || user1.handAndFootNailCare,
                                 bedMobility: req.body.bedMobility || user1.bedMobility,
                                 savedSigned: req.body.savedSigned || user1.savedSigned,
+                                dateSigned: req.body.dateSigned || user1.dateSigned,
+                                signedTime: req.body.signedTime || user1.signedTime,
                         };
                         let update = await ADLTrackingForm.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
