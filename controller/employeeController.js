@@ -3314,6 +3314,8 @@ exports.createStaffingNote = async (req, res) => {
                         barriers: req.body.barriers,
                         recommendations: req.body.recommendations,
                         staffSignature: req.body.staffSignature,
+                        signedDate: req.body.signedDate,
+                        signedTime: req.body.signedTime,
                 };
                 let newEmployee = await staffingNote.create(obj);
                 if (newEmployee) {
@@ -3376,6 +3378,8 @@ exports.editStaffingNoteById = async (req, res) => {
                                 barriers: req.body.barriers || user1.barriers,
                                 recommendations: req.body.recommendations || user1.recommendations,
                                 staffSignature: req.body.staffSignature || user1.staffSignature,
+                                signedTime: req.body.signedTime || user1.signedTime,
+                                signedDate: req.body.signedDate || user1.signedDate,
                         };
                         let update = await staffingNote.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {

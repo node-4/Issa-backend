@@ -48,6 +48,12 @@ const staffingNoteSchema = new mongoose.Schema({
     staffSignature: {
         type: String,
     },
+    signedTime: {
+        type: String,
+    },
+    signedDate: {
+        type: Date,
+    }
 });
 const StaffingNote = mongoose.model('StaffingNote', staffingNoteSchema);
 module.exports = StaffingNote;

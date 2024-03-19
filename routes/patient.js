@@ -4,6 +4,7 @@ const { upload, FranchiseUpload, productUpload } = require('../middleware/imageu
 module.exports = (app) => {
         app.post('/api/v1/Patient/signin', auth.signin);
         app.get('/api/v1/Patient/getProfile', authJwt.verifyToken, auth.getProfile);
+        app.get('/api/v1/Patient/getEmployee', authJwt.verifyToken, auth.getEmployee);
         app.put('/api/v1/Patient/updateProfile', authJwt.verifyToken, upload.single('image'), auth.updateProfile);
         app.post('/api/v1/Patient/createAppointment', authJwt.verifyToken, auth.createAppointment);
         app.put('/api/v1/Patient/cancelAppointment/:id', authJwt.verifyToken, auth.cancelAppointment);

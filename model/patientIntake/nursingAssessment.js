@@ -123,11 +123,17 @@ const nursingAssessmentSchema = new mongoose.Schema({
         legComment: {
                 type: String
         },
-        bhtName: { type: String },
+        bhtName: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
         bhtSignature: { type: String },
         bhpDate: { type: Date, default: Date.now },
         bhpTime: { type: String },
-        rnName: { type: String },
+        rnName: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
         rnSignature: { type: String },
         rnDate: { type: Date, default: Date.now },
         rnTime: { type: String },
