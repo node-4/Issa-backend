@@ -46,8 +46,22 @@ const residentExpenseSchema = new mongoose.Schema({
                 residentSignature: {
                         type: String,
                 },
+                residentSignDate: {
+                        type: Date,
+                        default: Date.now,
+                },
+                residentSignTime: {
+                        type: String
+                },
                 staffSignature: {
                         type: String,
+                },
+                StaffSignDate: {
+                        type: Date,
+                        default: Date.now,
+                },
+                StaffSignTime: {
+                        type: String
                 },
         }],
 });
