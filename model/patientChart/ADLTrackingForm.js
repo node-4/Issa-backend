@@ -407,6 +407,10 @@ const adlTrackingFormSchema = new mongoose.Schema({
     signedTime: {
         type: String
     },
+    saveAsDraft: {
+        type: Boolean,
+        default: false
+    },
 });
 
 const ADLTrackingForm = mongoose.model('ADLTrackingForm', adlTrackingFormSchema);

@@ -298,8 +298,9 @@ exports.createFaceSheet = async (req, res) => {
                                 bhpSignature: req.body.bhpSignature || findPatientTracking.bhpSignature,
                                 bhpDate: req.body.bhpDate || findPatientTracking.bhpDate,
                                 time: req.body.time || findPatientTracking.time,
+                                saveAsDraft: req.body.saveAsDraft || findPatientTracking.saveAsDraft
                         };
-                        let newEmployee = await residentSafetyPlan.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: obj }, { new: true });
+                        let newEmployee = await faceSheet.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: obj }, { new: true });
                         if (newEmployee) {
                                 return res.status(200).send({ status: 200, message: "ResidentSafety Plan add successfully.", data: newEmployee });
                         }
@@ -409,7 +410,8 @@ exports.createInitialAssessment = async (req, res) => {
                                 additionalNotes: req.body.additionalNotes || findPatientTracking.additionalNotes,
                                 residentInformation: req.body.residentInformation || findPatientTracking.residentInformation,
                                 staffInformation: req.body.staffInformation || findPatientTracking.staffInformation,
-                                bhpInformation: req.body.bhpInformation || findPatientTracking.bhpInformation
+                                bhpInformation: req.body.bhpInformation || findPatientTracking.bhpInformation,
+                                saveAsDraft: req.body.saveAsDraft || findPatientTracking.saveAsDraft
                         };
                         let newEmployee = await initialAssessment.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: consentFormData }, { new: true });
                         if (newEmployee) {
@@ -831,6 +833,7 @@ exports.createInitialAssessment = async (req, res) => {
                                         bhpDate: req.body.bhpDate || Date.now(),
                                         time: req.body.time
                                 },
+                                saveAsDraft: req.body.saveAsDraft
                         };
                         const newConsentForm = await initialAssessment.create(consentFormData);
                         if (newConsentForm) {
@@ -943,6 +946,7 @@ exports.createNursingAssessment = async (req, res) => {
                                 rnSignature: req.body.rnSignature || findPatientTracking.rnSignature,
                                 rnDate: req.body.rnDate || findPatientTracking.rnDate,
                                 rnTime: req.body.rnTime || findPatientTracking.rnTime,
+                                saveAsDraft: req.body.saveAsDraft || findPatientTracking.saveAsDraft
                         }
                         let newEmployee = await nursingAssessment.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: consentFormData }, { new: true });
                         if (newEmployee) {
@@ -1025,6 +1029,7 @@ exports.createNursingAssessment = async (req, res) => {
                                 rnSignature: req.body.rnSignature,
                                 rnDate: req.body.rnDate,
                                 rnTime: req.body.rnTime,
+                                saveAsDraft: req.body.saveAsDraft
                         }
                         let newEmployee = await nursingAssessment.create(obj);
                         if (newEmployee) {
@@ -1206,6 +1211,7 @@ exports.createResidentIntake = async (req, res) => {
                                 obligationsAndAuthorizationGuardianRepresentativeSignature: req.body.obligationsAndAuthorizationGuardianRepresentativeSignature || findPatientTracking.obligationsAndAuthorizationGuardianRepresentativeSignature,
                                 obligationsAndAuthorizationGuardianRepresentativeDate: req.body.obligationsAndAuthorizationGuardianRepresentativeDate || findPatientTracking.obligationsAndAuthorizationGuardianRepresentativeDate,
                                 obligationsAndAuthorizationGuardianRepresentativeTime: req.body.obligationsAndAuthorizationGuardianRepresentativeTime || findPatientTracking.obligationsAndAuthorizationGuardianRepresentativeTime,
+                                saveAsDraft: req.body.saveAsDraft || findPatientTracking.saveAsDraft
                         };
                         let newEmployee = await residentIntake.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: consentFormData }, { new: true });
                         if (newEmployee) {
@@ -1356,7 +1362,8 @@ exports.createResidentIntake = async (req, res) => {
                                 obligationsAndAuthorizationGuardianRepresentativeName: req.body.obligationsAndAuthorizationGuardianRepresentativeName,
                                 obligationsAndAuthorizationGuardianRepresentativeSignature: req.body.obligationsAndAuthorizationGuardianRepresentativeSignature,
                                 obligationsAndAuthorizationGuardianRepresentativeDate: req.body.obligationsAndAuthorizationGuardianRepresentativeDate,
-                                obligationsAndAuthorizationGuardianRepresentativeTime: req.body.obligationsAndAuthorizationGuardianRepresentativeTime
+                                obligationsAndAuthorizationGuardianRepresentativeTime: req.body.obligationsAndAuthorizationGuardianRepresentativeTime,
+                                saveAsDraft: req.body.saveAsDraft
                         };
                         const newConsentForm = await residentIntake.create(consentFormData);
                         if (newConsentForm) {
@@ -1414,6 +1421,7 @@ exports.createResidentSafetyPlan = async (req, res) => {
                                 signature: req.body.signature || findPatientTracking.signature,
                                 signatureDate: req.body.signatureDate || findPatientTracking.signatureDate,
                                 signatureTime: req.body.signatureTime || findPatientTracking.signatureTime,
+                                saveAsDraft: req.body.saveAsDraft || findPatientTracking.saveAsDraft
                         };
                         let newEmployee = await residentSafetyPlan.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: obj }, { new: true });
                         if (newEmployee) {
@@ -1441,6 +1449,7 @@ exports.createResidentSafetyPlan = async (req, res) => {
                                 signature: req.body.signature,
                                 signatureDate: req.body.signatureDate,
                                 signatureTime: req.body.signatureTime,
+                                saveAsDraft: req.body.saveAsDraft
                         }
                         let newEmployee = await residentSafetyPlan.create(obj);
                         if (newEmployee) {
@@ -1544,6 +1553,7 @@ exports.createTreatmentPlan = async (req, res) => {
                                 signaturesResident: req.body.signaturesResident || findPatientTracking.signaturesResident,
                                 signaturesFacilityRep: req.body.signaturesFacilityRep || findPatientTracking.signaturesFacilityRep,
                                 signaturesBhp: req.body.signaturesBhp || findPatientTracking.signaturesBhp,
+                                saveAsDraft: req.body.saveAsDraft || findPatientTracking.saveAsDraft
                         }
                         let newEmployee = await treatmentPlan.findByIdAndUpdate({ _id: findPatientTracking._id }, { $set: obj }, { new: true });
                         if (newEmployee) {
@@ -1680,6 +1690,7 @@ exports.createTreatmentPlan = async (req, res) => {
                                 signaturesResident: req.body.signaturesResident,
                                 signaturesFacilityRep: req.body.signaturesFacilityRep,
                                 signaturesBhp: req.body.signaturesBhp,
+                                saveAsDraft: req.body.saveAsDraft
                         }
                         let newEmployee = await treatmentPlan.create(obj);
                         if (newEmployee) {

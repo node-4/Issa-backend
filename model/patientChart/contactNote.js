@@ -68,6 +68,10 @@ const contactNoteSchema = new mongoose.Schema({
         savedTime: {
                 type: String,
         },
+        saveAsDraft: {
+                type: Boolean,
+                default: false
+        },
 });
 const ContactNote = mongoose.model('ContactNote', contactNoteSchema);
 module.exports = ContactNote;

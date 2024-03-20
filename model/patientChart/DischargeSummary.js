@@ -71,6 +71,10 @@ const dischargeSummarySchema = new mongoose.Schema({
         bhpSignatureDate: {
                 type: Date,
         },
+        saveAsDraft: {
+                type: Boolean,
+                default: false
+        },
 });
 const DischargeSummary = mongoose.model('DischargeSummary', dischargeSummarySchema);
 module.exports = DischargeSummary;

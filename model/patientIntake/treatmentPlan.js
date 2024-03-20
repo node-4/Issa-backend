@@ -335,6 +335,10 @@ const treatmentPlanSchema = new mongoose.Schema({
                         type: String,
                 },
         },
+        saveAsDraft: {
+                type: Boolean,
+                default: false
+        },
 });
 const TreatmentPlan = mongoose.model('TreatmentPlan', treatmentPlanSchema);
 module.exports = TreatmentPlan

@@ -144,6 +144,10 @@ const assessmentSchema = new mongoose.Schema({
         bhpSignature: { type: String },
         bhpDate: { type: Date, default: Date.now },
         time: { type: String },
+        saveAsDraft: {
+                type: Boolean,
+                default: false
+        },
 });
 const Assessment = mongoose.model('faceSheet', assessmentSchema);
 module.exports = Assessment;

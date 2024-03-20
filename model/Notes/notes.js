@@ -20,6 +20,14 @@ const addressSchema = new mongoose.Schema({
                 type: schema.Types.ObjectId,
                 ref: "User",
         },
+        employeeId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
+        patientId: {
+                type: schema.Types.ObjectId,
+                ref: "User",
+        },
         date: {
                 type: Date,
         },
@@ -86,10 +94,6 @@ const addressSchema = new mongoose.Schema({
         },
         administratorSignature: {
                 type: String,
-        },
-        adminId: {
-                type: schema.Types.ObjectId,
-                ref: "User",
         },
         facititAddress: {
                 type: String,
@@ -1484,10 +1488,6 @@ const addressSchema = new mongoose.Schema({
         },
         inspectionDate: {
                 type: Date,
-        },
-        patientId: {
-                type: schema.Types.ObjectId,
-                ref: "User",
         },
         incidents: {
                 type: Array

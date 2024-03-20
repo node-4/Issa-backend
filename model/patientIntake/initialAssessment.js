@@ -472,6 +472,10 @@ const assessmentSchema = new mongoose.Schema({
                 bhpDate: { type: Date, default: Date.now },
                 time: { type: String },
         },
+        saveAsDraft: {
+                type: Boolean,
+                default: false
+        },
 });
 const Assessment = mongoose.model('initialAssessment', assessmentSchema);
 module.exports = Assessment;

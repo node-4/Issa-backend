@@ -93,6 +93,10 @@ const progressNoteSchema = new mongoose.Schema({
         bhtSignature: {
                 type: String,
         },
+        saveAsDraft: {
+                type: Boolean,
+                default: false
+        },
 });
 const ProgressNote = mongoose.model('ProgressNote', progressNoteSchema);
 module.exports = ProgressNote;

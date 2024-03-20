@@ -62,6 +62,12 @@ const releaseInfoAuthorizationSchema = new mongoose.Schema({
         companyName: {
                 type: String,
         },
+        relationshipToPerson: {
+                type: String,
+        },
+        witness: {
+                type: String,
+        },
         signature: {
                 type: String,
         },
@@ -69,11 +75,12 @@ const releaseInfoAuthorizationSchema = new mongoose.Schema({
                 type: Date,
                 default: Date.now,
         },
-        relationshipToPerson: {
+        signedTime: {
                 type: String,
         },
-        witness: {
-                type: String,
+        saveAsDraft: {
+                type: Boolean,
+                default: false
         },
 });
 const ReleaseInfoAuthorization = mongoose.model('authorizationForReleaseOfInformation', releaseInfoAuthorizationSchema);

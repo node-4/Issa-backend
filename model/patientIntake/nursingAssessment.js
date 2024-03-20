@@ -137,7 +137,10 @@ const nursingAssessmentSchema = new mongoose.Schema({
         rnSignature: { type: String },
         rnDate: { type: Date, default: Date.now },
         rnTime: { type: String },
-
+        saveAsDraft: {
+                type: Boolean,
+                default: false
+        },
         // covid19ScreeningSymptomsFeverOrChills: { type: Boolean },
         // covid19ScreeningSymptomsShortnessOfBreath: { type: Boolean },
         // covid19ScreeningSymptomsSoreThroat: { type: Boolean },

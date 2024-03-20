@@ -469,6 +469,10 @@ const consentFormSchema = new mongoose.Schema({
         obligationsAndAuthorizationGuardianRepresentativeTime: {
                 type: String
         },
+        saveAsDraft: {
+                type: Boolean,
+                default: false
+        },
 });
 const ConsentForm = mongoose.model('residentIntake', consentFormSchema);
 module.exports = ConsentForm;

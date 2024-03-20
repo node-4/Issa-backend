@@ -84,6 +84,10 @@ const adlTrackingFormSchema = new mongoose.Schema({
         },
         signatureDate: { type: Date, default: Date.now },
         signatureTime: { type: String },
+        saveAsDraft: {
+                type: Boolean,
+                default: false
+        },
 });
 const ADLTrackingForm = mongoose.model('residentSafetyPlan', adlTrackingFormSchema);
 module.exports = ADLTrackingForm;

@@ -53,7 +53,11 @@ const staffingNoteSchema = new mongoose.Schema({
     },
     signedDate: {
         type: Date,
-    }
+    },
+    saveAsDraft: {
+        type: Boolean,
+        default: false
+    },
 });
 const StaffingNote = mongoose.model('StaffingNote', staffingNoteSchema);
 module.exports = StaffingNote;

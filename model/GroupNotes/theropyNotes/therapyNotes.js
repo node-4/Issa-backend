@@ -76,10 +76,12 @@ const therapySessionSchema = new mongoose.Schema({
                 type: String,
         },
         behavioralHealthProfessionalName: {
-                type: String, required: true
+                type: String,
+                required: true
         },
         behavioralHealthProfessionalSignature: {
-                type: String, required: true
+                type: String,
+                required: true
         },
         behavioralTechnicianName: {
                 type: String, required: true
@@ -87,7 +89,10 @@ const therapySessionSchema = new mongoose.Schema({
         behavioralTechnicianSignature: {
                 type: String, required: true
         },
-        pleaseSpecify1Date: { type: Date, required: true },
+        pleaseSpecify1Date: {
+                type: Date,
+                required: true
+        },
 
 });
 

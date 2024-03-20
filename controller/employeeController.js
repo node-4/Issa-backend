@@ -3033,7 +3033,8 @@ exports.createADLTrackingForm = async (req, res) => {
                         bedMobility: req.body.bedMobility,
                         savedSigned: req.body.savedSigned,
                         dateSigned: req.body.dateSigned,
-                        signedTime: req.body.signedTime
+                        signedTime: req.body.signedTime,
+                        saveAsDraft: req.body.saveAsDraft,
                 };
                 let newEmployee = await ADLTrackingForm.create(obj);
                 if (newEmployee) {
@@ -3108,6 +3109,7 @@ exports.editADLTrackingFormById = async (req, res) => {
                                 savedSigned: req.body.savedSigned || user1.savedSigned,
                                 dateSigned: req.body.dateSigned || user1.dateSigned,
                                 signedTime: req.body.signedTime || user1.signedTime,
+                                saveAsDraft: req.body.saveAsDraft || user1.saveAsDraft,
                         };
                         let update = await ADLTrackingForm.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
@@ -3316,6 +3318,7 @@ exports.createStaffingNote = async (req, res) => {
                         staffSignature: req.body.staffSignature,
                         signedDate: req.body.signedDate,
                         signedTime: req.body.signedTime,
+                        saveAsDraft: req.body.saveAsDraft,
                 };
                 let newEmployee = await staffingNote.create(obj);
                 if (newEmployee) {
@@ -3380,6 +3383,7 @@ exports.editStaffingNoteById = async (req, res) => {
                                 staffSignature: req.body.staffSignature || user1.staffSignature,
                                 signedTime: req.body.signedTime || user1.signedTime,
                                 signedDate: req.body.signedDate || user1.signedDate,
+                                saveAsDraft: req.body.saveAsDraft || user1.saveAsDraft,
                         };
                         let update = await staffingNote.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
@@ -3463,10 +3467,12 @@ exports.createAuthorizationForReleaseOfInformation = async (req, res) => {
                         expirationTo: req.body.expirationTo,
                         revocation: req.body.revocation,
                         specify: req.body.specify,
-                        signature: req.body.signature,
-                        dateSigned: req.body.dateSigned,
                         relationshipToPerson: req.body.relationshipToPerson,
                         witness: req.body.witness,
+                        signature: req.body.signature,
+                        dateSigned: req.body.dateSigned,
+                        signedTime: req.body.signedTime,
+                        saveAsDraft: req.body.saveAsDraft
                 };
                 let newEmployee = await authorizationForReleaseOfInformation.create(obj);
                 if (newEmployee) {
@@ -3533,10 +3539,12 @@ exports.editAuthorizationForReleaseOfInformationById = async (req, res) => {
                                 expirationTo: req.body.expirationTo || user1.expirationTo,
                                 revocation: req.body.revocation || user1.revocation,
                                 specify: req.body.specify || user1.specify,
-                                signature: req.body.signature || user1.signature,
-                                dateSigned: req.body.dateSigned || user1.dateSigned,
                                 relationshipToPerson: req.body.relationshipToPerson || user1.relationshipToPerson,
                                 witness: req.body.witness || user1.witness,
+                                signature: req.body.signature || user1.signature,
+                                dateSigned: req.body.dateSigned || user1.dateSigned,
+                                signedTime: req.body.signedTime || user1.signedTime,
+                                saveAsDraft: req.body.saveAsDraft || user1.saveAsDraft,
                         };
                         let update = await authorizationForReleaseOfInformation.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
@@ -3604,6 +3612,7 @@ exports.createIncidentReportPartA = async (req, res) => {
                 let obj = {
                         residentsInvolved: req.body.residentsInvolved,
                         adminId: user.adminId,
+                        employeeId: user._id,
                         name: "incidentReport",
                         patientId: user1._id,
                         employeesInvolved: req.body.employeesInvolved,
@@ -3667,6 +3676,7 @@ exports.createIncidentReportPartB = async (req, res) => {
                         let obj1 = {
                                 residentsInvolved: checklist.residentsInvolved,
                                 adminId: checklist.adminId,
+                                employeeId: checklist.employeeId,
                                 employeesInvolved: checklist.employeesInvolved,
                                 investigationDetails: req.body.investigationDetails,
                                 investigationRecommendationsAndActions: req.body.investigationRecommendationsAndActions,
@@ -3730,6 +3740,7 @@ exports.editIncidentReportPartA = async (req, res) => {
                         residentsInvolved: req.body.residentsInvolved || user2.residentsInvolved,
                         adminId: user.adminId,
                         patientId: patientId,
+                        employeeId: user._id,
                         employeesInvolved: req.body.employeesInvolved || user2.employeesInvolved,
                         dateOfIncident: req.body.dateOfIncident || user2.dateOfIncident,
                         timeOfIncident: req.body.timeOfIncident || user2.timeOfIncident,
@@ -3794,6 +3805,7 @@ exports.editIncidentReportPartB = async (req, res) => {
                 let obj1 = {
                         residentsInvolved: user2.residentsInvolved,
                         adminId: user2.adminId,
+                        employeeId: user2.employeeId,
                         employeesInvolved: user2.employeesInvolved,
                         investigationDetails: req.body.investigationDetails || user2.investigationDetails,
                         investigationRecommendationsAndActions: req.body.investigationRecommendationsAndActions || user2.investigationRecommendationsAndActions,
@@ -3838,7 +3850,7 @@ exports.getAllIncidentReport = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let filter = { employeesInvolved: { $in: [user._id.toString()] }, name: "incidentReport" };
+                let filter = { $or: [{ employeesInvolved: { $in: [user._id.toString()] } }, { residentsInvolved: { $in: [user._id.toString()] } }, { employeeId: user._id }], name: "incidentReport" };
                 if (req.query.partType != (null || undefined)) {
                         filter.partType = req.query.partType;
                 }
@@ -3885,6 +3897,7 @@ exports.createContactNote = async (req, res) => {
                         savedSigned: req.body.savedSigned,
                         savedTime: req.body.savedTime,
                         savedDate: req.body.savedDate,
+                        saveAsDraft: req.body.saveAsDraft,
                 };
                 let newEmployee = await contactNote.create(obj);
                 if (newEmployee) {
@@ -3952,6 +3965,7 @@ exports.editContactNoteById = async (req, res) => {
                                 contactSummaryNote: req.body.contactSummaryNote || user1.contactSummaryNote,
                                 emergencyIssue: req.body.emergencyIssue || user1.emergencyIssue,
                                 savedSigned: req.body.savedSigned || user1.savedSigned,
+                                saveAsDraft: req.body.saveAsDraft || user1.saveAsDraft,
                         };
                         let update = await contactNote.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
