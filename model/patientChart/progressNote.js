@@ -93,6 +93,13 @@ const progressNoteSchema = new mongoose.Schema({
         bhtSignature: {
                 type: String,
         },
+        dateSigned: {
+                type: Date,
+                default: Date.now,
+        },
+        signedTime: {
+                type: String
+        },
         saveAsDraft: {
                 type: Boolean,
                 default: false

@@ -1355,9 +1355,13 @@ exports.createOnSiteFacility = async (req, res) => {
                         description: req.body.description,
                         employeeSignature: req.body.employeeSignature,
                         employeeDate: req.body.employeeDate,
+                        employeeTime: req.body.employeeTime,
+                        employeeSaveAsDraft: req.body.employeeSaveAsDraft,
                         trainerSignature: req.body.trainerSignature,
                         trainerDate: req.body.trainerDate,
-                        savedSigned: employeeSignature
+                        traineeTime: req.body.traineeTime,
+                        traineeSaveAsDraft: req.body.traineeSaveAsDraft,
+
                 }
                 let newEmployee = await onSiteFacility.create(obj);
                 if (newEmployee) {
@@ -1454,9 +1458,12 @@ exports.updateOnSiteFacility = async (req, res) => {
                                 description: req.body.description || user1.description,
                                 employeeSignature: req.body.employeeSignature || user1.employeeSignature,
                                 employeeDate: req.body.employeeDate || user1.employeeDate,
+                                employeeTime: req.body.employeeTime || user1.employeeTime,
+                                employeeSaveAsDraft: req.body.employeeSaveAsDraft || user1.employeeSaveAsDraft,
                                 trainerSignature: req.body.trainerSignature || user1.trainerSignature,
                                 trainerDate: req.body.trainerDate || user1.trainerDate,
-                                savedSigned: employeeSignature || user1.employeeSignature,
+                                traineeTime: req.body.traineeTime || user1.traineeTime,
+                                traineeSaveAsDraft: req.body.traineeSaveAsDraft || user1.traineeSaveAsDraft,
                         }
                         let update = await onSiteFacility.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
@@ -1626,7 +1633,6 @@ exports.createTherapySession = async (req, res) => {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
                 let data = []
-                let employeeSignature = `${user.firstName} ${user.lastName}`
                 let obj = {
                         employeeId: user._id,
                         date: req.body.date,
@@ -1654,8 +1660,14 @@ exports.createTherapySession = async (req, res) => {
                         pleaseSpecify1Date: req.body.pleaseSpecify1Date,
                         behavioralHealthProfessionalName: req.body.behavioralHealthProfessionalName,
                         behavioralHealthProfessionalSignature: req.body.behavioralHealthProfessionalSignature,
+                        behavioralHealthProfessionalDateSigned: req.body.behavioralHealthProfessionalDateSigned,
+                        behavioralHealthProfessionalSignedTime: req.body.behavioralHealthProfessionalSignedTime,
+                        behavioralHealthProfessionalSaveAsDraft: req.body.behavioralHealthProfessionalSaveAsDraft,
                         behavioralTechnicianName: req.body.behavioralTechnicianName,
                         behavioralTechnicianSignature: req.body.behavioralTechnicianSignature,
+                        behavioralTechnicianDateSigned: req.body.behavioralTechnicianDateSigned,
+                        behavioralTechnicianSignedTime: req.body.behavioralTechnicianSignedTime,
+                        behavioralTechnicianSaveAsDraft: req.body.behavioralTechnicianSaveAsDraft
                 }
                 let newEmployee = await TherapySession.create(obj);
                 return res.status(200).send({ status: 200, message: "TherapySession add successfully.", data: data });
@@ -2710,6 +2722,9 @@ exports.createProgressNote = async (req, res) => {
                         noteSummary: req.body.noteSummary,
                         bhtName: req.body.bhtName,
                         bhtSignature: req.body.bhtSignature,
+                        dateSigned: req.body.dateSigned,
+                        signedTime: req.body.signedTime,
+                        saveAsDraft: req.body.saveAsDraft,
                 };
                 let newEmployee = await progressNote.create(obj);
                 if (newEmployee) {
@@ -2786,6 +2801,9 @@ exports.editProgressNoteById = async (req, res) => {
                                 noteSummary: req.body.noteSummary || user1.noteSummary,
                                 bhtName: req.body.bhtName || user1.bhtName,
                                 bhtSignature: req.body.bhtSignature || user1.bhtSignature,
+                                dateSigned: req.body.dateSigned || user1.dateSigned,
+                                signedTime: req.body.signedTime || user1.signedTime,
+                                saveAsDraft: req.body.saveAsDraft || user1.saveAsDraft,
                         };
                         let update = await progressNote.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
@@ -2870,9 +2888,13 @@ exports.createDischargeSummary = async (req, res) => {
                         staffNameAndTitle: req.body.staffNameAndTitle,
                         staffSignature: req.body.staffSignature,
                         staffSignatureDate: req.body.staffSignatureDate,
+                        staffSignatureTime: req.body.staffSignatureTime,
+                        staffSignatureSaveAsDraft: req.body.staffSignatureSaveAsDraft,
                         bhpNameAndCredentials: req.body.bhpNameAndCredentials,
                         bhpSignature: req.body.bhpSignature,
                         bhpSignatureDate: req.body.bhpSignatureDate,
+                        bhpSignatureTime: req.body.bhpSignatureTime,
+                        bhpSignatureSaveAsDraft: req.body.bhpSignatureSaveAsDraft
                 };
                 let newEmployee = await dischargeSummary.create(obj);
                 if (newEmployee) {
@@ -2940,9 +2962,13 @@ exports.editDischargeSummaryById = async (req, res) => {
                                 staffNameAndTitle: req.body.staffNameAndTitle || user1.staffNameAndTitle,
                                 staffSignature: req.body.staffSignature || user1.staffSignature,
                                 staffSignatureDate: req.body.staffSignatureDate || user1.staffSignatureDate,
+                                staffSignatureTime: req.body.staffSignatureTime || user1.staffSignatureTime,
+                                staffSignatureSaveAsDraft: req.body.staffSignatureSaveAsDraft || user1.staffSignatureSaveAsDraft,
                                 bhpNameAndCredentials: req.body.bhpNameAndCredentials || user1.bhpNameAndCredentials,
                                 bhpSignature: req.body.bhpSignature || user1.bhpSignature,
                                 bhpSignatureDate: req.body.bhpSignatureDate || user1.bhpSignatureDate,
+                                bhpSignatureTime: req.body.bhpSignatureTime || user1.bhpSignatureTime,
+                                bhpSignatureSaveAsDraft: req.body.bhpSignatureSaveAsDraft || user1.bhpSignatureSaveAsDraft,
                         };
                         let update = await dischargeSummary.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {

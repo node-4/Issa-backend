@@ -24,6 +24,11 @@ const addressSchema = new mongoose.Schema({
         employeeDate: {
                 type: String,
         },
+        employeeTime: { type: String },
+        employeeSaveAsDraft: {
+                type: Boolean,
+                default: false
+        },
         trainerSignature: {
                 type: String,
         },
@@ -32,6 +37,11 @@ const addressSchema = new mongoose.Schema({
         },
         savedSigned: {
                 type: String,
+        },
+        traineeTime: { type: String },
+        traineeSaveAsDraft: {
+                type: Boolean,
+                default: false
         },
 }, { timestamps: true });
 addressSchema.plugin(mongoosePaginate);

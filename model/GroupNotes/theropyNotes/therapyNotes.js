@@ -83,11 +83,33 @@ const therapySessionSchema = new mongoose.Schema({
                 type: String,
                 required: true
         },
+        behavioralHealthProfessionalDateSigned: {
+                type: Date,
+                default: Date.now,
+        },
+        behavioralHealthProfessionalSignedTime: {
+                type: String
+        },
+        behavioralHealthProfessionalSaveAsDraft: {
+                type: Boolean,
+                default: false
+        },
         behavioralTechnicianName: {
                 type: String, required: true
         },
         behavioralTechnicianSignature: {
                 type: String, required: true
+        },
+        behavioralTechnicianDateSigned: {
+                type: Date,
+                default: Date.now,
+        },
+        behavioralTechnicianSignedTime: {
+                type: String
+        },
+        behavioralTechnicianSaveAsDraft: {
+                type: Boolean,
+                default: false
         },
         pleaseSpecify1Date: {
                 type: Date,

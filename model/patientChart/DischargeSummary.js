@@ -62,6 +62,13 @@ const dischargeSummarySchema = new mongoose.Schema({
         staffSignatureDate: {
                 type: Date,
         },
+        staffSignatureTime: {
+                type: String,
+        },
+        staffSignatureSaveAsDraft: {
+                type: Boolean,
+                default: false
+        },
         bhpNameAndCredentials: {
                 type: String,
         },
@@ -71,7 +78,10 @@ const dischargeSummarySchema = new mongoose.Schema({
         bhpSignatureDate: {
                 type: Date,
         },
-        saveAsDraft: {
+        bhpSignatureTime: {
+                type: String,
+        },
+        bhpSignatureSaveAsDraft: {
                 type: Boolean,
                 default: false
         },
