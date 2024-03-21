@@ -144,4 +144,39 @@ module.exports = (app) => {
         app.get('/api/v1/superAdmin/getJobDescriptionById/:id', authJwt.verifyToken, auth.getJobDescriptionById);
         app.get('/api/v1/superAdmin/getAllJobDescription', authJwt.verifyToken, auth.getAllJobDescription);
         app.delete('/api/v1/superAdmin/deleteJobDescription/:id', authJwt.verifyToken, auth.deleteJobDescription);
+
+
+
+
+
+
+
+
+
+
+        app.post('/api/v1/superAdmin/addFirstAidChecklist', authJwt.verifyToken, auth.addFirstAidChecklist);
+        app.put('/api/v1/superAdmin/editFirstAidChecklist/:id', authJwt.verifyToken, auth.editFirstAidChecklist);
+        app.post('/api/v1/superAdmin/addFireEquipementMonitoring', authJwt.verifyToken, auth.addFireEquipementMonitoring);
+        app.put('/api/v1/superAdmin/editFireEquipementMonitoring/:id', authJwt.verifyToken, auth.editFireEquipementMonitoring);
+        app.post('/api/v1/superAdmin/addEvacuationAndFireDrill', authJwt.verifyToken, auth.addEvacuationAndFireDrill);
+        app.put('/api/v1/superAdmin/editEvacuationAndFireDrill/:id', authJwt.verifyToken, auth.editEvacuationAndFireDrill);
+        app.post('/api/v1/superAdmin/addDisasterDrill', authJwt.verifyToken, auth.addDisasterDrill);
+        app.put('/api/v1/superAdmin/editDisasterDrill/:id', authJwt.verifyToken, auth.editDisasterDrill);
+        app.post('/api/v1/superAdmin/addWeeklyVehicleInspectionChecklist', authJwt.verifyToken, auth.addWeeklyVehicleInspectionChecklist);
+        app.put('/api/v1/superAdmin/editWeeklyVehicleInspectionChecklist/:id', authJwt.verifyToken, auth.editWeeklyVehicleInspectionChecklist);
+        app.post('/api/v1/superAdmin/addClinicalOversight', authJwt.verifyToken, auth.addClinicalOversight);
+        app.put('/api/v1/superAdmin/editClinicalOversight/:id', authJwt.verifyToken, auth.editClinicalOversight);
+        app.post('/api/v1/superAdmin/addMonthlyVehicleInspection', authJwt.verifyToken, auth.addMonthlyVehicleInspection);
+        app.put('/api/v1/superAdmin/editMonthlyVehicleInspection/:id', authJwt.verifyToken, auth.editMonthlyVehicleInspection);
+        app.post('/api/v1/superAdmin/addVanEmergencyInformationForm', authJwt.verifyToken, auth.addVanEmergencyInformationForm);
+        app.put('/api/v1/superAdmin/editVanEmergencyInformationForm/:id', authJwt.verifyToken, auth.editVanEmergencyInformationForm);
+        app.post('/api/v1/superAdmin/addQualityManagement', authJwt.verifyToken, auth.addQualityManagement);
+        app.put('/api/v1/superAdmin/editQualityManagement/:id', authJwt.verifyToken, auth.editQualityManagement);
+        app.post('/api/v1/superAdmin/addInfectiousData', authJwt.verifyToken, auth.addInfectiousData);
+        app.put('/api/v1/superAdmin/editInfectiousData/:id', authJwt.verifyToken, auth.editInfectiousData);
+        app.post('/api/v1/superAdmin/addIncidentReport', authJwt.verifyToken, auth.addIncidentReport);
+        app.put('/api/v1/superAdmin/editIncidentReport/:id', authJwt.verifyToken, auth.editIncidentReport);
+        app.post('/api/v1/superAdmin/addDisasterPlanReview', authJwt.verifyToken, auth.addDisasterPlanReview);
+        app.put('/api/v1/superAdmin/editDisasterPlanReview/:id', authJwt.verifyToken, auth.editDisasterPlanReview);
+        app.delete('/api/v1/superAdmin/deleteNotes/:id', authJwt.verifyToken, auth.deleteNotes);
 }

@@ -145,19 +145,25 @@ const addressSchema = new mongoose.Schema({
                 type: String,
         },
         extinguisherTaken: {
-                type: Boolean,
+                type: String,
         },
         relocatedTheResidents: {
+                type: String,
+        },
+        otherDetailsData: {
+                type: String,
+        },
+        relocatedTheResidentsData: {
                 type: String,
         },
         recommendations: {
                 type: String,
         },
         residentMedication: {
-                type: Boolean,
+                type: String,
         },
         waterFoodAccessible: {
-                type: Boolean,
+                type: String,
         },
         residentsAccounted: {
                 type: String,
@@ -255,6 +261,12 @@ const addressSchema = new mongoose.Schema({
                 type: String,
         },
         condition: {
+                type: String,
+        },
+        unusualCondition: {
+                type: Boolean,
+        },
+        unusualConditionText: {
                 type: String,
         },
         problemEncounteredDuringEvacuationDrill: {
