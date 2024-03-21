@@ -80,9 +80,6 @@ const assessmentSchema = new mongoose.Schema({
                 address: {
                         type: String
                 },
-                OtherSpecialists: {
-                        type: String
-                },
                 preferredHospitalName: {
                         type: String
                 },
@@ -90,6 +87,17 @@ const assessmentSchema = new mongoose.Schema({
                         type: String
                 },
                 preferredHospitalAddress: {
+                        type: String
+                },
+        }],
+        primaryCareProviderOtherSpecialists: [{
+                name: {
+                        type: String
+                },
+                phone: {
+                        type: String
+                },
+                address: {
                         type: String
                 },
         }],
@@ -103,13 +111,21 @@ const assessmentSchema = new mongoose.Schema({
                 address: {
                         type: String
                 },
-                OtherSpecialists: {
-                        type: String
-                },
                 healthPlan: {
                         type: String
                 },
                 healthPlanId: {
+                        type: String
+                },
+        }],
+        psychiatricProviderOtherSpecialists: [{
+                name: {
+                        type: String
+                },
+                phone: {
+                        type: String
+                },
+                address: {
                         type: String
                 },
         }],
