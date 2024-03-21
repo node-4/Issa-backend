@@ -1232,7 +1232,10 @@ exports.createEmployeeInServiceLog = async (req, res) => {
                         trainingSubject: req.body.trainingSubject,
                         hoursOrUnits: req.body.hoursOrUnits,
                         administratorSignature: req.body.administratorSignature,
-                        employeeSignature: employeeSignature
+                        employeeSignature: req.body.employeeSignature,
+                        employeeDate: req.body.employeeDate,
+                        employeeTime: req.body.employeeTime,
+                        employeeSaveAsDraft: req.body.employeeSaveAsDraft,
                 }
                 let newEmployee = await EmployeeInServiceLog.create(obj);
                 if (newEmployee) {
@@ -1331,6 +1334,9 @@ exports.updateEmployeeInServiceLog = async (req, res) => {
                                 hoursOrUnits: req.body.hoursOrUnits || user1.hoursOrUnits,
                                 administratorSignature: req.body.administratorSignature || user1.administratorSignature,
                                 employeeSignature: employeeSignature || user1.employeeSignature,
+                                employeeDate: req.body.employeeDate || user1.employeeDate,
+                                employeeTime: req.body.employeeTime || user1.employeeTime,
+                                employeeSaveAsDraft: req.body.employeeSaveAsDraft || user1.employeeSaveAsDraft,
                         }
                         let update = await EmployeeInServiceLog.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
@@ -1481,7 +1487,6 @@ exports.createSkillAndKnowledge = async (req, res) => {
                 if (!user) {
                         return res.status(404).send({ status: 404, message: "user not found ! not registered", data: {} });
                 }
-                let employeeSignature = `${user.firstName} ${user.lastName}`
                 let obj = {
                         employeeId: user._id,
                         employeeName: user.firstName,
@@ -1489,12 +1494,18 @@ exports.createSkillAndKnowledge = async (req, res) => {
                         companyName: req.body.companyName,
                         selectedTrainingTopics: req.body.selectedTrainingTopics,
                         verificationMethod: req.body.verificationMethod,
-                        employeeSignature: employeeSignature,
                         employeeTitle: req.body.employeeTitle,
-                        employeeDate: req.body.employeeDate,
-                        verifiedBySignature: req.body.verifiedBySignature,
+                        employeeTitleDate: req.body.employeeTitleDate,
                         verifiedByTitle: req.body.verifiedByTitle,
                         verifiedByDate: req.body.verifiedByDate,
+                        employeeSignature: req.body.employeeSignature,
+                        employeeDate: req.body.employeeDate,
+                        employeeTime: req.body.employeeTime,
+                        employeeSaveAsDraft: req.body.employeeSaveAsDraft,
+                        verifiedBySignature: req.body.verifiedBySignature,
+                        verifiedBySignatureDate: req.body.verifiedBySignatureDate,
+                        verifiedBySignatureTime: req.body.verifiedBySignatureTime,
+                        verifiedBySignatureSaveAsDraft: req.body.verifiedBySignatureSaveAsDraft,
                 }
                 let newEmployee = await skillAndKnowledge.create(obj);
                 if (newEmployee) {
@@ -1584,7 +1595,6 @@ exports.updateSkillAndKnowledge = async (req, res) => {
                 if (!user1) {
                         return res.status(404).send({ status: 404, message: "Skill and knowledge  not found", data: {} });
                 } else {
-                        let employeeSignature = `${user.firstName} ${user.lastName}`
                         let obj = {
                                 employeeId: user._id,
                                 employeeName: user.firstName,
@@ -1592,12 +1602,18 @@ exports.updateSkillAndKnowledge = async (req, res) => {
                                 companyName: req.body.companyName || user1.companyName,
                                 selectedTrainingTopics: req.body.selectedTrainingTopics || user1.selectedTrainingTopics,
                                 verificationMethod: req.body.verificationMethod || user1.verificationMethod,
-                                employeeSignature: employeeSignature || user1.employeeSignature,
                                 employeeTitle: req.body.employeeTitle || user1.employeeTitle,
-                                employeeDate: req.body.employeeDate || user1.employeeDate,
-                                verifiedBySignature: req.body.verifiedBySignature || user1.verifiedBySignature,
+                                employeeTitleDate: req.body.employeeTitleDate || user1.employeeTitleDate,
                                 verifiedByTitle: req.body.verifiedByTitle || user1.verifiedByTitle,
                                 verifiedByDate: req.body.verifiedByDate || user1.verifiedByDate,
+                                employeeSignature: req.body.employeeSignature || user1.employeeSignature,
+                                employeeDate: req.body.employeeDate || user1.employeeDate,
+                                employeeTime: req.body.employeeTime || user1.employeeTime,
+                                employeeSaveAsDraft: req.body.employeeSaveAsDraft || user1.employeeSaveAsDraft,
+                                verifiedBySignature: req.body.verifiedBySignature || user1.verifiedBySignature,
+                                verifiedBySignatureDate: req.body.verifiedBySignatureDate || user1.verifiedBySignatureDate,
+                                verifiedBySignatureTime: req.body.verifiedBySignatureTime || user1.verifiedBySignatureTime,
+                                verifiedBySignatureSaveAsDraft: req.body.verifiedBySignatureSaveAsDraft || user1.verifiedBySignatureSaveAsDraft,
                         }
                         let update = await skillAndKnowledge.findOneAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
@@ -1778,8 +1794,11 @@ exports.createTimeOffRequest = async (req, res) => {
                         vacationPersonTimeUsed: req.body.vacationPersonTimeUsed,
                         sickTimeUsed: req.body.sickTimeUsed,
                         notes: req.body.notes,
-                        signature: req.body.signature,
                         requestType: req.body.requestType,
+                        signature: req.body.signature,
+                        signatureDate: req.body.signatureDate,
+                        signatureTime: req.body.signatureTime,
+                        signatureSaveAsDraft: req.body.signatureSaveAsDraft
                 }
                 let newEmployee = await timeOffRequest.create(obj);
                 if (newEmployee) {
@@ -1869,7 +1888,13 @@ exports.createEmployeePerformanceReview = async (req, res) => {
                         employeeName: req.body.employeeName,
                         employeeSignature: req.body.employeeSignature,
                         employeeDate: req.body.employeeDate,
-                        employeeTime: req.body.employeeTime
+                        employeeTime: req.body.employeeTime,
+                        employeeSaveAsDraft: req.body.employeeSaveAsDraft,
+                        administratorName: req.body.administratorName,
+                        administratorSignature: req.body.administratorSignature,
+                        administratorDate: req.body.administratorDate,
+                        administratorTime: req.body.administratorTime,
+                        administratorSaveAsDraft: req.body.administratorSaveAsDraft
                 }
                 let newEmployee = await employeePerformanceReview.create(obj);
                 if (newEmployee) {
@@ -2296,7 +2321,10 @@ exports.createInformedConsentForMedication = async (req, res) => {
                         admitDate: req.body.admitDate,
                         tableDate: req.body.tableDate,
                         staff: req.body.staff,
-                        residentGuardianSignature: req.body.residentGuardianSignature
+                        residentGuardianSignature: req.body.residentGuardianSignature,
+                        residentGuardianSignatureDate: req.body.residentGuardianSignatureDate,
+                        residentGuardianSignatureTime: req.body.residentGuardianSignatureTime,
+                        residentGuardianSignatureSaveAsDraft: req.body.residentGuardianSignatureSaveAsDraft,
                 }
                 let newEmployee = await informedConsentForMedication.create(obj);
                 if (newEmployee) {
@@ -2357,7 +2385,10 @@ exports.editInformedConsentForMedicationById = async (req, res) => {
                                 admitDate: req.body.admitDate || user1.admitDate,
                                 tableDate: req.body.tableDate || user1.tableDate,
                                 staff: req.body.staff || user1.staff,
-                                residentGuardianSignature: req.body.residentGuardianSignature || user1.residentGuardianSignature
+                                residentGuardianSignature: req.body.residentGuardianSignature || user1.residentGuardianSignature,
+                                residentGuardianSignatureDate: req.body.residentGuardianSignatureDate || user1.residentGuardianSignatureDate,
+                                residentGuardianSignatureTime: req.body.residentGuardianSignatureTime || user1.residentGuardianSignatureTime,
+                                residentGuardianSignatureSaveAsDraft: req.body.residentGuardianSignatureSaveAsDraft || user1.residentGuardianSignatureSaveAsDraft,
                         }
                         let update = await informedConsentForMedication.findByIdAndUpdate({ _id: user1._id }, { $set: obj }, { new: true });
                         if (update) {
@@ -2568,7 +2599,10 @@ exports.createMedicationReconciliation = async (req, res) => {
                         medications: req.body.medications,
                         providerName: req.body.providerName,
                         data: req.body.data,
-                        providerSignature: req.body.providerSignature
+                        providerSignature: req.body.providerSignature,
+                        providerSignatureDate: req.body.providerSignatureDate,
+                        providerSignatureTime: req.body.providerSignatureTime,
+                        providerSignatureSaveAsDraft: req.body.providerSignatureSaveAsDraft
                 }
                 let newEmployee = await medicationReconciliation.create(obj);
                 if (newEmployee) {
@@ -5965,6 +5999,9 @@ exports.createEmployeeTracking = async (req, res) => {
                         }
                 } else {
                         existingEmployee.employeeSignature = req.body.employeeSignature;
+                        existingEmployee.employeeSignatureSaveAsDraft = req.body.employeeSignatureSaveAsDraft;
+                        existingEmployee.employeeSignatureTime = req.body.employeeSignatureTime;
+                        existingEmployee.employeeSignatureDate = req.body.employeeSignatureDate;
                         existingEmployee.adminId = user.adminId;
                         if (req.body.CPRFirstAid) {
                                 existingEmployee.CPRFirstAid = req.body.CPRFirstAid;

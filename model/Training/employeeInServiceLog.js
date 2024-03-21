@@ -32,6 +32,16 @@ const employeeInServiceLogSchema = new mongoose.Schema({
         employeeSignature: {
                 type: String,
         },
+        employeeDate: {
+                type: String,
+        },
+        employeeTime: {
+                type: String
+        },
+        employeeSaveAsDraft: {
+                type: Boolean,
+                default: false
+        },
 });
 const EmployeeInServiceLog = mongoose.model('EmployeeInServiceLog', employeeInServiceLogSchema);
 module.exports = EmployeeInServiceLog;

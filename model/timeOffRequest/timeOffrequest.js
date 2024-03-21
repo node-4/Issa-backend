@@ -35,6 +35,17 @@ const addressSchema = new mongoose.Schema({
         signature: {
                 type: String,
         },
+        signatureDate: {
+                type: Date,
+                default: Date.now,
+        },
+        signatureTime: {
+                type: String
+        },
+        signatureSaveAsDraft: {
+                type: Boolean,
+                default: false
+        },
         requestType: {
                 type: String,
                 enum: ["PTO", "SICKTIME"],

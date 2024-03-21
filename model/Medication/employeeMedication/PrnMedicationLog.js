@@ -65,6 +65,17 @@ const prnMedicationLogSchema = new mongoose.Schema({
                 staffInitials: {
                         type: String
                 },
+                signatureDate: {
+                        type: Date,
+                        default: Date.now,
+                },
+                signatureTime: {
+                        type: String
+                },
+                signatureSaveAsDraft: {
+                        type: Boolean,
+                        default: false
+                },
         }],
 });
 const PRNMedicationLog = mongoose.model('PrnMedicationLog', prnMedicationLogSchema);

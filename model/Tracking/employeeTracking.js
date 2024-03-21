@@ -76,9 +76,16 @@ const addressSchema = new mongoose.Schema({
         employeeSignature: {
                 type: String,
         },
-        employeeId: {
-                type: schema.Types.ObjectId,
-                ref: "User",
+        employeeSignatureDate: {
+                type: Date,
+                default: Date.now,
+        },
+        employeeSignatureTime: {
+                type: String
+        },
+        employeeSignatureSaveAsDraft: {
+                type: Boolean,
+                default: false
         },
         adminId: {
                 type: schema.Types.ObjectId,

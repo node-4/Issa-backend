@@ -67,6 +67,10 @@ const performanceReviewSchema = new mongoose.Schema({
         employeeTime: {
                 type: String
         },
+        employeeSaveAsDraft: {
+                type: Boolean,
+                default: false
+        },
         administratorName: {
                 type: String
         },
@@ -78,6 +82,10 @@ const performanceReviewSchema = new mongoose.Schema({
         },
         administratorTime: {
                 type: String
+        },
+        administratorSaveAsDraft: {
+                type: Boolean,
+                default: false
         },
 });
 const PerformanceReview = mongoose.model('PerformanceReview', performanceReviewSchema);

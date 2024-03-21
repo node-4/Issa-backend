@@ -45,11 +45,22 @@ const medicationReconciliationSchema = new mongoose.Schema({
         providerName: {
                 type: String,
         },
+        date: {
+                type: Date,
+        },
         providerSignature: {
                 type: String,
         },
-        date: {
+        providerSignatureDate: {
                 type: Date,
+                default: Date.now,
+        },
+        providerSignatureTime: {
+                type: String
+        },
+        providerSignatureSaveAsDraft: {
+                type: Boolean,
+                default: false
         },
 });
 const MedicationReconciliation = mongoose.model('MedicationReconciliation', medicationReconciliationSchema);

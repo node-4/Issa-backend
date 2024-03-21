@@ -56,8 +56,30 @@ const opioidCountSchema = new mongoose.Schema({
                 currentStaffOnShiftSignature: {
                         type: String,
                 },
+                currentStaffOnShiftSignatureDate: {
+                        type: Date,
+                        default: Date.now,
+                },
+                currentStaffOnShiftSignatureTime: {
+                        type: String
+                },
+                currentStaffOnShiftSignatureSaveAsDraft: {
+                        type: Boolean,
+                        default: false
+                },
                 relievingStaffSignature: {
                         type: String,
+                },
+                relievingStaffSignatureDate: {
+                        type: Date,
+                        default: Date.now,
+                },
+                relievingStaffSignatureTime: {
+                        type: String
+                },
+                relievingStaffSignatureSaveAsDraft: {
+                        type: Boolean,
+                        default: false
                 },
         }],
         staff: [{

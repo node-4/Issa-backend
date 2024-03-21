@@ -42,18 +42,12 @@ const skillsAndKnowledgeTrainingSchema = new mongoose.Schema({
                         'Verbal interaction with the staff member, such as interviewing, discussion, or question and answer',
                 ],
         },
-        employeeSignature: {
-                type: String,
-        },
         employeeTitle: {
                 type: String,
         },
-        employeeDate: {
+        employeeTitleDate: {
                 type: Date,
                 default: Date.now,
-        },
-        verifiedBySignature: {
-                type: String,
         },
         verifiedByTitle: {
                 type: String,
@@ -61,6 +55,34 @@ const skillsAndKnowledgeTrainingSchema = new mongoose.Schema({
         verifiedByDate: {
                 type: Date,
                 default: Date.now,
+        },
+        employeeSignature: {
+                type: String,
+        },
+        employeeDate: {
+                type: Date,
+                default: Date.now,
+        },
+        employeeTime: {
+                type: String
+        },
+        employeeSaveAsDraft: {
+                type: Boolean,
+                default: false
+        },
+        verifiedBySignature: {
+                type: String,
+        },
+        verifiedBySignatureDate: {
+                type: Date,
+                default: Date.now,
+        },
+        verifiedBySignatureTime: {
+                type: String
+        },
+        verifiedBySignatureSaveAsDraft: {
+                type: Boolean,
+                default: false
         },
 });
 const SkillsAndKnowledgeTraining = mongoose.model('SkillsAndKnowledgeTraining', skillsAndKnowledgeTrainingSchema);

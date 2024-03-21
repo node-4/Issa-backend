@@ -51,11 +51,33 @@ const informedConsentSchema = new mongoose.Schema({
                 },
                 signature: {
                         type: String,
-                }
+                },
+                signatureDate: {
+                        type: Date,
+                        default: Date.now,
+                },
+                signatureTime: {
+                        type: String
+                },
+                signatureSaveAsDraft: {
+                        type: Boolean,
+                        default: false
+                },
         }],
         residentGuardianSignature: {
                 type: String,
-        }
+        },
+        residentGuardianSignatureDate: {
+                type: Date,
+                default: Date.now,
+        },
+        residentGuardianSignatureTime: {
+                type: String
+        },
+        residentGuardianSignatureSaveAsDraft: {
+                type: Boolean,
+                default: false
+        },
 });
 const InformedConsent = mongoose.model('informedConsentForMedication', informedConsentSchema);
 module.exports = InformedConsent;
