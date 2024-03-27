@@ -25,30 +25,36 @@ const progressNoteSchema = new mongoose.Schema({
         date: {
                 type: Date,
         },
+        shiftBeginning: {
+                type: String,
+        },
+        shiftEnd: {
+                type: String,
+        },
         shift: {
                 type: String,
                 enum: ['7am-3pm', '3pm-11pm', '11pm-7am', '8am-4pm', '4pm-12am', '12am-8am', '7am-7pm', '7pm-7am', '8am-8pm', '8pm-8am',],
         },
-        medicationAdministrationCompleted: {
-                type: Boolean
-        },
-        assistanceInMedicationAdministrationCompleted: {
-                type: Boolean
-        },
-        healthAndWelfareChecksCompleted: {
-                type: Boolean
-        },
+        // medicationAdministrationCompleted: {
+        //         type: Boolean
+        // },
+        // assistanceInMedicationAdministrationCompleted: {
+        //         type: Boolean
+        // },
+        // healthAndWelfareChecksCompleted: {
+        //         type: Boolean
+        // },
         communityLivingSupport: {
                 type: String,
                 enum: ['monitors', 'Prompts']
         },
-        therapy: {
+        appointment: {
                 type: Array,
         },
         mood: {
                 type: Array,
         },
-        appointment: {
+        therapy: {
                 type: Array,
         },
         PCP: {
