@@ -99,15 +99,27 @@ const treatmentPlanSchema = new mongoose.Schema({
                 behavioralSymptoms: [{
                         type: String,
                 }],
+                behavioralSymptomsOther: {
+                        type: String,
+                },
                 physicalSymptoms: [{
                         type: String,
                 }],
+                physicalSymptomsOther: {
+                        type: String,
+                },
                 cognitiveSymptoms: [{
                         type: String,
                 }],
+                cognitiveSymptomsOther: {
+                        type: String,
+                },
                 psychosocialSymptoms: [{
                         type: String,
                 }],
+                psychosocialSymptomsOther: {
+                        type: String,
+                },
         },
         interventions: [{
                 type: String,
@@ -237,6 +249,9 @@ const treatmentPlanSchema = new mongoose.Schema({
         afterCareAndTransitionPlanning: [{
                 type: String
         }],
+        clinicalSummaryBeforeDate: {
+                type: Date,
+        },
         clinicalSummary: {
                 type: Array,
         },
